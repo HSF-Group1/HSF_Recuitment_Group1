@@ -1,7 +1,3 @@
-# System Entities and Relationships
-
-Dựa trên tài liệu `context.md` và các yêu cầu bổ sung về hệ thống tuyển dụng mở rộng, dưới đây là danh sách các thực thể (entities) chi tiết cùng với mối quan hệ giữa chúng. File này được thiết kế để làm đầu vào cho các tác vụ tạo database schema hoặc ORM model (như JPA, Hibernate, Sequelize...).
-
 ## 1. Entities
 
 ### 1.1 Role (Phân quyền)
