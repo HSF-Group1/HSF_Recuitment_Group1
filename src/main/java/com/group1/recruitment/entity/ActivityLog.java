@@ -1,11 +1,11 @@
-package com.group3.recruitment.entity;
+package com.group1.recruitment.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.group3.recruitment.enums.EventType;
+import com.group1.recruitment.enums.EventType;
 
 @Entity
 @Table(name = "activity_logs")

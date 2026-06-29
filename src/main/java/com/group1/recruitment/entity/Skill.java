@@ -1,4 +1,4 @@
-package com.group3.recruitment.entity;
+package com.group1.recruitment.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

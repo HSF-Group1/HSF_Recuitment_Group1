@@ -1,4 +1,4 @@
-package com.group3.recruitment.entity;
+package com.group1.recruitment.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.group3.recruitment.enums.JobStatus;
+import com.group1.recruitment.enums.JobStatus;
 
 @Entity
 @Table(name = "job_postings")

@@ -1,6 +1,6 @@
-package com.group3.recruitment.entity;
+package com.group1.recruitment.entity;
 
-import com.group3.recruitment.enums.ProficiencyLevel;
+import com.group1.recruitment.enums.ProficiencyLevel;
 
 import jakarta.persistence.*;
 import lombok.*;

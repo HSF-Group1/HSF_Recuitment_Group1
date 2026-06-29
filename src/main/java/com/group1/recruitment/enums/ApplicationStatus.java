@@ -1,4 +1,4 @@
-package com.group3.recruitment.enums;
+package com.group1.recruitment.enums;
 
 public enum ApplicationStatus {
     APPLIED,
