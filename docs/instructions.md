@@ -5,8 +5,8 @@ I have a system model specification defined in my project [entities.md](file;fil
 
 ### 1. Project Package Structure Requirements
 You must organize the classes into separate packages. Do NOT embed Enum declarations inside the Entity classes. Every Enum and Entity must be a standalone Java file.
-- **Entity Package (`com.example.talenthub.model.entity` or `.entity`):** Contains only JPA Entity classes.
-- **Enum Package (`com.example.talenthub.model.enums` or `.enums`):** Contains only Java Enum files. Inside the Entities, import these Enums and use the `@Enumerated(EnumType.STRING)` annotation above the enum fields.
+- **Entity Package (`com.example.talenthub.entity` or `.entity`):** Contains only JPA Entity classes.
+- **Enum Package (`com.example.talenthub.enums` or `.enums`):** Contains only Java Enum files. Inside the Entities, import these Enums and use the `@Enumerated(EnumType.STRING)` annotation above the enum fields.
 
 ### 2. Java & JPA Coding Conventions (NO Validation, NO AI)
 - Use standard Java PascalCase for Class/Enum names and camelCase for field names.
