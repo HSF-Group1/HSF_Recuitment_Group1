@@ -1,0 +1,10 @@
+<!-- Reusable Card (Pure Thymeleaf) -->
+<div th:fragment="appCard(title, subtitle, content)" class="app-card">
+  <div class="mb-3" th:if="${title != null}">
+    <h3 th:text="${title}" class="app-card-title">Card Title</h3>
+    <div th:if="${subtitle != null}" th:text="${subtitle}" class="app-card-subtitle">Card Subtitle</div>
+  </div>
+  <div th:replace="${content}">
+    <!-- Card content placeholder -->
+  </div>
+</div>

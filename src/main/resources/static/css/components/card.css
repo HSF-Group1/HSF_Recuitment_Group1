@@ -1,0 +1,20 @@
+.app-card {
+  background-color: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  padding: var(--space-24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.app-card-title {
+  font-size: var(--h2-size);
+  color: var(--primary);
+  margin-bottom: var(--space-8);
+  font-weight: 600;
+}
+
+.app-card-subtitle {
+  font-size: var(--small-size);
+  color: var(--gray-text);
+  margin-bottom: var(--space-16);
+}

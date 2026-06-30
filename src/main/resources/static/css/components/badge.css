@@ -1,0 +1,25 @@
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--small-size);
+  font-weight: 600;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius);
+  line-height: 1;
+}
+
+.app-badge-success {
+  background-color: #DCFCE7;
+  color: var(--success);
+}
+
+.app-badge-warning {
+  background-color: #FEF3C7;
+  color: var(--warning);
+}
+
+.app-badge-danger {
+  background-color: #FEE2E2;
+  color: var(--danger);
+}

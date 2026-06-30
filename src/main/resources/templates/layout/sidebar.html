@@ -1,0 +1,33 @@
+<div th:fragment="sidebar" class="app-sidebar">
+  <div class="app-sidebar-logo">
+    <i class="bi bi-hub me-2"></i>
+    <span>TalentHub</span>
+  </div>
+  
+  <ul class="app-sidebar-menu">
+    <li>
+      <a th:href="@{/}" class="app-sidebar-link active">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a th:href="@{/jobs}" class="app-sidebar-link">
+        <i class="bi bi-briefcase"></i>
+        <span>Jobs</span>
+      </a>
+    </li>
+    <li>
+      <a th:href="@{/candidates}" class="app-sidebar-link">
+        <i class="bi bi-people"></i>
+        <span>Candidates</span>
+      </a>
+    </li>
+    <li>
+      <a th:href="@{/settings}" class="app-sidebar-link">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      </a>
+    </li>
+  </ul>
+</div>

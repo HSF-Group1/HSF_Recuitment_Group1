@@ -1,0 +1,17 @@
+<!-- Reusable Native Bootstrap Modal (Pure Thymeleaf) -->
+<div th:fragment="appModal(id, title, body, footer)" th:id="${id}" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content app-modal">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="${title}">Modal Title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div th:replace="${body}">Body content placeholder</div>
+      </div>
+      <div class="modal-footer" th:if="${footer != null}">
+        <div th:replace="${footer}">Footer actions placeholder</div>
+      </div>
+    </div>
+  </div>
+</div>

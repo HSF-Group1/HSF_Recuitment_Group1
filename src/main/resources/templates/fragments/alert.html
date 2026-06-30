@@ -1,0 +1,9 @@
+<!-- Reusable Alert (Pure Thymeleaf) -->
+<div th:fragment="appAlert(message, type)"
+     th:if="${message != null}"
+     th:class="${'app-alert app-alert-' + (type != null ? type : 'success')}"
+     class="app-alert"
+     role="alert">
+  <i th:class="${'bi ' + (type == 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle')}" style="font-size: 20px;"></i>
+  <span th:text="${message}">Alert message text</span>
+</div>

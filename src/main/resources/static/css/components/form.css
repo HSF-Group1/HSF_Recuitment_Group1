@@ -1,0 +1,54 @@
+.app-form-label {
+  font-weight: 500;
+  font-size: var(--small-size);
+  color: var(--gray-text);
+  margin-bottom: var(--space-8);
+  display: inline-block;
+}
+
+.app-form-control {
+  width: 100%;
+  padding: var(--space-8) var(--space-16);
+  font-size: var(--body-size);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  background-color: var(--white);
+  color: var(--gray-text);
+}
+
+.app-form-control:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Choice inputs (Checkbox & Radio) styling */
+.app-choice-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.app-choice-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Search bar styling */
+.app-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.app-search-input {
+  padding-left: var(--space-32);
+}
+
+.app-search-icon {
+  position: absolute;
+  left: var(--space-12);
+  color: var(--gray-text);
+  pointer-events: none;
+}
