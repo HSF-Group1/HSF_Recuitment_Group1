@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='Application Detail', content=~{::section})}">
+
+<body>
+<section>
+    <div th:if="${currentApplication}"
+         th:replace="~{fragments/card :: appCard(title='Application Detail', subtitle='This application', content=~{::application})}">
+        <div th:fragment="application">
+            <div>
+                <div>Application ID:</div>
+                <div th:text="${currentApplication.id}">1</div>
+            </div>
+            <div>
+                <div>Job Title:</div>
+                <div
+                        th:text="${currentApplication.jobPosting != null ? currentApplication.jobPosting.title : 'N/A'}">
+                    ABC
+                </div>
+            </div>
+            <div>
+                <div>Submission Date:</div>
+                <div th:text="${currentApplication.submissionDate}">2312</div>
+            </div>
+            <div>
+                <div>Status:</div>
+                <div th:text="${currentApplication.status}">1</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${currentApplication.getCandidate()}"
+         th:replace="~{fragments/card :: appCard(title='Candidate Detail', subtitle='This candidate', content=~{::candidate})}">
+        <div th:fragment="candidate">
+            <div>
+                <div>Full Name:</div>
+                <div th:text="${currentApplication.getCandidate().getUser().getFullName()}">1</div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="app-btn app-btn-secondary">Exit</button>
+    <button type="button" class="app-btn app-btn-primary">Download CV</button>
+
+</section>
+</body>
+</html>
