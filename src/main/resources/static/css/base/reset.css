@@ -1,0 +1,44 @@
+body {
+  font-family: var(--font-family);
+  background-color: var(--background);
+  color: var(--gray-text);
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: var(--h1-size);
+  color: var(--primary);
+  margin-bottom: var(--space-16);
+}
+
+h2 {
+  font-size: var(--h2-size);
+  color: var(--primary);
+  margin-bottom: var(--space-16);
+}
+
+p {
+  font-size: var(--body-size);
+  line-height: 1.5;
+  margin-bottom: var(--space-16);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Accessibility Focus Outline */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

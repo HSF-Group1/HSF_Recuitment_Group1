@@ -1,0 +1,22 @@
+.app-alert {
+  padding: var(--space-16) var(--space-24);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--body-size);
+  margin-bottom: var(--space-16);
+}
+
+.app-alert-success {
+  background-color: #DCFCE7;
+  border-color: rgba(22, 163, 74, 0.2);
+  color: var(--success);
+}
+
+.app-alert-danger {
+  background-color: #FEE2E2;
+  border-color: rgba(220, 38, 38, 0.2);
+  color: var(--danger);
+}

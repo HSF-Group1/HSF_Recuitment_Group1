@@ -1,0 +1,33 @@
+:root {
+  /* Color Tokens */
+  --primary: #234B7C;
+  --primary-hover: #1B3A63;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+  --gray-text: #4B5563;
+  --gray-border: #E5E7EB;
+  --background: #F9FAFB;
+  --white: #FFFFFF;
+
+  /* Typography */
+  --font-family: 'Inter', system-ui, sans-serif;
+  --h1-size: 28px;
+  --h2-size: 22px;
+  --body-size: 16px;
+  --small-size: 14px;
+
+  /* Spacing */
+  --space-8: 8px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Radius */
+  --radius: 8px;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --navbar-height: 64px;
+  --content-padding: 16px;
+}

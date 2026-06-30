@@ -1,0 +1,9 @@
+<!-- Reusable Button (Pure Thymeleaf) -->
+<button th:fragment="appButton(text, type, icon, disabled, btnType)"
+        th:type="${btnType != null ? btnType : 'button'}"
+        th:disabled="${disabled}"
+        th:class="${'app-btn app-btn-' + (type != null ? type : 'primary')}"
+        class="app-btn">
+  <i th:if="${icon != null}" th:class="${'bi ' + icon}"></i>
+  <span th:text="${text}">Button</span>
+</button>
