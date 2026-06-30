@@ -1,47 +1,109 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: mainLayout(title='Application Detail', content=~{::section})}">
+    th:replace="~{layout/base :: mainLayout(title='Application Detail', content=~{::section})}">
 
 <body>
-<section>
-    <div th:if="${currentApplication}"
-         th:replace="~{fragments/card :: appCard(title='Application Detail', subtitle='This application', content=~{::application})}">
-        <div th:fragment="application">
-            <div>
-                <div>Application ID:</div>
-                <div th:text="${currentApplication.id}">1</div>
-            </div>
-            <div>
-                <div>Job Title:</div>
-                <div
-                        th:text="${currentApplication.jobPosting != null ? currentApplication.jobPosting.title : 'N/A'}">
-                    ABC
+    <section class="container py-4">
+        <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(parentText='Applications', parentUrl='/application', activeText='Details')}"></div>
+
+        <div th:replace="~{fragments/alert :: appAlert(message=${errorMsg}, type='danger')}"></div>
+
+        <div class="row g-4 mt-2">
+            <!-- Left: Application Detail Card -->
+            <div class="col-md-6" th:if="${currentApplication}">
+                <div th:replace="~{fragments/card :: appCard(title='Application Detail', subtitle='This application', content=~{::application})}">
+                    <div th:fragment="application" class="py-2">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Application ID:</div>
+                            <div class="col-sm-8 fw-bold text-dark" th:text="${currentApplication.id}">1</div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Job Title:</div>
+                            <div class="col-sm-8 fw-bold text-primary"
+                                th:text="${currentApplication.jobPosting != null ? currentApplication.jobPosting.title : 'N/A'}">
+                                ABC
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Submission Date:</div>
+                            <div class="col-sm-8 text-dark" 
+                                 th:text="${#temporals.format(currentApplication.submissionDate, 'dd/MM/yyyy HH:mm')}">
+                                2312
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Status:</div>
+                            <div class="col-sm-8">
+                                <span th:if="${currentApplication.status.name() == 'HIRED'}" class="app-badge app-badge-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Hired
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'SCREENING'}" class="app-badge app-badge-warning">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i>Screening
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'REJECTED'}" class="app-badge app-badge-danger">
+                                    <i class="bi bi-x-circle-fill me-1"></i>Rejected
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'APPLIED'}" class="app-badge app-badge-info">
+                                    <i class="bi bi-info-circle-fill me-1"></i>Applied
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'INTERVIEW'}" class="app-badge app-badge-info">
+                                    <i class="bi bi-people-fill me-1"></i>Interview
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'OFFER'}" class="app-badge app-badge-primary">
+                                    <i class="bi bi-envelope-paper-fill me-1"></i>Offer
+                                </span>
+                                <span th:if="${currentApplication.status.name() == 'WITHDRAWN'}" class="app-badge app-badge-secondary">
+                                    <i class="bi bi-dash-circle-fill me-1"></i>Withdrawn
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top">
+                            <a th:if="${currentApplication.cvFileUrl != null}" th:href="${currentApplication.cvFileUrl}" target="_blank" class="app-btn app-btn-primary text-decoration-none d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-download"></i> Download CV
+                            </a>
+                            <button th:if="${currentApplication.cvFileUrl == null}" type="button" class="app-btn app-btn-primary" disabled>
+                                <i class="bi bi-download"></i> Download CV (No File)
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div>
-                <div>Submission Date:</div>
-                <div th:text="${currentApplication.submissionDate}">2312</div>
-            </div>
-            <div>
-                <div>Status:</div>
-                <div th:text="${currentApplication.status}">1</div>
+
+            <!-- Right: Candidate Detail Card -->
+            <div class="col-md-6" th:if="${currentApplication != null && currentApplication.getCandidate() != null}">
+                <div th:replace="~{fragments/card :: appCard(title='Candidate Detail', subtitle='This candidate', content=~{::candidate})}">
+                    <div th:fragment="candidate" class="py-2">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Full Name:</div>
+                            <div class="col-sm-8 fw-bold text-dark" th:text="${currentApplication.getCandidate().getUser().getFullName()}">1</div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Email:</div>
+                            <div class="col-sm-8">
+                                <a th:href="'mailto:' + ${currentApplication.getCandidate().getUser().getEmail()}" 
+                                   th:text="${currentApplication.getCandidate().getUser().getEmail()}" 
+                                   class="text-decoration-none fw-medium">email@example.com</a>
+                            </div>
+                        </div>
+                        <div class="row mb-0 align-items-center">
+                            <div class="col-sm-4 fw-semibold text-muted">Account Status:</div>
+                            <div class="col-sm-8">
+                                <span class="app-badge" 
+                                      th:classappend="${currentApplication.getCandidate().getUser().getStatus().name() == 'ACTIVE' ? 'app-badge-success' : 'app-badge-danger'}"
+                                      th:text="${currentApplication.getCandidate().getUser().getStatus()}">ACTIVE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div th:if="${currentApplication.getCandidate()}"
-         th:replace="~{fragments/card :: appCard(title='Candidate Detail', subtitle='This candidate', content=~{::candidate})}">
-        <div th:fragment="candidate">
-            <div>
-                <div>Full Name:</div>
-                <div th:text="${currentApplication.getCandidate().getUser().getFullName()}">1</div>
-            </div>
+        <div class="mt-4">
+            <a href="/application" class="app-btn app-btn-secondary text-decoration-none">
+                <i class="bi bi-x-circle me-1"></i> Exit
+            </a>
         </div>
-    </div>
-
-    <button type="button" class="app-btn app-btn-secondary">Exit</button>
-    <button type="button" class="app-btn app-btn-primary">Download CV</button>
-
-</section>
+    </section>
 </body>
+
 </html>
