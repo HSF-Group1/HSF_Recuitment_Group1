@@ -1,0 +1,128 @@
+/* ============================================================
+   Dark mode — follows ui-skill.md §9 (Dark Mode & Atmospheric
+   Architecture). Driven by data-bs-theme="dark" on <html>.
+   Tonal elevation only — NO box-shadow in dark states.
+   Base #0A0F1D · Surface-1 #121829 · Surface-2 #1A2138
+   Text #E2E8F0 (never pure #FFFFFF) · Borders #232B45
+   ============================================================ */
+
+/* Smooth theme switch on the elements that change colour (both directions). */
+body,
+.app-card, .app-navbar, .app-sidebar,
+.app-table, .app-table th, .app-table td,
+.app-form-control, .form-control, .form-select,
+.card, .dropdown-menu, .modal-content, .nav-link, .app-badge, .theme-toggle {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-bs-theme="dark"] {
+  /* Bootstrap 5.3 theme variables → atmospheric navy palette */
+  --bs-body-bg: #0A0F1D;
+  --bs-body-color: #E2E8F0;
+  --bs-border-color: #232B45;
+  --bs-secondary-bg: #121829;
+  --bs-tertiary-bg: #1A2138;
+  --bs-secondary-color: #A9B4CC;
+  --bs-emphasis-color: #F1F5F9;
+  --bs-card-bg: #121829;
+  --bs-card-border-color: #232B45;
+  --bs-dropdown-bg: #1A2138;
+  --bs-dropdown-border-color: #232B45;
+  --bs-dropdown-link-color: #E2E8F0;
+  --bs-modal-bg: #1A2138;
+
+  /* Project design tokens */
+  --background: #0A0F1D;
+  --surface: #121829;
+  --surface-2: #1A2138;
+  --gray-text: #E2E8F0;
+  --gray-border: #232B45;
+  --accent: #C7D6F0;
+  color-scheme: dark;
+}
+
+/* Page + typography (off-white, never pure #FFFFFF) */
+[data-bs-theme="dark"] body { background-color: var(--background); color: var(--gray-text); }
+[data-bs-theme="dark"] h1,
+[data-bs-theme="dark"] h2,
+[data-bs-theme="dark"] .app-card-title,
+[data-bs-theme="dark"] .app-navbar-brand { color: #F1F5F9; }
+[data-bs-theme="dark"] a { color: var(--accent); }
+[data-bs-theme="dark"] a:hover { color: #E2ECFB; }
+
+/* Surfaces — tonal elevation, no shadows */
+[data-bs-theme="dark"] .app-card,
+[data-bs-theme="dark"] .app-table-wrapper,
+[data-bs-theme="dark"] .app-navbar,
+[data-bs-theme="dark"] .card {
+  background-color: var(--surface);
+  border-color: var(--gray-border);
+  color: var(--gray-text);
+  box-shadow: none !important;
+}
+[data-bs-theme="dark"] .modal-content,
+[data-bs-theme="dark"] .dropdown-menu { background-color: var(--surface-2); border-color: var(--gray-border); }
+
+/* Sidebar — one step below the canvas for atmosphere */
+[data-bs-theme="dark"] .app-sidebar { background-color: #070B15; border-right: 1px solid var(--gray-border); }
+
+/* Tables */
+[data-bs-theme="dark"] .app-table th { background-color: #0D1322; color: #A9B4CC; border-color: var(--gray-border); }
+[data-bs-theme="dark"] .app-table td { color: var(--gray-text); border-color: var(--gray-border); }
+[data-bs-theme="dark"] .app-table tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); }
+
+/* Forms — crisp focus, no glow ring */
+[data-bs-theme="dark"] .app-form-control,
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background-color: #0A0F1D;
+  color: var(--gray-text);
+  border-color: var(--gray-border);
+}
+[data-bs-theme="dark"] .app-form-control::placeholder,
+[data-bs-theme="dark"] .form-control::placeholder { color: #6B7690; }
+[data-bs-theme="dark"] .app-form-control:focus,
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+  background-color: #0A0F1D; color: var(--gray-text);
+  border-color: var(--accent); box-shadow: none;
+}
+[data-bs-theme="dark"] .app-form-label { color: var(--gray-text); }
+
+/* Bootstrap helpers used across templates */
+[data-bs-theme="dark"] .bg-light { background-color: var(--background) !important; }
+[data-bs-theme="dark"] .text-muted { color: #94A3B8 !important; }
+[data-bs-theme="dark"] .text-dark { color: var(--gray-text) !important; }
+[data-bs-theme="dark"] .border-top,
+[data-bs-theme="dark"] .border-bottom { border-color: var(--gray-border) !important; }
+[data-bs-theme="dark"] .shadow-sm,
+[data-bs-theme="dark"] .shadow { box-shadow: none !important; }
+
+/* Tabs */
+[data-bs-theme="dark"] .nav-tabs { border-bottom-color: var(--gray-border); }
+[data-bs-theme="dark"] .nav-tabs .nav-link { color: #94A3B8; }
+[data-bs-theme="dark"] .nav-tabs .nav-link.active {
+  background-color: var(--surface); color: #F1F5F9;
+  border-color: var(--gray-border) var(--gray-border) var(--surface);
+}
+
+/* Dropdown items */
+[data-bs-theme="dark"] .dropdown-item { color: var(--gray-text); }
+[data-bs-theme="dark"] .dropdown-item:hover { background-color: #232B45; color: #F1F5F9; }
+[data-bs-theme="dark"] .dropdown-divider { border-top-color: var(--gray-border); }
+
+/* Misc */
+[data-bs-theme="dark"] .progress { background-color: #232B45; }
+[data-bs-theme="dark"] hr { border-color: var(--gray-border); opacity: 1; }
+
+/* Theme toggle button */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--gray-border, #EFEFEF);
+  color: inherit;
+  border-radius: 4px;
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--accent, #111111); }
