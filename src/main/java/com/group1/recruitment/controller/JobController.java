@@ -7,11 +7,8 @@ import com.group1.recruitment.enums.JobStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
 import com.group1.recruitment.exception.ValidationException;
 import com.group1.recruitment.repository.UserRepository;
-import com.group1.recruitment.security.SessionUser;
-import com.group1.recruitment.security.SessionUtil;
 import com.group1.recruitment.service.ApplicationService;
 import com.group1.recruitment.service.JobService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +22,8 @@ import java.util.Map;
 @RequestMapping("/manage/jobs")
 public class JobController {
 
+    private final User user;
+
     private final JobService jobService;
     private final ApplicationService applicationService;
     private final UserRepository userRepository;
@@ -34,20 +33,20 @@ public class JobController {
         this.jobService = jobService;
         this.applicationService = applicationService;
         this.userRepository = userRepository;
+
+        this.user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    private User managed(SessionUser user) {
-        return userRepository.findById(user.getId()).orElse(null);
-    }
+    // private User managed(SessionUser user) {
+    // return userRepository.findById(user.getId()).orElse(null);
+    // }
 
     // ---------------- SCR-10 Job List ----------------
 
     @GetMapping
     public String list(@RequestParam(required = false) String status,
-            @RequestParam(required = false) String q,
-            HttpSession session, Model model) {
-        SessionUser user = SessionUtil.require(session);
-        List<JobPosting> all = jobService.listForManager(user, managed(user));
+            @RequestParam(required = false) String q, Model model) {
+        List<JobPosting> all = jobService.listForManager(user);
 
         JobStatus tab = parseStatus(status);
         String term = q == null ? null : q.trim().toLowerCase();
@@ -92,11 +91,10 @@ public class JobController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute JobForm jobForm, HttpSession session,
+    public String create(@ModelAttribute JobForm jobForm,
             RedirectAttributes ra, Model model) {
-        SessionUser user = SessionUtil.require(session);
         try {
-            JobPosting job = jobService.create(jobForm, managed(user));
+            JobPosting job = jobService.create(jobForm, user);
             ra.addFlashAttribute("flash", "Job posting saved as Draft.");
             return "redirect:/manage/jobs/" + job.getId();
         } catch (ValidationException ex) {
@@ -107,8 +105,7 @@ public class JobController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, HttpSession session, Model model) {
-        SessionUser user = SessionUtil.require(session);
+    public String editForm(@PathVariable Long id, Model model) {
         JobPosting job = jobService.getOrThrow(id);
         jobService.assertCanManage(job, user);
         if (!model.containsAttribute("jobForm")) {
@@ -120,9 +117,7 @@ public class JobController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute JobForm jobForm,
-            HttpSession session, RedirectAttributes ra, Model model) {
-        SessionUser user = SessionUtil.require(session);
+    public String update(@PathVariable Long id, @ModelAttribute JobForm jobForm, RedirectAttributes ra, Model model) {
         try {
             jobService.update(id, jobForm, user);
             ra.addFlashAttribute("flash", "Job posting updated.");
@@ -137,20 +132,19 @@ public class JobController {
     }
 
     @PostMapping("/{id}/publish")
-    public String publish(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
-        actAndFlash(id, session, ra, () -> jobService.publish(id, SessionUtil.require(session)), "Job published.");
+    public String publish(@PathVariable Long id, RedirectAttributes ra) {
+        actAndFlash(id, ra, () -> jobService.publish(id, user), "Job published.");
         return "redirect:/manage/jobs/" + id;
     }
 
     @PostMapping("/{id}/close")
-    public String close(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
-        actAndFlash(id, session, ra, () -> jobService.close(id, SessionUtil.require(session)), "Job closed.");
+    public String close(@PathVariable Long id, RedirectAttributes ra) {
+        actAndFlash(id, ra, () -> jobService.close(id, user), "Job closed.");
         return "redirect:/manage/jobs/" + id;
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
-        SessionUser user = SessionUtil.require(session);
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
         try {
             jobService.delete(id, user);
             ra.addFlashAttribute("flash", "Job posting deleted.");
@@ -164,8 +158,7 @@ public class JobController {
     // ---------------- SCR-12 Job Detail ----------------
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, HttpSession session, Model model) {
-        SessionUser user = SessionUtil.require(session);
+    public String detail(@PathVariable Long id, Model model) {
         JobPosting job = jobService.getOrThrow(id);
         if (!jobService.canManage(job, user)) {
             throw new AccessDeniedException("You cannot view this job posting.");
@@ -176,37 +169,7 @@ public class JobController {
         return "job/detail";
     }
 
-    // // ---------------- SCR-16 Application List (for one job) ----------------
-
-    // @GetMapping("/{id}/applications")
-    // public String applications(@PathVariable Long id, @RequestParam(required =
-    // false) String stage,
-    // HttpSession session, Model model) {
-    // SessionUser user = SessionUtil.require(session);
-    // JobPosting job = jobService.getOrThrow(id);
-    // if (!jobService.canManage(job, user)) {
-    // throw new AccessDeniedException("You cannot view these applications.");
-    // }
-    // ApplicationStatus stageFilter = parseAppStatus(stage);
-    // List<Application> apps = applicationService.listForJob(job, stageFilter);
-
-    // Map<String, Long> stageCounts = new LinkedHashMap<>();
-    // stageCounts.put("ALL", (long) applicationService.listForJob(job,
-    // null).size());
-    // for (ApplicationStatus s : ApplicationStatus.values()) {
-    // stageCounts.put(s.name(), applicationService.listForJob(job, s).size() + 0L);
-    // }
-
-    // model.addAttribute("job", job);
-    // model.addAttribute("applications", apps);
-    // model.addAttribute("activeStage", stageFilter == null ? "ALL" :
-    // stageFilter.name());
-    // model.addAttribute("stageCounts", stageCounts);
-    // model.addAttribute("stages", ApplicationStatus.values());
-    // return "application/list";
-    // }
-
-    private void actAndFlash(Long id, HttpSession session, RedirectAttributes ra, Runnable action, String ok) {
+    private void actAndFlash(Long id, RedirectAttributes ra, Runnable action, String ok) {
         try {
             action.run();
             ra.addFlashAttribute("flash", ok);
@@ -225,13 +188,4 @@ public class JobController {
         }
     }
 
-    // private ApplicationStatus parseAppStatus(String status) {
-    // if (status == null || status.isBlank() || status.equalsIgnoreCase("ALL"))
-    // return null;
-    // try {
-    // return ApplicationStatus.valueOf(status.toUpperCase());
-    // } catch (IllegalArgumentException e) {
-    // return null;
-    // }
-    // }
 }

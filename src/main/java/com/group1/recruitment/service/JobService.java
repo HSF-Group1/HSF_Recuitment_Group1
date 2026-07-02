@@ -11,7 +11,6 @@ import com.group1.recruitment.exception.ValidationException;
 import com.group1.recruitment.repository.ApplicationRepository;
 import com.group1.recruitment.repository.CompanyRepository;
 import com.group1.recruitment.repository.JobPostingRepository;
-import com.group1.recruitment.security.SessionUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +38,11 @@ public class JobService {
     }
 
     // SCR-10: HR sees only own postings; Admin sees all.
-    public List<JobPosting> listForManager(SessionUser user, User managed) {
-        if (user.isAdmin()) {
+    public List<JobPosting> listForManager(User user) {
+        if (user.getRole().getName().equals("ROLE_ADMIN")) {
             return jobRepository.findAllByOrderByCreatedAtDesc();
         }
-        return jobRepository.findByCreatedByOrderByCreatedAtDesc(managed);
+        return jobRepository.findByCreatedByOrderByCreatedAtDesc(user);
     }
 
     // SCR-13: only ACTIVE postings are public.
@@ -55,13 +54,17 @@ public class JobService {
         return applicationRepository.countByJobPosting(job);
     }
 
-    public boolean canManage(JobPosting job, SessionUser user) {
-        if (user.isAdmin())
+    public boolean canManage(JobPosting job, User user) {
+        if ("ROLE_ADMIN".equals(user.getRole().getName())) {
             return true;
-        return user.isHr() && job.getCreatedBy() != null && user.getId().equals(job.getCreatedBy().getId());
+        }
+
+        return "ROLE_HR".equals(user.getRole().getName())
+                && job.getCreatedBy() != null
+                && user.getId().equals(job.getCreatedBy().getId());
     }
 
-    public void assertCanManage(JobPosting job, SessionUser user) {
+    public void assertCanManage(JobPosting job, User user) {
         if (!canManage(job, user)) {
             throw new AccessDeniedException("You cannot manage this job posting.");
         }
@@ -82,7 +85,7 @@ public class JobService {
 
     // SCR11 Manager Update job posting
     @Transactional
-    public JobPosting update(Long id, JobForm form, SessionUser user) {
+    public JobPosting update(Long id, JobForm form, User user) {
         JobPosting job = getOrThrow(id);
         assertCanManage(job, user);
         if (job.getStatus() == JobStatus.CLOSED) {
@@ -94,7 +97,7 @@ public class JobService {
     }
 
     @Transactional
-    public void publish(Long id, SessionUser user) {
+    public void publish(Long id, User user) {
         JobPosting job = getOrThrow(id);
         assertCanManage(job, user);
         if (job.getStatus() != JobStatus.DRAFT) {
@@ -105,7 +108,7 @@ public class JobService {
     }
 
     @Transactional
-    public void close(Long id, SessionUser user) {
+    public void close(Long id, User user) {
         JobPosting job = getOrThrow(id);
         assertCanManage(job, user);
         if (job.getStatus() != JobStatus.ACTIVE) {
@@ -116,7 +119,7 @@ public class JobService {
     }
 
     @Transactional
-    public void delete(Long id, SessionUser user) {
+    public void delete(Long id, User user) {
         JobPosting job = getOrThrow(id);
         assertCanManage(job, user);
         if (job.getStatus() != JobStatus.DRAFT || applicationRepository.countByJobPosting(job) > 0) {
