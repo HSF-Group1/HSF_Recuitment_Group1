@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/** SCR-01 Login, SCR-02 Password Reset, SCR-03 Register. */
 @Controller
 public class AuthController {
 
@@ -33,9 +32,7 @@ public class AuthController {
         this.passwordResetService = passwordResetService;
     }
 
-    // --------------------------------------------------------- SCR-01 Login
 
-    /** Friendly aliases — the screen list calls SCR-01 out as "Direct URL /login". */
     @GetMapping("/login")
     public String loginAlias() {
         return "redirect:/auth/login";
@@ -51,7 +48,6 @@ public class AuthController {
         return "redirect:/auth/forgot-password";
     }
 
-    /** Root: guests land on login, members on their home page. */
     @GetMapping("/home")
     public String home(HttpSession session) {
         SessionUser user = SessionUtil.current(session);
@@ -118,7 +114,6 @@ public class AuthController {
         return "redirect:/auth/login?logout";
     }
 
-    // ------------------------------------------------------ SCR-03 Register
 
     @GetMapping("/auth/register")
     public String registerForm(HttpSession session, Model model) {

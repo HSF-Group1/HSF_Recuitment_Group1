@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: mainLayout(title='Access Denied - 403', content=~{::section})}">
+      th:replace="~{layout/auth :: authLayout(title='Access Denied', content=~{::section})}">
 <body>
 <section>
-  <div class="d-flex flex-column align-items-center justify-content-center text-center py-5" style="min-height: 60vh;">
-    <!-- Icon representing locked/forbidden -->
-    <div class="bg-danger-soft text-danger rounded-circle p-4 mb-4 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background-color: #FEE2E2;">
-      <i class="bi bi-shield-lock" style="font-size: 40px; color: var(--danger);"></i>
+  <style>
+    .error-chip {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; background: #FDF1F2; color: #A63A3A;
+    }
+    [data-bs-theme="dark"] .error-chip { background: rgba(166, 58, 58, 0.22); color: #E8A6A6; }
+    .error-code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #757575;
+    }
+    [data-bs-theme="dark"] .error-code { color: #94A3B8; }
+  </style>
+
+  <div class="text-center py-2">
+    <div class="error-chip mb-3">
+      <i class="fa-solid fa-lock fa-fw"></i>
     </div>
-    
-    <h1 class="display-5 fw-bold mb-3">Access Denied (403)</h1>
-    <p class="text-muted mb-4" style="max-width: 500px; font-size: var(--body-size);">
-      You do not have permission to view this resource. Please contact your system administrator if you believe this is a mistake.
+
+    <p class="error-code mb-2">Error 403</p>
+    <h1 class="mb-3" style="font-size: 1.5rem;">Access denied</h1>
+    <p class="text-muted mb-4" style="line-height: 1.6;">
+      You don't have permission to view this page. If you believe this is a
+      mistake, please contact your administrator.
     </p>
 
-    <div class="d-flex gap-3">
-      <a th:href="@{/}" class="app-btn app-btn-primary">
-        <i class="bi bi-house me-2"></i>Go to Dashboard
+    <div class="d-grid gap-2">
+      <a th:href="@{/home}" class="btn btn-charcoal">
+        <i class="fa-solid fa-house fa-fw me-1"></i>Go to Homepage
       </a>
+      <button type="button" class="btn btn-quiet" onclick="history.back()">
+        <i class="fa-solid fa-arrow-left fa-fw me-1"></i>Go Back
+      </button>
     </div>
   </div>
 </section>
