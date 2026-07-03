@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-/** Exposes the authenticated user to every Thymeleaf view as {@code currentUser}. */
 @ControllerAdvice
 public class GlobalControllerAdvice {
 

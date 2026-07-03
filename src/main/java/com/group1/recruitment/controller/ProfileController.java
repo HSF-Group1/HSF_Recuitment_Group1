@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/** SCR-04 User Profile, SCR-05 Password Change. */
 @Controller
 public class ProfileController {
 
@@ -28,12 +27,10 @@ public class ProfileController {
         this.authService = authService;
     }
 
-    // --------------------------------------------------------- SCR-04 Profile
 
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
-        // Re-query by session id to guarantee state synchronisation (spec SCR-04).
         User user = userRepository.findById(sessionUser.getId())
                 .orElseThrow(() -> new IllegalStateException("Authenticated user no longer exists"));
         model.addAttribute("user", user);
