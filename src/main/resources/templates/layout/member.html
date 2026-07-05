@@ -71,16 +71,6 @@
     .app-form-control.is-invalid { border-color: #A63A3A; }
     .field-error { display: block; color: #A63A3A; font-size: 0.82rem; margin-top: 4px; }
     [data-bs-theme="dark"] .field-error { color: #E8A6A6; }
-
-    /* Password reveal button sits inside the input row */
-    .pw-group { position: relative; }
-    .pw-group .app-form-control { padding-right: 46px; }
-    .pw-toggle {
-      position: absolute; top: 0; right: 0; height: 100%; width: 44px;
-      background: transparent; border: 0; color: var(--gray-text); cursor: pointer;
-    }
-    .pw-toggle:hover { color: var(--ink); }
-    [data-bs-theme="dark"] .pw-toggle:hover { color: #F1F5F9; }
   </style>
 </head>
 
@@ -152,6 +142,13 @@
     input.type = show ? 'text' : 'password';
     icon.className = show ? 'fa-solid fa-eye-slash fa-fw' : 'fa-solid fa-eye fa-fw';
   }
+
+  function initRevealAnimations() {
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-visible'));
+    }, 50);
+  }
+  document.addEventListener("DOMContentLoaded", initRevealAnimations);
 </script>
 </body>
 </html>

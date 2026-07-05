@@ -52,3 +52,12 @@
   color: var(--gray-text);
   pointer-events: none;
 }
+/* Password reveal button sits inside the input row */
+.pw-group { position: relative; }
+.pw-group .app-form-control { padding-right: 46px; }
+.pw-toggle {
+  position: absolute; top: 0; right: 0; height: 100%; width: 44px;
+  background: transparent; border: 0; color: var(--gray-text); cursor: pointer;
+}
+.pw-toggle:hover { color: var(--ink); }
+[data-bs-theme=""dark""] .pw-toggle:hover { color: #F1F5F9; }

@@ -32,6 +32,10 @@ public class AuthController {
         this.passwordResetService = passwordResetService;
     }
 
+    @GetMapping("/")
+    public String rootAlias() {
+        return "redirect:/home";
+    }
 
     @GetMapping("/login")
     public String loginAlias() {
@@ -56,9 +60,9 @@ public class AuthController {
 
     @GetMapping("/auth/login")
     public String loginForm(@RequestParam(required = false) String registered,
-                            @RequestParam(required = false) String reset,
-                            @RequestParam(required = false) String logout,
-                            HttpSession session, Model model) {
+            @RequestParam(required = false) String reset,
+            @RequestParam(required = false) String logout,
+            HttpSession session, Model model) {
         if (SessionUtil.isAuthenticated(session)) {
             return "redirect:" + SessionUtil.require(session).homePath();
         }
@@ -77,7 +81,7 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public String login(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult binding,
-                        HttpSession session, Model model) {
+            HttpSession session, Model model) {
         if (binding.hasErrors()) {
             return "auth/login";
         }
@@ -111,9 +115,8 @@ public class AuthController {
     @PostMapping("/auth/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/auth/login?logout";
+        return "redirect:/auth/login";
     }
-
 
     @GetMapping("/auth/register")
     public String registerForm(HttpSession session, Model model) {
@@ -148,7 +151,7 @@ public class AuthController {
 
     @PostMapping("/auth/forgot-password")
     public String forgotPassword(@Valid @ModelAttribute("forgotPasswordForm") ForgotPasswordForm form,
-                                 BindingResult binding, HttpServletRequest request, Model model) {
+            BindingResult binding, HttpServletRequest request, Model model) {
         if (binding.hasErrors()) {
             return "auth/forgot-password";
         }
@@ -176,7 +179,7 @@ public class AuthController {
 
     @PostMapping("/auth/reset-password")
     public String resetPassword(@Valid @ModelAttribute("resetPasswordForm") ResetPasswordForm form,
-                                BindingResult binding, Model model) {
+            BindingResult binding, Model model) {
         if (!passwordResetService.isValid(form.getToken())) {
             model.addAttribute("invalidToken", true);
             return "auth/reset-password";

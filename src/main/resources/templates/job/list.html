@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='Job Positions', activeMenu='jobs', content=~{::section})}">
+<body>
+<section>
+  <style>
+    .nav-tabs-custom { border-bottom: 1px solid var(--gray-border); display: flex; gap: 24px; padding: 0 24px; border-radius: 8px 8px 0 0; }
+    .nav-tabs-custom .nav-link { 
+      border: none; 
+      color: var(--gray-text); 
+      padding: 16px 0; 
+      font-weight: 500; 
+      position: relative; 
+      background: transparent; 
+    }
+    .nav-tabs-custom .nav-link:hover { color: var(--ink); }
+    .nav-tabs-custom .nav-link.active { color: var(--ink); font-weight: 600; }
+    .nav-tabs-custom .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--ink);
+    }
+    
+    /* Table locked layout */
+    .table-container { padding: 0 24px 24px 24px; }
+    .app-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 0; }
+    .app-table th { color: var(--gray-text); font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 1px solid var(--gray-border); padding: 12px 16px; }
+    .app-table td { border-bottom: 1px solid var(--gray-border); padding: 16px; vertical-align: middle; }
+    .app-table tr:last-child td { border-bottom: none; }
+    
+    .search-input { border: 1px solid var(--gray-border); border-radius: 6px; padding: 8px 12px 8px 36px; width: 300px; outline: none; transition: border-color 0.2s ease; background-color: transparent; }
+    .search-input:focus { border-color: var(--ink); }
+    .search-wrapper { position: relative; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-text); }
+    
+    .empty-state { padding: 60px 20px; text-align: center; }
+    .empty-icon { font-size: 48px; color: var(--gray-border); margin-bottom: 16px; }
+    
+    .reveal-on-scroll { opacity: 0; transform: translateY(12px); transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+  </style>
+
+  <div class="container py-4 reveal-on-scroll is-visible">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="mb-1">Job Positions</h1>
+        <p class="text-muted mb-0">Manage internal job postings and track candidate pipelines.</p>
+      </div>
+      <a th:href="@{/manage/jobs/new}" class="btn btn-charcoal">
+        <i class="fa-solid fa-plus fa-fw me-2"></i>New Job
+      </a>
+    </div>
+
+    <!-- Flash messages -->
+    <div class="alert alert-success d-flex align-items-center gap-2" th:if="${flash != null}">
+      <i class="fa-solid fa-circle-check fa-fw"></i>
+      <span th:text="${flash}">Success message</span>
+    </div>
+
+    <div class="app-card mb-4 p-0">
+      <!-- Tabs -->
+      <div class="nav-tabs-custom">
+        <a th:href="@{/manage/jobs(status='ALL', q=${q})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'ALL' ? 'active' : ''}">
+          All Jobs <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['ALL']}">0</span>
+        </a>
+        <a th:href="@{/manage/jobs(status='ACTIVE', q=${q})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'ACTIVE' ? 'active' : ''}">
+          Active <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['ACTIVE']}">0</span>
+        </a>
+        <a th:href="@{/manage/jobs(status='DRAFT', q=${q})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'DRAFT' ? 'active' : ''}">
+          Draft <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['DRAFT']}">0</span>
+        </a>
+        <a th:href="@{/manage/jobs(status='CLOSED', q=${q})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'CLOSED' ? 'active' : ''}">
+          Closed <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['CLOSED']}">0</span>
+        </a>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="d-flex justify-content-between align-items-center p-4">
+        <form th:action="@{/manage/jobs}" method="get" class="m-0 search-wrapper">
+          <input type="hidden" name="status" th:value="${activeTab}">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" name="q" class="search-input" placeholder="Search by title..." th:value="${q}">
+        </form>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <div th:if="${jobs.isEmpty()}" class="empty-state">
+          <i class="fa-solid fa-box-open empty-icon"></i>
+          <h4 style="font-weight: 600;">No jobs found</h4>
+          <p class="text-muted">Get started by creating a new job posting.</p>
+          <a th:href="@{/manage/jobs/new}" class="btn btn-charcoal mt-3">Create Job</a>
+        </div>
+
+        <div th:unless="${jobs.isEmpty()}" class="table-responsive">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th style="width: 40%;">Job Title</th>
+                <th style="width: 20%;">Status</th>
+                <th style="width: 20%;">Applicants</th>
+                <th style="width: 20%; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="job : ${jobs}">
+                <td>
+                  <a th:href="@{/manage/jobs/{id}(id=${job.id})}" class="text-decoration-none fw-semibold" style="color: var(--ink);" th:text="${job.title}">Job Title</a>
+                  <div class="text-muted small mt-1" th:text="${job.location != null ? job.location : 'Remote'}">Location</div>
+                </td>
+                <td>
+                  <span class="app-badge" 
+                        th:classappend="${job.status.name() == 'ACTIVE' ? 'app-badge-success' : (job.status.name() == 'DRAFT' ? 'app-badge-info' : 'app-badge-danger')}">
+                        <i class="fa-solid" th:classappend="${job.status.name() == 'ACTIVE' ? 'fa-check-circle' : (job.status.name() == 'DRAFT' ? 'fa-pen' : 'fa-xmark-circle')}"></i>
+                        [[${job.status}]]
+                  </span>
+                </td>
+                <td>
+                  <span class="fw-semibold" th:text="${appCounts[job.id]}">0</span> <span class="text-muted small">total</span>
+                </td>
+                <td style="text-align: right;">
+                  <a th:href="@{/manage/jobs/{id}(id=${job.id})}" class="btn btn-quiet btn-sm">
+                    View
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

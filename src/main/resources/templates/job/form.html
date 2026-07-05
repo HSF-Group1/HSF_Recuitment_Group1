@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="layoutTitle=${editMode ? 'Edit Job' : 'New Job'}"
+  th:replace="~{layout/base :: mainLayout(title=${layoutTitle}, activeMenu='jobs', content=~{::section})}">
+
+<body>
+  <section>
+    <style>
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .reveal-on-scroll.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+
+    <div class="container py-4 reveal-on-scroll is-visible" style="max-width: 800px;">
+
+      <div class="mb-4 d-flex align-items-center gap-3">
+        <a th:href="@{${editMode} ? '/manage/jobs/' + ${job.id} : '/manage/jobs'}" class="btn btn-quiet"
+          style="padding: 8px 12px; border: 1px solid var(--gray-border);">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <h1 class="mb-1" th:text="${editMode ? 'Edit Job Posting' : 'New Job Posting'}">New Job Posting</h1>
+          <p class="text-muted mb-0"
+            th:text="${editMode ? 'Update the details below.' : 'Create a new job posting entry.'}">Create a new job.
+          </p>
+        </div>
+      </div>
+
+      <div class="alert alert-danger d-flex gap-2 align-items-center"
+        th:if="${errors != null && errors.containsKey('global')}">
+        <i class="fa-solid fa-triangle-exclamation fa-fw"></i>
+        <span th:text="${errors.get('global')}">Error</span>
+      </div>
+
+      <div class="app-card p-4 p-md-5">
+        <form th:action="@{${editMode} ? '/manage/jobs/' + ${job.id} : '/manage/jobs'}" method="post"
+          th:object="${jobForm}">
+          <input type="hidden" th:if="${editMode}" th:field="*{id}" />
+
+          <div class="row g-4">
+            <div class="col-12">
+              <label for="title" class="app-form-label">Job Title</label>
+              <input type="text" id="title" class="app-form-control" th:field="*{title}"
+                th:classappend="${errors != null && errors.containsKey('title')} ? 'is-invalid' : ''"
+                placeholder="e.g. Senior Software Engineer">
+              <div class="field-error" th:if="${errors != null && errors.containsKey('title')}"
+                th:text="${errors.get('title')}"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="department" class="app-form-label">Department</label>
+              <input type="text" id="department" class="app-form-control" th:field="*{department}"
+                th:classappend="${errors != null && errors.containsKey('department')} ? 'is-invalid' : ''"
+                placeholder="e.g. Engineering">
+              <div class="field-error" th:if="${errors != null && errors.containsKey('department')}"
+                th:text="${errors.get('department')}"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="location" class="app-form-label">Location</label>
+              <input type="text" id="location" class="app-form-control" th:field="*{location}"
+                th:classappend="${errors != null && errors.containsKey('location')} ? 'is-invalid' : ''"
+                placeholder="e.g. Remote, or New York, NY">
+              <div class="field-error" th:if="${errors != null && errors.containsKey('location')}"
+                th:text="${errors.get('location')}"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="salaryRange" class="app-form-label">Salary Range</label>
+              <input type="text" id="salaryRange" class="app-form-control" th:field="*{salaryRange}"
+                th:classappend="${errors != null && errors.containsKey('salaryRange')} ? 'is-invalid' : ''"
+                placeholder="e.g. $100k - $120k">
+              <div class="field-error" th:if="${errors != null && errors.containsKey('salaryRange')}"
+                th:text="${errors.get('salaryRange')}"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="applicationDeadline" class="app-form-label">Application Deadline</label>
+              <input type="date" id="applicationDeadline" class="app-form-control" th:field="*{applicationDeadline}"
+                th:classappend="${errors != null && errors.containsKey('applicationDeadline')} ? 'is-invalid' : ''">
+              <div class="field-error" th:if="${errors != null && errors.containsKey('applicationDeadline')}"
+                th:text="${errors.get('applicationDeadline')}"></div>
+            </div>
+
+            <div class="col-12">
+              <label for="description" class="app-form-label">Description</label>
+              <textarea id="description" class="app-form-control" th:field="*{description}" rows="5"
+                th:classappend="${errors != null && errors.containsKey('description')} ? 'is-invalid' : ''"
+                placeholder="Describe the role..."></textarea>
+              <div class="field-error" th:if="${errors != null && errors.containsKey('description')}"
+                th:text="${errors.get('description')}"></div>
+            </div>
+
+            <div class="col-12">
+              <label for="requirements" class="app-form-label">Requirements</label>
+              <textarea id="requirements" class="app-form-control" th:field="*{requirements}" rows="5"
+                th:classappend="${errors != null && errors.containsKey('requirements')} ? 'is-invalid' : ''"
+                placeholder="List the requirements..."></textarea>
+              <div class="field-error" th:if="${errors != null && errors.containsKey('requirements')}"
+                th:text="${errors.get('requirements')}"></div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-3 mt-5 pt-4" style="border-top: 1px solid var(--gray-border);">
+            <a th:href="@{${editMode} ? '/manage/jobs/' + ${job.id} : '/manage/jobs'}" class="btn btn-quiet"
+              style="border: 1px solid var(--gray-border);">Cancel</a>
+            <button type="submit" class="btn btn-charcoal">
+              <i class="fa-solid fa-check fa-fw me-2"></i><span
+                th:text="${editMode ? 'Save Changes' : 'Save as Draft'}">Save</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
