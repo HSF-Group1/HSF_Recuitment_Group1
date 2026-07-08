@@ -35,6 +35,15 @@
                 <!-- Candidate Info Fragment -->
                 <div th:replace="~{application/fragments/_candidate_info :: candidateInfo(${currentApplication})}"></div>
                 
+                <!-- Interview Summary Fragment -->
+                <th:block th:if="${currentApplication.interviews != null}">
+                    <th:block th:each="interview : ${currentApplication.interviews}">
+                        <th:block th:if="${interview != null && (interview.status.name() == 'SCHEDULED' || interview.status.name() == 'EVALUATED' || interview.status.name() == 'CANCELLED')}">
+                            <div th:replace="~{interview/fragments/_interview_info :: interviewInfo(${interview}, ${currentApplication})}"></div>
+                        </th:block>
+                    </th:block>
+                </th:block>
+                
                 <!-- Activity Timeline Fragment -->
                 <div th:replace="~{application/fragments/_activity_timeline :: activityTimeline(${currentApplication})}"></div>
                 

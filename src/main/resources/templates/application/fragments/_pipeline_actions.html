@@ -17,15 +17,12 @@
                 <i class="bi bi-search me-1"></i> Move to Screening
             </button>
 
-            <!-- Move to Interview -->
-            <button th:if="${targetStatus.name() == 'INTERVIEW'}"
-                    type="button"
-                    class="app-btn app-btn-primary"
-                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=INTERVIEW'"
-                    hx-target="#application-detail-panels"
-                    hx-swap="outerHTML">
-                <i class="bi bi-people me-1"></i> Move to Interview
-            </button>
+            <!-- Move to Interview (Redirect to Assign Interview Page) -->
+            <a th:if="${targetStatus.name() == 'INTERVIEW'}"
+               th:href="@{/interviews/assign/{id}(id=${app.id})}"
+               class="app-btn app-btn-primary text-decoration-none">
+                <i class="bi bi-people me-1"></i> Assign Interview
+            </a>
 
             <!-- Move to Offer -->
             <button th:if="${targetStatus.name() == 'OFFER'}"

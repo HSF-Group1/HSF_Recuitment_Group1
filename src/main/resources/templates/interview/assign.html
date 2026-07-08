@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='Assign Interview', activeMenu = 'dashboard', content=~{::section})}">
+<body>
+<section class="container py-4">
+    <!-- Breadcrumb -->
+    <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(parentText='Applications', parentUrl='/application', activeText='Assign Interview')}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="app-h1">Assign Interview</h1>
+        <a th:href="@{/application/{id}(id=${app.id})}" class="app-btn app-btn-secondary text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i> Back to Detail
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Candidate Summary -->
+        <div class="col-md-5">
+            <div th:replace="~{interview/fragments/_candidate_summary :: candidateSummary(${app})}"></div>
+        </div>
+
+        <!-- Right Column: Form or Scheduled Info -->
+        <div class="col-md-7">
+            <!-- If already scheduled, show the scheduled info -->
+            <div th:if="${activeInterview != null}">
+                <div th:replace="~{interview/fragments/_interview_info :: interviewInfo(${activeInterview}, ${app})}"></div>
+            </div>
+            <!-- Otherwise, show the schedule form -->
+            <div th:unless="${activeInterview != null}">
+                <div th:replace="~{interview/fragments/_interview_form :: interviewForm(${app}, ${interviewers})}"></div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
