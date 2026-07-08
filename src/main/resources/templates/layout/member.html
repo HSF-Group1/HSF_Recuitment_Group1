@@ -83,13 +83,16 @@
     </a>
 
     <div class="d-flex align-items-center gap-3">
+      <a th:href="@{/profile/my-applications}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
+        My Applications
+      </a>
       <a th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
         View Jobs
       </a>
       <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon fa-fw" data-theme-icon=""></i>
       </button>
-      
+
       <div class="dropdown" th:if="${currentUser != null}">
         <button class="nav-user-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="fa-solid fa-circle-user fa-fw"></i>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -51,4 +52,27 @@ public class ApplicationService {
 
         return applicationRepository.save(application);
     }
+
+    public List<Application> listForCandidate(Candidate candidate){
+        return applicationRepository.findByCandidateOrderBySubmissionDateDesc(candidate);
+    }
+
+    @Transactional
+    public void withdraw(Long applicationId, Candidate candidate) {
+        Application application = getOrThrow(applicationId);
+
+        if (application.getCandidate() == null
+                || !application.getCandidate().getId().equals(candidate.getId())) {
+            throw ValidationException.global("You cannot withdraw this application.");
+        }
+
+        if (application.getStatus() != ApplicationStatus.APPLIED
+                && application.getStatus() != ApplicationStatus.SCREENING) {
+            throw ValidationException.global("Only applied or screening applications can be withdrawn.");
+        }
+
+        application.setStatus(ApplicationStatus.WITHDRAWN);
+        applicationRepository.save(application);
+    }
+    
 }
