@@ -1,0 +1,63 @@
+<div th:fragment="pipelineActions(app, allowedTransitions)" 
+     class="app-card" 
+     th:if="${(currentUserRole == 'ADMIN' || currentUserRole == 'HR_MANAGER') && allowedTransitions != null && !allowedTransitions.isEmpty()}">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-gear-fill me-2"></i>Pipeline Actions</h3>
+        <div class="app-card-subtitle">Advance or reject candidate in the recruitment pipeline</div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 py-2">
+        <th:block th:each="targetStatus : ${allowedTransitions}">
+            <!-- Move to Screening -->
+            <button th:if="${targetStatus.name() == 'SCREENING'}"
+                    type="button"
+                    class="app-btn app-btn-primary"
+                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=SCREENING'"
+                    hx-target="#application-detail-panels"
+                    hx-swap="outerHTML">
+                <i class="bi bi-search me-1"></i> Move to Screening
+            </button>
+
+            <!-- Move to Interview -->
+            <button th:if="${targetStatus.name() == 'INTERVIEW'}"
+                    type="button"
+                    class="app-btn app-btn-primary"
+                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=INTERVIEW'"
+                    hx-target="#application-detail-panels"
+                    hx-swap="outerHTML">
+                <i class="bi bi-people me-1"></i> Move to Interview
+            </button>
+
+            <!-- Move to Offer -->
+            <button th:if="${targetStatus.name() == 'OFFER'}"
+                    type="button"
+                    class="app-btn app-btn-primary"
+                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=OFFER'"
+                    hx-target="#application-detail-panels"
+                    hx-swap="outerHTML">
+                <i class="bi bi-envelope-open me-1"></i> Move to Offer
+            </button>
+
+            <!-- Mark as Hired -->
+            <button th:if="${targetStatus.name() == 'HIRED'}"
+                    type="button"
+                    class="app-btn app-btn-primary"
+                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=HIRED'"
+                    hx-target="#application-detail-panels"
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to mark this candidate as HIRED?">
+                <i class="bi bi-check-circle me-1"></i> Mark as Hired
+            </button>
+
+            <!-- Reject -->
+            <button th:if="${targetStatus.name() == 'REJECTED'}"
+                    type="button"
+                    class="app-btn app-btn-danger"
+                    th:attr="hx-post='/application/' + ${app.id} + '/status?status=REJECTED'"
+                    hx-target="#application-detail-panels"
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to REJECT this candidate?">
+                <i class="bi bi-x-circle me-1"></i> Reject
+            </button>
+        </th:block>
+    </div>
+</div>

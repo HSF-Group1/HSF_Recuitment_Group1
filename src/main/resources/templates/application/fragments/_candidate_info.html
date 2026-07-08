@@ -1,0 +1,38 @@
+<div th:fragment="candidateInfo(app)" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-person-badge-fill me-2"></i>Candidate Detail</h3>
+        <div class="app-card-subtitle">Personal and account information</div>
+    </div>
+    <div class="py-2">
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Full Name:</div>
+            <div class="col-sm-8 fw-bold text-dark" th:text="${app.candidate != null && app.candidate.user != null ? app.candidate.user.fullName : 'N/A'}">Tran Thi Mai</div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Email:</div>
+            <div class="col-sm-8">
+                <a th:if="${app.candidate != null && app.candidate.user != null}"
+                   th:href="'mailto:' + ${app.candidate.user.email}"
+                   th:text="${app.candidate.user.email}"
+                   class="text-decoration-none fw-medium">mai.tran@gmail.com</a>
+                <span th:unless="${app.candidate != null && app.candidate.user != null}">N/A</span>
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Phone:</div>
+            <div class="col-sm-8 text-dark"
+                 th:text="${app.candidate != null && app.candidate.profile != null ? app.candidate.profile.phone : 'N/A'}">0901234567</div>
+        </div>
+        <div class="row mb-0 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Account Status:</div>
+            <div class="col-sm-8" th:if="${app.candidate != null && app.candidate.user != null}">
+                <span class="app-badge"
+                      th:classappend="${app.candidate.user.status.name() == 'ACTIVE' ? 'app-badge-success' : 'app-badge-danger'}"
+                      th:text="${app.candidate.user.status}">ACTIVE</span>
+            </div>
+            <div class="col-sm-8" th:unless="${app.candidate != null && app.candidate.user != null}">
+                <span class="app-badge app-badge-secondary">UNKNOWN</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,30 +1,30 @@
 package com.group1.recruitment.service;
 
+import com.group1.recruitment.dto.response.ApplicationDetailResponse;
 import com.group1.recruitment.entity.*;
 import com.group1.recruitment.enums.ApplicationStatus;
 import com.group1.recruitment.exception.NotFoundException;
+import com.group1.recruitment.exception.ValidationException;
 import com.group1.recruitment.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
+    private final ApplicationWorkflowService workflowService;
 
-    public ApplicationService(ApplicationRepository applicationRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, ApplicationWorkflowService workflowService) {
         this.applicationRepository = applicationRepository;
-
-    }
-
-    public ApplicationService(ApplicationRepository applicationRepository) {
-        this.applicationRepository = applicationRepository;
+        this.workflowService = workflowService;
     }
 
     public ApplicationDetailResponse getById(Long id) {
-        Application application = applicationRepository.findById(id)
+        Application application = applicationRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new RuntimeException("Application does not exists!"));
 
         ApplicationDetailResponse applicationDetail = new ApplicationDetailResponse();
@@ -41,8 +41,9 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findAll();
         return applications;
     }
+
     public Application getOrThrow(Long id) {
-        return applicationRepository.findById(id)
+        return applicationRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new NotFoundException("Application not found: " + id));
     }
 
@@ -55,4 +56,13 @@ public class ApplicationService {
         return counts;
     }
 
+    /** Updates the status of an application after validating the transition via WorkflowService. */
+    public void updateApplicationStatus(Long id, ApplicationStatus targetStatus) {
+        Application application = getOrThrow(id);
+        if (!workflowService.isValidTransition(application.getStatus(), targetStatus)) {
+            throw ValidationException.global("Invalid status transition from " + application.getStatus() + " to " + targetStatus);
+        }
+        application.setStatus(targetStatus);
+        applicationRepository.save(application);
+    }
 }

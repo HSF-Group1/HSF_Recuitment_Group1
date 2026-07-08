@@ -1,0 +1,31 @@
+<div th:fragment="internalNotes" class="app-card" th:if="${currentUserRole == 'ADMIN' || currentUserRole == 'HR_MANAGER'}">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-sticky-fill me-2"></i>Internal Notes</h3>
+        <div class="app-card-subtitle">Private HR and Admin notes (Interviewer restricted)</div>
+    </div>
+    <div class="py-2">
+        <div class="alert alert-info py-2 px-3 mb-4">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <span><strong>Note:</strong> Internal Notes logging is coming in the next sprint. Currently read-only placeholder.</span>
+        </div>
+        
+        <div class="text-center py-4 border rounded border-dashed mb-4 bg-light" style="border-style: dashed !important;">
+            <div class="fs-2 text-muted mb-2"><i class="bi bi-chat-square-text"></i></div>
+            <div class="text-muted">No notes recorded yet.</div>
+        </div>
+        
+        <div class="mt-3">
+            <div class="mb-3">
+                <label for="newNoteContent" class="form-label fw-semibold text-muted small">Add Internal Note</label>
+                <textarea id="newNoteContent" 
+                          class="form-control" 
+                          rows="3" 
+                          placeholder="Type internal note details here..." 
+                          disabled></textarea>
+            </div>
+            <button type="button" class="app-btn app-btn-secondary" disabled>
+                <i class="bi bi-plus-circle me-1"></i> Add Note
+            </button>
+        </div>
+    </div>
+</div>

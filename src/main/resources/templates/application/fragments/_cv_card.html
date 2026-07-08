@@ -1,0 +1,30 @@
+<div th:fragment="cvCard(app, canDownloadCv)" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-file-earmark-arrow-down-fill me-2"></i>Curriculum Vitae</h3>
+        <div class="app-card-subtitle">Candidate resume document</div>
+    </div>
+    <div class="py-2">
+        <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-light mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="fs-1 text-danger"><i class="bi bi-file-earmark-pdf"></i></div>
+                <div>
+                    <div class="fw-semibold text-dark" th:text="${app.cvFileUrl?.contains('/') ? app.cvFileUrl.substring(app.cvFileUrl.lastIndexOf('/') + 1) : (app.cvFileUrl ?: 'CV_Document.pdf')}">mai_tran.pdf</div>
+                    <div class="small text-muted" th:text="${app.submissionDate != null ? 'Uploaded: ' + #temporals.format(app.submissionDate, 'dd/MM/yyyy HH:mm') : 'Uploaded: N/A'}">Uploaded: 01/07/2026</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a th:if="${canDownloadCv && app.cvFileUrl != null}" 
+               th:href="@{/application/{id}/cv(id=${app.id})}" 
+               class="app-btn app-btn-primary text-decoration-none d-inline-flex align-items-center gap-2">
+                <i class="bi bi-download"></i> Download CV
+            </a>
+            <button th:if="${!canDownloadCv || app.cvFileUrl == null}" 
+                    type="button" 
+                    class="app-btn app-btn-primary" 
+                    disabled>
+                <i class="bi bi-lock-fill"></i> Download Restricted
+            </button>
+        </div>
+    </div>
+</div>

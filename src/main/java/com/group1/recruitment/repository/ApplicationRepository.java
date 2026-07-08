@@ -10,9 +10,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-  Optional<Application> findById(Long id);
+    @Query("SELECT a FROM Application a " +
+           "LEFT JOIN FETCH a.jobPosting jp " +
+           "LEFT JOIN FETCH jp.createdBy " +
+           "LEFT JOIN FETCH a.candidate c " +
+           "LEFT JOIN FETCH c.user " +
+           "LEFT JOIN FETCH c.profile " +
+           "LEFT JOIN FETCH a.interviews iv " +
+           "LEFT JOIN FETCH iv.interviewer " +
+           "WHERE a.id = :id")
+    Optional<Application> findByIdWithDetails(@Param("id") Long id);
+
+    Optional<Application> findById(Long id);
 
     List<Application> findByJobPostingOrderBySubmissionDateDesc(JobPosting jobPosting);
 

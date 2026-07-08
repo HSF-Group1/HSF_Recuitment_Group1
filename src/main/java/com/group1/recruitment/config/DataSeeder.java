@@ -22,7 +22,7 @@ public class DataSeeder implements CommandLineRunner {
 
     public DataSeeder(PasswordUtil passwordUtil) {
         this.passwordUtil = passwordUtil;
-        this.DEMO_PASSWORD = passwordUtil.hash("password123");
+        this.DEMO_PASSWORD = passwordUtil.hash("Password123@");
     }
 
     @PersistenceContext
