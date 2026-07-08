@@ -1,0 +1,17 @@
+<div th:fragment="jobSelector(jobs, selectedJobId)" class="row align-items-center">
+    <div class="col-md-3 fw-semibold text-charcoal">Filter by Job Posting:</div>
+    <div class="col-md-6">
+        <select class="form-select" 
+                name="jobId" 
+                hx-get="/reports/pipeline" 
+                hx-target="#pipeline-data-container" 
+                hx-swap="outerHTML" 
+                hx-trigger="change">
+            <option value="">-- All Job Postings --</option>
+            <option th:each="job : ${jobs}" 
+                    th:value="${job.id}" 
+                    th:text="${job.title + ' (' + (job.department != null ? job.department : 'No Dept') + ')'}"
+                    th:selected="${job.id == selectedJobId}"></option>
+        </select>
+    </div>
+</div>

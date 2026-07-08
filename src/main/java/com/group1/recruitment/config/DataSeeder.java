@@ -325,6 +325,7 @@ public class DataSeeder implements CommandLineRunner {
         a.setStatus(status);
         a.setSubmissionDate(submittedAt);
         a.setCvFileUrl(cvUrl);
+        a.setStatusUpdatedAt(submittedAt);
         em.persist(a);
         return a;
     }

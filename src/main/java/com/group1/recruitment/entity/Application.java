@@ -30,6 +30,9 @@ public class Application {
     @Column(name = "cv_file_url")
     private String cvFileUrl;
 
+    @Column(name = "status_updated_at")
+    private LocalDateTime statusUpdatedAt;
+
     @OneToMany(mappedBy = "application")
     private List<Interview> interviews;
 
@@ -41,13 +44,14 @@ public class Application {
     }
 
     // All-args constructor
-    public Application(Long id, Candidate candidate, JobPosting jobPosting, LocalDateTime submissionDate, ApplicationStatus status, String cvFileUrl, List<Interview> interviews, List<InternalNote> internalNotes) {
+    public Application(Long id, Candidate candidate, JobPosting jobPosting, LocalDateTime submissionDate, ApplicationStatus status, String cvFileUrl, LocalDateTime statusUpdatedAt, List<Interview> interviews, List<InternalNote> internalNotes) {
         this.id = id;
         this.candidate = candidate;
         this.jobPosting = jobPosting;
         this.submissionDate = submissionDate;
         this.status = status;
         this.cvFileUrl = cvFileUrl;
+        this.statusUpdatedAt = statusUpdatedAt;
         this.interviews = interviews;
         this.internalNotes = internalNotes;
     }
@@ -99,6 +103,14 @@ public class Application {
 
     public void setCvFileUrl(String cvFileUrl) {
         this.cvFileUrl = cvFileUrl;
+    }
+
+    public LocalDateTime getStatusUpdatedAt() {
+        return statusUpdatedAt;
+    }
+
+    public void setStatusUpdatedAt(LocalDateTime statusUpdatedAt) {
+        this.statusUpdatedAt = statusUpdatedAt;
     }
 
     public List<Interview> getInterviews() {

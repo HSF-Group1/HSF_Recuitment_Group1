@@ -95,6 +95,7 @@ public class InterviewService {
 
         // Update application status to INTERVIEW
         application.setStatus(ApplicationStatus.INTERVIEW);
+        application.setStatusUpdatedAt(java.time.LocalDateTime.now());
         applicationRepository.save(application);
 
         return saved;
@@ -121,6 +122,7 @@ public class InterviewService {
                         .anyMatch(i -> !i.getId().equals(interviewId) && (i.getStatus() == InterviewStatus.SCHEDULED || i.getStatus() == InterviewStatus.EVALUATED));
         if (!hasOtherActiveOrEvaluated) {
             application.setStatus(ApplicationStatus.SCREENING);
+            application.setStatusUpdatedAt(java.time.LocalDateTime.now());
             applicationRepository.save(application);
         }
     }

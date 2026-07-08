@@ -23,6 +23,12 @@
         <span>Candidates</span>
       </a>
     </li>
+    <li th:if="${session.loggedInUser?.role?.name == 'ADMIN' || session.loggedInUser?.role?.name == 'HR_MANAGER'}">
+      <a th:href="@{/reports/pipeline}" class="app-sidebar-link" th:classappend="${activeMenu == 'report' ? 'active' : ''}">
+        <i class="bi bi-graph-up"></i>
+        <span>Pipeline Report</span>
+      </a>
+    </li>
     <li>
       <a th:href="@{/settings}" class="app-sidebar-link" th:classappend="${activeMenu == 'settings' ? 'active' : ''}">
         <i class="bi bi-gear"></i>

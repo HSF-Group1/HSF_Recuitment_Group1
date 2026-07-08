@@ -1,0 +1,7 @@
+<div th:fragment="pipelineData(summary, applications, reportService)" id="pipeline-data-container" class="d-flex flex-column gap-4">
+    <!-- Summary counts -->
+    <div th:replace="~{report/fragments/_pipeline_summary :: pipelineSummary(${summary})}"></div>
+
+    <!-- Candidates table -->
+    <div th:replace="~{report/fragments/_pipeline_table :: pipelineTable(${applications}, ${reportService})}"></div>
+</div>

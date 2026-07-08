@@ -29,6 +29,31 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Optional<Application> findById(Long id);
 
+    @Query("SELECT DISTINCT a FROM Application a " +
+           "LEFT JOIN FETCH a.jobPosting jp " +
+           "LEFT JOIN FETCH jp.createdBy " +
+           "LEFT JOIN FETCH a.candidate c " +
+           "LEFT JOIN FETCH c.user " +
+           "LEFT JOIN FETCH c.profile " +
+           "LEFT JOIN FETCH a.interviews iv " +
+           "LEFT JOIN FETCH iv.interviewer " +
+           "LEFT JOIN FETCH iv.evaluation " +
+           "ORDER BY a.submissionDate DESC")
+    List<Application> findAllWithDetails();
+
+    @Query("SELECT DISTINCT a FROM Application a " +
+           "LEFT JOIN FETCH a.jobPosting jp " +
+           "LEFT JOIN FETCH jp.createdBy " +
+           "LEFT JOIN FETCH a.candidate c " +
+           "LEFT JOIN FETCH c.user " +
+           "LEFT JOIN FETCH c.profile " +
+           "LEFT JOIN FETCH a.interviews iv " +
+           "LEFT JOIN FETCH iv.interviewer " +
+           "LEFT JOIN FETCH iv.evaluation " +
+           "WHERE jp.id = :jobId " +
+           "ORDER BY a.submissionDate DESC")
+    List<Application> findByJobPostingIdWithDetails(@Param("jobId") Long jobId);
+
     List<Application> findByJobPostingOrderBySubmissionDateDesc(JobPosting jobPosting);
 
     List<Application> findByJobPostingAndStatusOrderBySubmissionDateDesc(JobPosting jobPosting,

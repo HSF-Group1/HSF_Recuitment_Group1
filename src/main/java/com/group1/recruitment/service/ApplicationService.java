@@ -63,6 +63,7 @@ public class ApplicationService {
             throw ValidationException.global("Invalid status transition from " + application.getStatus() + " to " + targetStatus);
         }
         application.setStatus(targetStatus);
+        application.setStatusUpdatedAt(java.time.LocalDateTime.now());
         applicationRepository.save(application);
     }
 }
