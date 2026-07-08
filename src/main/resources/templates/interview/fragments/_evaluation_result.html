@@ -1,0 +1,47 @@
+<div th:fragment="evaluationResult(evaluation)" id="evaluation-panel" class="app-card">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="app-card-title"><i class="bi bi-file-earmark-ruled-fill me-2"></i>Evaluation Result</h3>
+            <div class="app-card-subtitle">Submitted assessment summary</div>
+        </div>
+        <div>
+            <span class="app-badge app-badge-success">EVALUATED</span>
+        </div>
+    </div>
+    
+    <div class="py-2">
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Overall Rating:</div>
+            <div class="col-sm-8 fs-5">
+                <span class="text-warning fw-bold">
+                    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                        <i class="bi" th:classappend="${star <= evaluation.rating ? 'bi-star-fill' : 'bi-star'}"></i>
+                    </th:block>
+                </span>
+                <span class="ms-2 text-dark font-monospace fw-bold" th:text="${evaluation.rating + '/5'}">4/5</span>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-sm-4 fw-semibold text-muted">Feedback Comments:</div>
+            <div class="col-sm-8 text-dark" style="white-space: pre-wrap;" th:text="${evaluation.feedback}">
+                Good candidate.
+            </div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Evaluated By:</div>
+            <div class="col-sm-8 text-dark fw-bold" th:text="${evaluation.interview?.interviewer?.fullName ?: 'N/A'}">
+                Nguyen Van Khoa
+            </div>
+        </div>
+
+        <div class="row mb-0 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Submitted Time:</div>
+            <div class="col-sm-8 text-charcoal" 
+                 th:text="${evaluation.submittedAt != null ? #temporals.format(evaluation.submittedAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                 09/07/2026 15:30
+            </div>
+        </div>
+    </div>
+</div>
