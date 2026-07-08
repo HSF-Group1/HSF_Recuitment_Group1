@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- SCR-04: User Profile (data re-queried from DB per request for state sync) -->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="${currentUser.isHrOrAdmin()} ? ~{layout/base :: mainLayout(title='Profile', activeMenu='profile', content=~{::section})} : ~{layout/member :: memberLayout(title='Profile', content=~{::section})}">
+<body>
+<section class="container" style="max-width: 720px; margin: 0 auto;">
+  <h1 class="mb-1">Profile</h1>
+  <p class="text-muted mb-4">Your account details as currently stored in the system.</p>
+
+  <div class="alert alert-success d-flex align-items-center gap-2" th:if="${flashMessage != null}">
+    <i class="fa-solid fa-circle-check fa-fw"></i>
+    <span th:text="${flashMessage}">Done</span>
+  </div>
+
+  <div class="app-card p-4 mb-4">
+    <div class="row gy-4">
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Full name</div>
+        <div th:text="${user.fullName}">Mai Tran</div>
+      </div>
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Username</div>
+        <div class="d-flex align-items-center gap-2">
+          <span th:text="${user.username}">mai_tran</span>
+          <span class="text-muted" style="font-size: 0.78rem;">(cannot be changed)</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Email</div>
+        <div th:text="${user.email}">mai.tran@gmail.com</div>
+      </div>
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Role</div>
+        <span class="app-badge app-badge-info" th:text="${user.role != null ? user.role.name : '—'}">CANDIDATE</span>
+      </div>
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Account status</div>
+        <span class="app-badge"
+              th:classappend="${user.status != null && user.status.name() == 'ACTIVE'} ? ' app-badge-success' : ' app-badge-warning'"
+              th:text="${user.status != null ? user.status.name() : '—'}">ACTIVE</span>
+      </div>
+      <div class="col-sm-6">
+        <div class="app-form-label mb-1">Member since</div>
+        <div th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd MMM yyyy') : '—'}">02 Jul 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2">
+    <a th:href="@{/profile/change-password}" class="btn btn-charcoal">
+      <i class="fa-solid fa-key fa-fw me-2"></i>Change Password
+    </a>
+    <form th:action="@{/auth/logout}" method="post" class="m-0">
+      <button type="submit" class="btn btn-quiet">
+        <i class="fa-solid fa-arrow-right-from-bracket fa-fw me-2"></i>Sign Out
+      </button>
+    </form>
+  </div>
+</section>
+</body>
+</html>
