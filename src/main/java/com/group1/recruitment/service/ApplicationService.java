@@ -23,6 +23,10 @@ public class ApplicationService {
 
     }
 
+    public ApplicationRepository getApplicationRepository() {
+        return applicationRepository;
+    }
+
     public Application getOrThrow(Long id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Application not found: " + id));
@@ -53,7 +57,7 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
-    public List<Application> listForCandidate(Candidate candidate){
+    public List<Application> listForCandidate(Candidate candidate) {
         return applicationRepository.findByCandidateOrderBySubmissionDateDesc(candidate);
     }
 
@@ -74,5 +78,23 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.WITHDRAWN);
         applicationRepository.save(application);
     }
-    
+
+    // Get all applications by status and submission date descending(for HR Manager)
+    public Map<ApplicationStatus, Long> getPipelineCountsForHr(User hr) {
+        Map<ApplicationStatus, Long> counts = new LinkedHashMap<>();
+        for (ApplicationStatus s : ApplicationStatus.values()) {
+            counts.put(s, applicationRepository.countByJobPosting_CreatedByAndStatus(hr, s));
+        }
+        return counts;
+    }
+
+    // Get all applications by status and submission date descending(for admin)
+    public Map<ApplicationStatus, Long> getPipelineCountsAll() {
+        Map<ApplicationStatus, Long> counts = new LinkedHashMap<>();
+        for (ApplicationStatus s : ApplicationStatus.values()) {
+            counts.put(s, applicationRepository.countByStatus(s));
+        }
+        return counts;
+    }
+
 }
