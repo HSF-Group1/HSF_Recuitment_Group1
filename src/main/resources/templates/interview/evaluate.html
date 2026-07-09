@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='Interview Evaluation', activeMenu = 'dashboard', content=~{::section})}">
+<body>
+<section class="container py-4">
+    <!-- Breadcrumb -->
+    <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(parentText='Applications', parentUrl='/application', activeText='Evaluate Interview')}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="app-h1">Interview Evaluation</h1>
+        <a th:href="@{/application/{id}(id=${app.id})}" class="app-btn app-btn-secondary text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i> Back to Detail
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Candidate Summary -->
+        <div class="col-md-5">
+            <div th:replace="~{interview/fragments/_candidate_summary :: candidateSummary(${app})}"></div>
+        </div>
+
+        <!-- Right Column: Schedule Info & Evaluation Form/Result -->
+        <div class="col-md-7">
+            <!-- Interview Schedule Summary -->
+            <div th:replace="~{interview/fragments/_interview_summary :: interviewSummary(${interview})}"></div>
+
+            <!-- Evaluation panel (Form or Result) -->
+            <div th:if="${evaluation != null}">
+                <div th:replace="~{interview/fragments/_evaluation_result :: evaluationResult(${evaluation})}"></div>
+            </div>
+            <div th:unless="${evaluation != null}">
+                <div th:replace="~{interview/fragments/_evaluation_form :: evaluationForm(${interview})}"></div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

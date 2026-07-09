@@ -1,0 +1,58 @@
+<div th:fragment="interviewForm(app, interviewers)" id="interview-form-container" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-calendar-event-fill me-2"></i>Schedule Interview</h3>
+        <div class="app-card-subtitle">Assign interviewer and scheduling details</div>
+    </div>
+    
+    <div th:if="${errorMsg}" th:replace="~{fragments/alert :: appModalAlert(message=${errorMsg}, type='danger')}"></div>
+    
+    <form th:attr="hx-post='/interviews/assign/' + ${app.id}" 
+          hx-target="#interview-form-container" 
+          hx-swap="outerHTML" 
+          class="needs-validation py-2">
+          
+        <div class="mb-3">
+            <label for="interviewerId" class="form-label fw-semibold text-dark">Assigned Interviewer</label>
+            <select class="form-select" id="interviewerId" name="interviewerId" required>
+                <option value="">-- Select Interviewer --</option>
+                <option th:each="interviewer : ${interviewers}" 
+                        th:value="${interviewer.id}" 
+                        th:text="${interviewer.fullName + ' (' + interviewer.email + ')'}"
+                        th:selected="${interviewer.id == interviewerId}"></option>
+            </select>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="date" class="form-label fw-semibold text-dark">Interview Date</label>
+                <input type="date" class="form-control" id="date" name="date" 
+                       th:value="${date != null ? date : ''}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="time" class="form-label fw-semibold text-dark">Interview Time</label>
+                <input type="time" class="form-control" id="time" name="time" 
+                       th:value="${time != null ? time : ''}" required>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="location" class="form-label fw-semibold text-dark">Location / Meeting Link</label>
+            <input type="text" class="form-control" id="location" name="location" 
+                   th:value="${location != null ? location : ''}" 
+                   placeholder="e.g. Meeting Room A or Google Meet Link" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="notes" class="form-label fw-semibold text-dark">Internal Notes / Instructions</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                      placeholder="Special instructions for the candidate or interviewer..." 
+                      th:text="${notes != null ? notes : ''}"></textarea>
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="submit" class="app-btn app-btn-primary">
+                <i class="bi bi-calendar-plus me-1"></i> Assign Interview
+            </button>
+        </div>
+    </form>
+</div>

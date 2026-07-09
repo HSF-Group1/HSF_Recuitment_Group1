@@ -1,0 +1,53 @@
+<div th:fragment="statusCard(app)" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-file-earmark-text-fill me-2"></i>Application Detail</h3>
+        <div class="app-card-subtitle">General application info</div>
+    </div>
+    <div class="py-2">
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Application ID:</div>
+            <div class="col-sm-8 fw-bold text-dark" th:text="${app.id}">1</div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Job Title:</div>
+            <div class="col-sm-8 fw-bold text-dark" th:text="${app.jobPosting != null ? app.jobPosting.title : 'N/A'}">
+                Java Backend Developer
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Submission Date:</div>
+            <div class="col-sm-8 text-dark"
+                th:text="${app.submissionDate != null ? #temporals.format(app.submissionDate, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                01/07/2026 10:00
+            </div>
+        </div>
+        <div class="row mb-0 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Current Status:</div>
+            <div class="col-sm-8">
+                <span th:if="${app.status.name() == 'HIRED'}" class="app-badge app-badge-success">
+                    <i class="bi bi-check-circle-fill me-1"></i>Hired
+                </span>
+                <span th:if="${app.status.name() == 'SCREENING'}" class="app-badge app-badge-warning">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i>Screening
+                </span>
+                <span th:if="${app.status.name() == 'REJECTED'}" class="app-badge app-badge-danger">
+                    <i class="bi bi-x-circle-fill me-1"></i>Rejected
+                </span>
+                <span th:if="${app.status.name() == 'APPLIED'}" class="app-badge app-badge-info">
+                    <i class="bi bi-info-circle-fill me-1"></i>Applied
+                </span>
+                <span th:if="${app.status.name() == 'INTERVIEW'}" class="app-badge"
+                    style="background-color: #EAE6F8; color: #5B4EBE;">
+                    <i class="bi bi-people-fill me-1"></i>Interview
+                </span>
+                <span th:if="${app.status.name() == 'OFFER'}" class="app-badge"
+                    style="background-color: #E6F4EA; color: #2E6B3F;">
+                    <i class="bi bi-envelope-paper-fill me-1"></i>Offer
+                </span>
+                <span th:if="${app.status.name() == 'WITHDRAWN'}" class="app-badge app-badge-secondary">
+                    <i class="bi bi-dash-circle-fill me-1"></i>Withdrawn
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

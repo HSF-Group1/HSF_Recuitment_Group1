@@ -1,0 +1,197 @@
+<div th:fragment="activityTimeline(app)" class="app-card">
+    <div class="mb-4">
+        <h3 class="app-card-title"><i class="bi bi-clock-history me-2"></i>Activity Timeline</h3>
+        <div class="app-card-subtitle">Recruitment process milestones</div>
+    </div>
+    <div class="timeline-stepper py-3">
+        <div class="stepper-track"></div>
+        <div class="d-flex justify-content-between align-items-center position-relative">
+            <!-- Step 1: Applied -->
+            <div class="stepper-item" 
+                 th:classappend="${(app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'APPLIED') ? 'active danger' : 
+                                 (app.status.name() == 'APPLIED' ? 'active' : 'completed')}">
+                <div class="step-circle">
+                    <i class="bi" th:classappend="${app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'APPLIED' ? 'bi-x' : 'bi-check-lg'}"></i>
+                </div>
+                <div class="step-label">Applied</div>
+            </div>
+
+            <!-- Step 2: Screening -->
+            <div class="stepper-item"
+                 th:classappend="${(app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'SCREENING') ? 'active danger' : 
+                                 (app.status.name() == 'SCREENING' ? 'active' : 
+                                  ((app.status.name() == 'APPLIED' || (app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'APPLIED')) ? '' : 'completed'))}">
+                <div class="step-circle">
+                    <i class="bi" th:classappend="${app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'SCREENING' ? 'bi-x' : 'bi-check-lg'}"></i>
+                </div>
+                <div class="step-label">Screening</div>
+            </div>
+
+            <!-- Step 3: Interview -->
+            <div class="stepper-item"
+                 th:classappend="${(app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'INTERVIEW') ? 'active danger' : 
+                                 (app.status.name() == 'INTERVIEW' ? 'active' : 
+                                  ((app.status.name() == 'APPLIED' || app.status.name() == 'SCREENING' || 
+                                    (app.status.name() == 'REJECTED' && (app.rejectedAtStage?.name() == 'APPLIED' || app.rejectedAtStage?.name() == 'SCREENING'))) ? '' : 'completed'))}">
+                <div class="step-circle">
+                    <i class="bi" th:classappend="${app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'INTERVIEW' ? 'bi-x' : 'bi-check-lg'}"></i>
+                </div>
+                <div class="step-label">Interview</div>
+            </div>
+
+            <!-- Step 4: Offer -->
+            <div class="stepper-item"
+                 th:classappend="${(app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'OFFER') ? 'active danger' : 
+                                 (app.status.name() == 'OFFER' ? 'active' : 
+                                  ((app.status.name() == 'APPLIED' || app.status.name() == 'SCREENING' || app.status.name() == 'INTERVIEW' || 
+                                    (app.status.name() == 'REJECTED' && (app.rejectedAtStage?.name() == 'APPLIED' || app.rejectedAtStage?.name() == 'SCREENING' || app.rejectedAtStage?.name() == 'INTERVIEW'))) ? '' : 'completed'))}">
+                <div class="step-circle">
+                    <i class="bi" th:classappend="${app.status.name() == 'REJECTED' && app.rejectedAtStage?.name() == 'OFFER' ? 'bi-x' : 'bi-check-lg'}"></i>
+                </div>
+                <div class="step-label">Offer</div>
+            </div>
+
+            <!-- Step 5: Final -->
+            <div class="stepper-item" 
+                 th:classappend="${app.status.name() == 'HIRED' ? 'completed success' : 
+                                 (app.status.name() == 'WITHDRAWN' ? 'active secondary' : 
+                                  (app.status.name() == 'REJECTED' && app.rejectedAtStage == null ? 'active danger' : ''))}">
+                <div class="step-circle">
+                    <i th:if="${app.status.name() == 'HIRED'}" class="bi bi-check-lg"></i>
+                    <i th:if="${app.status.name() == 'REJECTED' && app.rejectedAtStage == null}" class="bi bi-x"></i>
+                    <i th:if="${app.status.name() == 'WITHDRAWN'}" class="bi bi-dash"></i>
+                    <i th:if="${app.status.name() != 'HIRED' && (app.status.name() != 'REJECTED' || app.rejectedAtStage != null) && app.status.name() != 'WITHDRAWN'}"
+                        class="bi bi-flag"></i>
+                </div>
+                <div class="step-label" th:if="${app.status.name() == 'HIRED'}">Hired</div>
+                <div class="step-label" th:if="${app.status.name() == 'REJECTED' && app.rejectedAtStage == null}">Rejected</div>
+                <div class="step-label" th:if="${app.status.name() == 'WITHDRAWN'}">Withdrawn</div>
+                <div class="step-label"
+                    th:if="${app.status.name() != 'HIRED' && (app.status.name() != 'REJECTED' || app.rejectedAtStage != null) && app.status.name() != 'WITHDRAWN'}">
+                    Hired</div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .timeline-stepper {
+            position: relative;
+        }
+
+        .stepper-track {
+            position: absolute;
+            top: calc(50% - 12px);
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background-color: var(--gray-border);
+            z-index: 0;
+        }
+
+        .stepper-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--white);
+            border: 2px solid var(--gray-border);
+            color: var(--gray-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .step-circle i {
+            display: none;
+        }
+
+        .step-label {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-text);
+            transition: all 0.3s ease;
+        }
+
+        .stepper-item.active .step-circle {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.1);
+        }
+
+        .stepper-item.active .step-circle i {
+            display: inline-block;
+        }
+
+        .stepper-item.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .stepper-item.completed .step-circle {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .stepper-item.completed .step-circle i {
+            display: inline-block;
+        }
+
+        .stepper-item.completed .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .stepper-item.completed.success .step-circle {
+            background-color: var(--success) !important;
+            border-color: var(--success) !important;
+            color: var(--white) !important;
+        }
+
+        .stepper-item.completed.success .step-label {
+            color: var(--success) !important;
+        }
+
+        .stepper-item.active.danger .step-circle {
+            background-color: #FDF1F2 !important;
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        }
+
+        .stepper-item.active.danger .step-circle i {
+            display: inline-block;
+        }
+
+        .stepper-item.active.danger .step-label {
+            color: var(--danger) !important;
+        }
+
+        .stepper-item.active.secondary .step-circle {
+            background-color: #F4F3EF !important;
+            border-color: #757575 !important;
+            color: #757575 !important;
+            box-shadow: 0 0 0 4px rgba(117, 117, 117, 0.1);
+        }
+
+        .stepper-item.active.secondary .step-circle i {
+            display: inline-block;
+        }
+
+        .stepper-item.active.secondary .step-label {
+            color: #757575 !important;
+        }
+    </style>
+</div>

@@ -18,7 +18,7 @@
       </a>
     </li>
     <li>
-           <a th:href="@{/hr/applications}" class="app-sidebar-link" th:classappend="${activeMenu == 'applications' ? 'active' : ''}">
+           <a th:href="@{/applications}" class="app-sidebar-link" th:classappend="${activeMenu == 'applications' ? 'active' : ''}">
               <i class="bi bi-file-earmark-person"></i>
              <span>Applications</span>
             </a>
@@ -27,6 +27,12 @@
       <a th:href="@{/candidates}" class="app-sidebar-link" th:classappend="${activeMenu == 'candidates' ? 'active' : ''}">
         <i class="bi bi-people"></i>
         <span>Candidates</span>
+      </a>
+    </li>
+    <li th:if="${currentUser != null && currentUser.isHrOrAdmin()}">
+      <a th:href="@{/reports/pipeline}" class="app-sidebar-link" th:classappend="${activeMenu == 'report' ? 'active' : ''}">
+        <i class="bi bi-graph-up"></i>
+        <span>Pipeline Report</span>
       </a>
     </li>
     <li>

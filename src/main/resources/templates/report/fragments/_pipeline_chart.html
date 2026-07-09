@@ -1,0 +1,58 @@
+<div th:fragment="pipelineChart(summary)" class="app-card p-4 mb-4">
+    <div class="mb-4">
+        <h3 class="app-card-title"><i class="bi bi-bar-chart-fill me-2"></i>Pipeline Stage Overview</h3>
+        <div class="app-card-subtitle">Distribution of candidates across recruitment stages</div>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-end px-3 py-2 text-center" style="height: 250px; border-bottom: 1px solid var(--gray-border); padding-bottom: 10px;">
+        <!-- Applied -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).APPLIED) ?: 0}">
+            <div class="fw-bold mb-1 text-primary" th:text="${cnt}">0</div>
+            <div style="background: #2563EB; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #2563EB; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Applied</small>
+        </div>
+        <!-- Screening -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).SCREENING) ?: 0}">
+            <div class="fw-bold mb-1 text-warning" th:text="${cnt}">0</div>
+            <div style="background: #D97706; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #D97706; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Screening</small>
+        </div>
+        <!-- Interview -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).INTERVIEW) ?: 0}">
+            <div class="fw-bold mb-1 text-info" th:text="${cnt}">0</div>
+            <div style="background: #0284C7; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #0284C7; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Interview</small>
+        </div>
+        <!-- Offer -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).OFFER) ?: 0}">
+            <div class="fw-bold mb-1" style="color: #2E6B3F;" th:text="${cnt}">0</div>
+            <div style="background: #2E6B3F; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #2E6B3F; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Offer</small>
+        </div>
+        <!-- Hired -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).HIRED) ?: 0}">
+            <div class="fw-bold mb-1 text-success" th:text="${cnt}">0</div>
+            <div style="background: #059669; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #059669; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Hired</small>
+        </div>
+        <!-- Rejected -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).REJECTED) ?: 0}">
+            <div class="fw-bold mb-1 text-danger" th:text="${cnt}">0</div>
+            <div style="background: #DC2626; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #DC2626; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Rejected</small>
+        </div>
+        <!-- Withdrawn -->
+        <div class="d-flex flex-column align-items-center" style="width: 11%;" th:with="cnt=${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).WITHDRAWN) ?: 0}">
+            <div class="fw-bold mb-1 text-secondary" th:text="${cnt}">0</div>
+            <div style="background: #4B5563; width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; max-height: 180px; transition: height 0.5s ease-in-out;"
+                 th:style="|background: #4B5563; width: 100%; height: ${cnt * 30}px; max-height: 180px; border-radius: 4px 4px 0 0;|"></div>
+            <small class="mt-2 text-muted fw-semibold text-center text-truncate w-100" style="font-size: 0.75rem;">Withdrawn</small>
+        </div>
+    </div>
+</div>

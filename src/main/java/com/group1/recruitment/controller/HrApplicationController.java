@@ -38,7 +38,7 @@ public class HrApplicationController {
     }
 
     // 1. Xem danh sách đơn tuyển dụng chung (của HR hoặc Admin)
-    @GetMapping({"/hr/applications", "/manage/applications"})
+    @GetMapping({"/applications", "/manage/applications"})
     public String listAllApplications(@RequestParam(required = false) String status,
                                       HttpSession session, Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
@@ -74,7 +74,7 @@ public class HrApplicationController {
     }
 
     // 2. Xem danh sách đơn tuyển dụng của 1 Job cụ thể
-    @GetMapping({"/hr/jobs/{jobId}/applications", "/manage/jobs/{jobId}/applications"})
+    @GetMapping({"/jobs/{jobId}/applications", "/manage/jobs/{jobId}/applications"})
     public String listJobApplications(@PathVariable Long jobId,
                                       @RequestParam(required = false) String status,
                                       HttpSession session, Model model) {
