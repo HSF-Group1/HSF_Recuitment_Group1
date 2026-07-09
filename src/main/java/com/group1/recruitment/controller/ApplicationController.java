@@ -67,7 +67,7 @@ public class ApplicationController {
         }
         checkAccess(application, sessionUser);
 
-        applicationService.updateApplicationStatus(id, status);
+        applicationService.updateApplicationStatus(id, status, sessionUser);
 
         if (hxRequest != null) {
             // Fetch the updated state

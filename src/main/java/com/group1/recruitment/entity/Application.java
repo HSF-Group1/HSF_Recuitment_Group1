@@ -27,6 +27,10 @@ public class Application {
     @Column(name = "status")
     private ApplicationStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rejected_at_stage")
+    private ApplicationStatus rejectedAtStage;
+
     @Column(name = "cv_file_url")
     private String cvFileUrl;
 
@@ -44,12 +48,13 @@ public class Application {
     }
 
     // All-args constructor
-    public Application(Long id, Candidate candidate, JobPosting jobPosting, LocalDateTime submissionDate, ApplicationStatus status, String cvFileUrl, LocalDateTime statusUpdatedAt, List<Interview> interviews, List<InternalNote> internalNotes) {
+    public Application(Long id, Candidate candidate, JobPosting jobPosting, LocalDateTime submissionDate, ApplicationStatus status, ApplicationStatus rejectedAtStage, String cvFileUrl, LocalDateTime statusUpdatedAt, List<Interview> interviews, List<InternalNote> internalNotes) {
         this.id = id;
         this.candidate = candidate;
         this.jobPosting = jobPosting;
         this.submissionDate = submissionDate;
         this.status = status;
+        this.rejectedAtStage = rejectedAtStage;
         this.cvFileUrl = cvFileUrl;
         this.statusUpdatedAt = statusUpdatedAt;
         this.interviews = interviews;
@@ -119,6 +124,14 @@ public class Application {
 
     public void setInterviews(List<Interview> interviews) {
         this.interviews = interviews;
+    }
+
+    public ApplicationStatus getRejectedAtStage() {
+        return rejectedAtStage;
+    }
+
+    public void setRejectedAtStage(ApplicationStatus rejectedAtStage) {
+        this.rejectedAtStage = rejectedAtStage;
     }
 
     public List<InternalNote> getInternalNotes() {

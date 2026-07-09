@@ -4,7 +4,7 @@
         <div class="app-card-subtitle">Assign interviewer and scheduling details</div>
     </div>
     
-    <div th:if="${errorMsg}" th:replace="~{fragments/alert :: appAlert(message=${errorMsg}, type='danger')}"></div>
+    <div th:if="${errorMsg}" th:replace="~{fragments/alert :: appModalAlert(message=${errorMsg}, type='danger')}"></div>
     
     <form th:attr="hx-post='/interviews/assign/' + ${app.id}" 
           hx-target="#interview-form-container" 

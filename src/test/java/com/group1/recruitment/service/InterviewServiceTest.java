@@ -42,8 +42,9 @@ class InterviewServiceTest {
     @Test
     void testScheduleInterviewSuccess() {
         // Application 2 is for Job 1 (created by hr_hieu, User ID 3)
-        // Its status is already SCREENING
         Application app = applicationService.getOrThrow(2L);
+        app.setStatus(ApplicationStatus.SCREENING);
+        applicationRepository.save(app);
         assertEquals(ApplicationStatus.SCREENING, app.getStatus());
 
         SessionUser actor = new SessionUser(3L, "Nguyen Minh Hieu", "hr_hieu", "hieu.hr@hsf.com", "HR_MANAGER");
@@ -66,6 +67,10 @@ class InterviewServiceTest {
 
     @Test
     void testScheduleInterviewFailPastDate() {
+        Application app = applicationService.getOrThrow(2L);
+        app.setStatus(ApplicationStatus.SCREENING);
+        applicationRepository.save(app);
+
         SessionUser actor = new SessionUser(3L, "Nguyen Minh Hieu", "hr_hieu", "hieu.hr@hsf.com", "HR_MANAGER");
         List<User> interviewers = interviewService.getActiveInterviewers();
         Long interviewerId = interviewers.get(0).getId();
@@ -82,6 +87,8 @@ class InterviewServiceTest {
     void testScheduleInterviewFailInvalidStatus() {
         // Application 5 is in OFFER status
         Application app = applicationService.getOrThrow(5L);
+        app.setStatus(ApplicationStatus.OFFER);
+        applicationRepository.save(app);
         assertEquals(ApplicationStatus.OFFER, app.getStatus());
 
         SessionUser actor = new SessionUser(2L, "Nguyen Thi Huong", "hr_huong", "huong.hr@hsf.com", "HR_MANAGER");

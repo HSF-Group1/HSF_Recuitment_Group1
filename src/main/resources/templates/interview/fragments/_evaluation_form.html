@@ -4,7 +4,7 @@
         <div class="app-card-subtitle">Complete evaluation form for the candidate</div>
     </div>
 
-    <div th:if="${errorMsg}" th:replace="~{fragments/alert :: appAlert(message=${errorMsg}, type='danger')}"></div>
+    <div th:if="${errorMsg}" th:replace="~{fragments/alert :: appModalAlert(message=${errorMsg}, type='danger')}"></div>
 
     <form th:attr="hx-post='/interviews/evaluate/' + ${interview.id}"
           hx-target="#evaluation-panel"

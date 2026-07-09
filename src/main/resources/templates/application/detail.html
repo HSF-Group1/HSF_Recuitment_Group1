@@ -24,15 +24,15 @@
                     Exit
                 </a>
             </div>
-        </div>  
+        </div>
 
-        <!-- Alert -->
-        <div th:replace="~{fragments/alert :: appAlert(
+        <!-- Alert Modal -->
+        <div th:replace="~{fragments/alert :: appModalAlert(
             message=${errorMsg},
             type='danger')}">
         </div>
 
-        <div id="application-detail" class="row g-4 mt-2" th:if="${currentApplication != null}">
+        <div id="application-detail-panels" class="row g-4 mt-2" th:if="${currentApplication != null}">
 
             <!-- ===================================================== -->
             <!-- LEFT COLUMN : Candidate -->

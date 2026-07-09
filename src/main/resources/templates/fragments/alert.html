@@ -1,4 +1,6 @@
-<!-- Reusable Alert (Pure Thymeleaf) -->
+<!-- Reusable Alert & Modal Fragments -->
+
+<!-- 1. Reusable Alert (original inline banner fallback) -->
 <div th:fragment="appAlert(message, type)"
      th:if="${message != null}"
      th:class="${'app-alert app-alert-' + (type != null ? type : 'success')}"
@@ -6,4 +8,37 @@
      role="alert">
   <i th:class="${'bi ' + (type == 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle')}" style="font-size: 20px;"></i>
   <span th:text="${message}">Alert message text</span>
+</div>
+
+<!-- 2. Reusable Modal Alert (Popup Modal) -->
+<div th:fragment="appModalAlert(message, type)" th:if="${message != null}">
+  <div class="modal fade" id="appAlertModal" tabindex="-1" aria-labelledby="appAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0" style="border-radius: var(--card-border-radius, 12px);">
+        <div class="modal-header border-0 pb-0" th:classappend="${type == 'danger' ? 'text-danger' : 'text-success'}">
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="appAlertModalLabel">
+            <i th:class="${type == 'danger' ? 'bi bi-exclamation-triangle-fill fs-4' : 'bi bi-check-circle-fill fs-4'}"></i>
+            <span th:text="${type == 'danger' ? 'Error' : 'Notification'}">Notification</span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4 text-center">
+          <p class="mb-0 fs-5 text-dark fw-semibold" th:text="${message}">Message body</p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="app-btn w-100" th:classappend="${type == 'danger' ? 'app-btn-danger' : 'app-btn-primary'}" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    (function() {
+      var modalEl = document.getElementById('appAlertModal');
+      if (modalEl) {
+        var modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    })();
+  </script>
 </div>
