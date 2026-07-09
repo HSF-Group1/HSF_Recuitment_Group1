@@ -85,14 +85,14 @@
 
     <!-- Funnel Filter Tabs -->
     <div class="funnel-tabs mb-4">
-      <a th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status='ALL')} : @{/hr/applications(status='ALL')}"
+      <a th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status='ALL')} : @{/applications(status='ALL')}"
          class="funnel-tab" th:classappend="${activeTab == 'ALL' ? 'active' : ''}">
         <span>All</span>
       </a>
 
       <!-- Lặp qua các Status Enum để sinh ra Tab động kèm số lượng -->
       <a th:each="entry : ${pipeline}"
-         th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status=${entry.key.name()})} : @{/hr/applications(status=${entry.key.name()})}"
+         th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status=${entry.key.name()})} : @{/applications(status=${entry.key.name()})}"
          class="funnel-tab" th:classappend="${activeTab == entry.key.name() ? 'active' : ''}">
         <span th:text="${#strings.capitalize(#strings.toLowerCase(entry.key.name()))}">Stage</span>
         <span class="badge-count" th:text="${entry.value}">0</span>
@@ -147,7 +147,7 @@
                 </span>
             </td>
             <td class="pe-4 text-end">
-              <a th:href="@{/hr/applications/{id}(id=${app.id})}" class="btn btn-quiet btn-sm">
+              <a th:href="@{/applications/{id}(id=${app.id})}" class="btn btn-quiet btn-sm">
                 View Profile <i class="fa-solid fa-chevron-right ms-1"></i>
               </a>
             </td>

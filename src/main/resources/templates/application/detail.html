@@ -10,7 +10,7 @@
         <!-- Breadcrumb -->
         <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(
             parentText='Applications',
-            parentUrl='/application',
+            parentUrl='/applications',
             activeText='Details')}">
         </div>
 
@@ -19,7 +19,7 @@
             <h1 class="app-h1">Application Detail</h1>
 
             <div th:if="${currentApplication != null}">
-                <a href="/application" class="app-btn app-btn-secondary text-decoration-none">
+                <a href="/applications" class="app-btn app-btn-secondary text-decoration-none">
                     <i class="bi bi-x-circle me-1"></i>
                     Exit
                 </a>

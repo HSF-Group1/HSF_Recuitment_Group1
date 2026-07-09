@@ -11,8 +11,6 @@ import com.group1.recruitment.repository.*;
 import com.group1.recruitment.security.SessionUser;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;

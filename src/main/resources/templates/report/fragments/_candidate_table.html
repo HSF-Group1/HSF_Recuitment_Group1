@@ -5,7 +5,9 @@
     </div>
 
     <!-- Empty State -->
-    <div th:if="${applications == null || applications.isEmpty()}" th:replace="~{report/fragments/_pipeline_empty :: pipelineEmpty}"></div>
+    <th:block th:if="${applications == null || applications.isEmpty()}">
+        <div th:replace="~{report/fragments/_pipeline_empty :: pipelineEmpty}"></div>
+    </th:block>
 
     <!-- Table -->
     <div class="table-responsive" th:unless="${applications == null || applications.isEmpty()}">
