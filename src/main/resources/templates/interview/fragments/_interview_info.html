@@ -5,22 +5,23 @@
             <div class="app-card-subtitle">Scheduled interview schedule information</div>
         </div>
         <div>
-            <span class="app-badge" 
-                  th:classappend="${interview.status.name() == 'SCHEDULED' ? 'app-badge-info' : 
+            <span class="app-badge"
+                th:classappend="${interview.status.name() == 'SCHEDULED' ? 'app-badge-info' : 
                                   (interview.status.name() == 'EVALUATED' ? 'app-badge-success' : 'app-badge-secondary')}"
-                  th:text="${interview.status}">SCHEDULED</span>
+                th:text="${interview.status}">SCHEDULED</span>
         </div>
     </div>
-    
+
     <div class="py-2">
         <div class="row mb-3 align-items-center">
             <div class="col-sm-4 fw-semibold text-muted">Interviewer:</div>
-            <div class="col-sm-8 fw-bold text-dark" th:text="${interview.interviewer?.fullName ?: 'N/A'}">Khoa Nguyen</div>
+            <div class="col-sm-8 fw-bold text-dark" th:text="${interview.interviewer?.fullName ?: 'N/A'}">Khoa Nguyen
+            </div>
         </div>
         <div class="row mb-3 align-items-center">
             <div class="col-sm-4 fw-semibold text-muted">Date & Time:</div>
-            <div class="col-sm-8 text-dark" 
-                 th:text="${(interview.interviewDate != null ? #temporals.format(interview.interviewDate, 'dd/MM/yyyy') : 'N/A') + ' at ' + (interview.interviewTime != null ? interview.interviewTime : 'N/A')}">
+            <div class="col-sm-8 text-dark"
+                th:text="${(interview.interviewDate != null ? #temporals.format(interview.interviewDate, 'dd/MM/yyyy') : 'N/A') + ' at ' + (interview.interviewTime != null ? interview.interviewTime : 'N/A')}">
                 05/07/2026 at 10:00
             </div>
         </div>
@@ -28,37 +29,45 @@
             <div class="col-sm-4 fw-semibold text-muted">Location / Link:</div>
             <div class="col-sm-8 text-charcoal">
                 <span th:if="${interview.locationOrLink != null && interview.locationOrLink.startsWith('http')}">
-                    <a th:href="${interview.locationOrLink}" target="_blank" class="text-decoration-none" th:text="${interview.locationOrLink}">Link</a>
+                    <a th:href="${interview.locationOrLink}" target="_blank" class="text-decoration-none"
+                        th:text="${interview.locationOrLink}">Link</a>
                 </span>
-                <span th:unless="${interview.locationOrLink != null && interview.locationOrLink.startsWith('http')}" th:text="${interview.locationOrLink ?: 'N/A'}">Room 101</span>
+                <span th:unless="${interview.locationOrLink != null && interview.locationOrLink.startsWith('http')}"
+                    th:text="${interview.locationOrLink ?: 'N/A'}">Room 101</span>
             </div>
         </div>
         <div class="row mb-3" th:if="${interview.notes != null && !interview.notes.isEmpty()}">
             <div class="col-sm-4 fw-semibold text-muted">Notes:</div>
-            <div class="col-sm-8 text-dark" style="white-space: pre-wrap;" th:text="${interview.notes}">Special instructions</div>
+            <div class="col-sm-8 text-dark" style="white-space: pre-wrap;" th:text="${interview.notes}">Special
+                instructions</div>
         </div>
-        
+
         <!-- Evaluation details (visible when EVALUATED) -->
-        <div th:if="${interview.status.name() == 'EVALUATED' && interview.evaluation != null}" class="mt-4 pt-3 border-top">
-            <h4 class="fs-6 fw-bold text-dark mb-3"><i class="bi bi-file-earmark-check-fill me-1"></i>Evaluation Result</h4>
+        <div th:if="${interview.status.name() == 'EVALUATED' && interview.evaluation != null}"
+            class="mt-4 pt-3 border-top">
+            <h4 class="fs-6 fw-bold text-dark mb-3"><i class="bi bi-file-earmark-check-fill me-1"></i>Evaluation Result
+            </h4>
             <div class="row mb-2">
                 <div class="col-sm-4 fw-semibold text-muted">Overall Rating:</div>
                 <div class="col-sm-8 text-warning fw-bold">
                     <th:block th:each="star : ${#numbers.sequence(1, 5)}">
-                        <i class="bi" th:classappend="${star <= interview.evaluation.rating ? 'bi-star-fill' : 'bi-star'}"></i>
+                        <i class="bi"
+                            th:classappend="${star <= interview.evaluation.rating ? 'bi-star-fill' : 'bi-star'}"></i>
                     </th:block>
-                    <span class="ms-2 text-dark font-monospace fw-bold" th:text="${interview.evaluation.rating + '/5'}">4/5</span>
+                    <span class="ms-2 text-dark font-monospace fw-bold"
+                        th:text="${interview.evaluation.rating + '/5'}">4/5</span>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-sm-4 fw-semibold text-muted">Comments:</div>
-                <div class="col-sm-8 text-dark" style="white-space: pre-wrap;" th:text="${interview.evaluation.feedback}">Good candidate.</div>
+                <div class="col-sm-8 text-dark" style="white-space: pre-wrap;"
+                    th:text="${interview.evaluation.feedback}">Good candidate.</div>
             </div>
             <div class="row mb-0">
                 <div class="col-sm-4 fw-semibold text-muted">Submitted At:</div>
-                <div class="col-sm-8 text-charcoal" 
-                     th:text="${interview.evaluation.submittedAt != null ? #temporals.format(interview.evaluation.submittedAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
-                     09/07/2026 15:30
+                <div class="col-sm-8 text-charcoal"
+                    th:text="${interview.evaluation.submittedAt != null ? #temporals.format(interview.evaluation.submittedAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                    09/07/2026 15:30
                 </div>
             </div>
         </div>
@@ -66,22 +75,19 @@
         <!-- Action Buttons (Cancel / Evaluate) -->
         <div class="d-flex justify-content-end gap-2 mt-4">
             <!-- Cancel button (visible to Admin / HR Manager owning the job) -->
-            <th:block th:if="${currentUserRole == 'ADMIN' || (currentUserRole == 'HR_MANAGER' && app.jobPosting?.createdBy?.id == currentUser?.id)}">
-                <button th:if="${interview.status.name() == 'SCHEDULED'}"
-                        type="button" 
-                        class="app-btn app-btn-danger"
-                        th:attr="hx-post='/interviews/cancel/' + ${interview.id}"
-                        hx-target="#application-detail-panels"
-                        hx-swap="outerHTML"
-                        hx-confirm="Are you sure you want to cancel this interview?">
+            <th:block
+                th:if="${currentUserRole == 'ADMIN' || (currentUserRole == 'HR_MANAGER' && app.jobPosting?.createdBy?.id == currentUser?.id)}">
+                <button th:if="${interview.status.name() == 'SCHEDULED'}" type="button" class="app-btn app-btn-danger"
+                    th:attr="hx-post='/interviews/cancel/' + ${interview.id}" hx-target="#application-detail-panels"
+                    hx-swap="outerHTML" hx-confirm="Are you sure you want to cancel this interview?">
                     <i class="bi bi-calendar-x me-1"></i> Cancel Interview
                 </button>
             </th:block>
 
             <!-- Evaluate button (visible to assigned interviewer when status is SCHEDULED) -->
             <a th:if="${interview.status.name() == 'SCHEDULED' && interview.interviewer?.id == currentUser?.id}"
-               th:href="@{/interviews/evaluate/{id}(id=${interview.id})}" 
-               class="app-btn app-btn-primary text-decoration-none">
+                th:href="@{/interviews/evaluate/{id}(id=${interview.id})}"
+                class="app-btn app-btn-primary text-decoration-none">
                 <i class="bi bi-file-earmark-check-fill me-1"></i> Evaluate Candidate
             </a>
         </div>
