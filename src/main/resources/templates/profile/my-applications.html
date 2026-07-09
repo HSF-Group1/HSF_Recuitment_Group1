@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/member :: memberLayout(title='My Application', content=~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <section>
+        <style>
+            .applications-shell {
+                max-width: 980px;
+                margin: 0 auto;
+            }
+
+            .applications-panel {
+                border: 1px solid var(--gray-border);
+                border-radius: 8px;
+                background: var(--surface, #ffffff);
+                padding: 24px;
+            }
+
+            .applications-table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            .applications-table th {
+                color: var(--gray-text);
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                border-bottom: 1px solid var(--gray-border);
+                padding: 12px;
+            }
+
+            .applications-table td {
+                border-bottom: 1px solid var(--gray-border);
+                padding: 16px 12px;
+                vertical-align: middle;
+            }
+
+            .applications-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .status-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                border-radius: 6px;
+                padding: 4px 8px;
+                font-size: 0.78rem;
+                font-weight: 700;
+            }
+
+            .status-applied,
+            .status-screening {
+                background: #FEF9E7;
+                color: #8F6B00;
+            }
+
+            .status-interview {
+                background: #E6F4EA;
+                color: #2B6CB0;
+            }
+
+            .status-offer,
+            .status-hired {
+                background: #EBF7EE;
+                color: #2F6A3E;
+            }
+
+            .status-rejected,
+            .status-withdrawn {
+                background: #FDF1F2;
+                color: #A63A3A;
+            }
+
+            @media (max-width: 767.98px) {
+                .applications-panel {
+                    padding: 16px;
+                }
+
+                .applications-table {
+                    min-width: 720px;
+                }
+            }
+        </style>
+        <div class="applications-shell">
+            <div class="mb-4">
+                <div class="text-muted text-uppercase mb-2"
+                    style="font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;">
+                    Candidate Portal
+                </div>
+                <h1>
+                    My application
+                </h1>
+                <p>Track submitted applications and withdraw eligible submissions.</p>
+            </div>
+            <div class="alert alert-success" th:if="${flash != null}" th:text="${flash}">Done</div>
+            <div class="alert alert-danger" th:if="${error != null}" th:text="${error}">Error</div>
+
+            <div class="applications-panel">
+                <div th:if="${applications == null or applications.isEmpty()}" class="text-center py-5">
+                    <i class="fa-solid fa-folder-open fa-fw text-muted" style="font-size: 2rem;"></i>
+                    <h2 class="h5 mt-3">No applications yet</h2>
+                    <p class="text-muted mb-3">Browse active roles and submit your first application.</p>
+                    <a th:href="@{/jobs}" class="btn btn-charcoal">
+                        <i class="fa-solid fa-briefcase fa-fw me-2"></i>View Jobs
+                    </a>
+                </div>
+                <div th:unless="${applications == null or applications.isEmpty()}" class="table-responsive">
+                    <table class="applications-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 32%;">Job</th>
+                                <th style="width: 18%;">Location</th>
+                                <th style="width: 18%;">Submitted</th>
+                                <th style="width: 16%;">Status</th>
+                                <th style="width: 16%; text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="app : ${applications}">
+                                <td>
+                                    <div class="fw-semibold" th:text="${app.jobPosting.title}">Java Backend
+                                        Developer</div>
+                                    <div class="text-muted small" th:text="${app.jobPosting.department}">
+                                        Engineering</div>
+                                  </td>
+
+                                <td th:text="${app.jobPosting.location}">Ha Noi</td>
+
+                                <td
+                                    th:text="${app.submissionDate != null ? #temporals.format(app.submissionDate, 'dd MMM yyyy') : '-'}">
+                                    09 Jul 2026
+                                </td>
+
+                                <td>
+                                    <span class="status-chip"
+                                        th:classappend="${' status-' + #strings.toLowerCase(app.status.name())}">
+                                        <i class="fa-solid fa-circle fa-fw" style="font-size: 0.45rem;"></i>
+                                        <span th:text="${app.status.name()}">APPLIED</span>
+                                    </span>
+                                </td>
+
+                                <td style="text-align: right;">
+                                    <form
+                                        th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                        th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
+                                        method="post" class="m-0"
+                                        onsubmit="return confirm('Withdraw this application?');">
+                                        <button type="submit" class="btn btn-quiet btn-sm">
+                                            Withdraw
+                                        </button>
+                                    </form>
+
+                                    <span
+                                        th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                        class="text-muted small">
+                                        Locked
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</body>
+
+</html>

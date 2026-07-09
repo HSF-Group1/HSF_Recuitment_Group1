@@ -18,6 +18,12 @@
       </a>
     </li>
     <li>
+           <a th:href="@{/hr/applications}" class="app-sidebar-link" th:classappend="${activeMenu == 'applications' ? 'active' : ''}">
+              <i class="bi bi-file-earmark-person"></i>
+             <span>Applications</span>
+            </a>
+          </li>
+    <li>
       <a th:href="@{/candidates}" class="app-sidebar-link" th:classappend="${activeMenu == 'candidates' ? 'active' : ''}">
         <i class="bi bi-people"></i>
         <span>Candidates</span>

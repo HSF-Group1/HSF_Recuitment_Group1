@@ -71,4 +71,18 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     // Applications belonging to jobs created by a given HR Manager
     long countByJobPosting_CreatedByAndStatus(User createdBy, ApplicationStatus status);
+
+    // Get all applications by submission date descending(for admin)
+    List<Application> findAllByOrderBySubmissionDateDesc();
+
+    // Get all applications by status and submission date descending(for admin)
+    List<Application> findByStatusOrderBySubmissionDateDesc(ApplicationStatus status);
+
+    // Get all applications belonging to jobs created by a given HR Manager and ordered by submission date descending
+    List<Application> findByJobPosting_CreatedByOrderBySubmissionDateDesc(User createdBy);
+
+    // Get all applications belonging to jobs created by a given HR Manager and ordered by status and submission date descending
+    List<Application> findByJobPosting_CreatedByAndStatusOrderBySubmissionDateDesc(User createdBy,
+            ApplicationStatus status); 
+
 }
