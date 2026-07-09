@@ -9,6 +9,7 @@ import com.group1.recruitment.security.SessionUtil;
 import com.group1.recruitment.service.ApplicationService;
 import com.group1.recruitment.service.ApplicationWorkflowService;
 import com.group1.recruitment.service.InterviewService;
+import com.group1.recruitment.service.InternalNoteService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -25,13 +26,16 @@ public class InterviewController {
     private final InterviewService interviewService;
     private final ApplicationService applicationService;
     private final ApplicationWorkflowService workflowService;
+    private final InternalNoteService internalNoteService;
 
     public InterviewController(InterviewService interviewService,
                                ApplicationService applicationService,
-                               ApplicationWorkflowService workflowService) {
+                               ApplicationWorkflowService workflowService,
+                               InternalNoteService internalNoteService) {
         this.interviewService = interviewService;
         this.applicationService = applicationService;
         this.workflowService = workflowService;
+        this.internalNoteService = internalNoteService;
     }
 
     @GetMapping("/assign/{applicationId}")
@@ -131,6 +135,10 @@ public class InterviewController {
             model.addAttribute("currentUserRole", sessionUser.getRoleName());
             model.addAttribute("applicationStatus", application.getStatus());
             model.addAttribute("allowedTransitions", workflowService.getAllowedTransitions(application.getStatus()));
+
+            if (sessionUser.isHrOrAdmin()) {
+                model.addAttribute("internalNotes", internalNoteService.getNotesForApplication(application.getId()));
+            }
 
             boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
                     (sessionUser.isInterviewer() && application.getInterviews() != null &&

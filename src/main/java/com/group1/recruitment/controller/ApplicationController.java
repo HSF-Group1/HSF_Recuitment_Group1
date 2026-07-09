@@ -1,6 +1,7 @@
 package com.group1.recruitment.controller;
 
 import com.group1.recruitment.entity.Application;
+import com.group1.recruitment.entity.InternalNote;
 import com.group1.recruitment.enums.ApplicationStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
 import com.group1.recruitment.exception.NotFoundException;
@@ -8,6 +9,7 @@ import com.group1.recruitment.security.SessionUser;
 import com.group1.recruitment.security.SessionUtil;
 import com.group1.recruitment.service.ApplicationService;
 import com.group1.recruitment.service.ApplicationWorkflowService;
+import com.group1.recruitment.service.InternalNoteService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,10 +25,14 @@ public class ApplicationController {
 
     private final ApplicationService applicationService;
     private final ApplicationWorkflowService workflowService;
+    private final InternalNoteService internalNoteService;
 
-    public ApplicationController(ApplicationService applicationService, ApplicationWorkflowService workflowService) {
+    public ApplicationController(ApplicationService applicationService, 
+                                 ApplicationWorkflowService workflowService,
+                                 InternalNoteService internalNoteService) {
         this.applicationService = applicationService;
         this.workflowService = workflowService;
+        this.internalNoteService = internalNoteService;
     }
 
     @GetMapping("/{id}")
@@ -41,6 +47,10 @@ public class ApplicationController {
         model.addAttribute("currentUserRole", sessionUser.getRoleName());
         model.addAttribute("applicationStatus", application.getStatus());
         model.addAttribute("allowedTransitions", workflowService.getAllowedTransitions(application.getStatus()));
+
+        if (sessionUser.isHrOrAdmin()) {
+            model.addAttribute("internalNotes", internalNoteService.getNotesForApplication(id));
+        }
 
         // Check if CV download is permitted
         boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
@@ -77,6 +87,10 @@ public class ApplicationController {
             model.addAttribute("applicationStatus", application.getStatus());
             model.addAttribute("allowedTransitions", workflowService.getAllowedTransitions(application.getStatus()));
 
+            if (sessionUser.isHrOrAdmin()) {
+                model.addAttribute("internalNotes", internalNoteService.getNotesForApplication(id));
+            }
+
             boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
                     (sessionUser.isInterviewer() && application.getInterviews() != null &&
                             application.getInterviews().stream()
@@ -87,6 +101,27 @@ public class ApplicationController {
         }
 
         return "redirect:/application/" + id;
+    }
+
+    @PostMapping("/{id}/notes")
+    public String addNote(@PathVariable Long id,
+                          @RequestParam String content,
+                          HttpSession session,
+                          Model model) {
+        SessionUser sessionUser = SessionUtil.require(session);
+        Application application = applicationService.getOrThrow(id);
+
+        // Security check
+        checkAccess(application, sessionUser);
+
+        internalNoteService.addNote(id, content, sessionUser);
+
+        // Fetch application for model
+        model.addAttribute("currentApplication", application);
+        model.addAttribute("currentUserRole", sessionUser.getRoleName());
+        model.addAttribute("internalNotes", internalNoteService.getNotesForApplication(id));
+
+        return "application/detail :: #notes-panel";
     }
 
     @GetMapping("/{id}/cv")
