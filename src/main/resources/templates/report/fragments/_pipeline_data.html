@@ -1,7 +1,16 @@
-<div th:fragment="pipelineData(summary, applications, reportService)" id="pipeline-data-container" class="d-flex flex-column gap-4">
-    <!-- Summary counts -->
-    <div th:replace="~{report/fragments/_pipeline_summary :: pipelineSummary(${summary})}"></div>
+<div th:fragment="pipelineData(summary, applications, reportService)" id="pipeline-report" class="d-flex flex-column gap-4">
+    <!-- 1. Pipeline Summary -->
+    <div id="summary-section">
+        <div th:replace="~{report/fragments/_summary_cards :: summaryCards(${summary})}"></div>
+    </div>
 
-    <!-- Candidates table -->
-    <div th:replace="~{report/fragments/_pipeline_table :: pipelineTable(${applications}, ${reportService})}"></div>
+    <!-- 2. Pipeline Overview (Chart) -->
+    <div id="chart-section">
+        <div th:replace="~{report/fragments/_pipeline_chart :: pipelineChart(${summary})}"></div>
+    </div>
+
+    <!-- 3. Candidate Details (Table) -->
+    <div id="table-section">
+        <div th:replace="~{report/fragments/_candidate_table :: candidateTable(${applications}, ${reportService})}"></div>
+    </div>
 </div>

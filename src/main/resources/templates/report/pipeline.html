@@ -13,13 +13,13 @@
         </div>
     </div>
 
-    <!-- Job Filter Card -->
-    <div class="app-card mb-4">
+    <!-- Job Filter Section -->
+    <div class="mb-4">
         <div th:replace="~{report/fragments/_job_selector :: jobSelector(${jobs}, ${selectedJobId})}"></div>
     </div>
 
     <!-- Data Dashboard Wrapper -->
-    <div id="pipeline-data-container">
+    <div id="pipeline-report">
         <div th:replace="~{report/fragments/_pipeline_data :: pipelineData(${summary}, ${applications}, ${reportService})}"></div>
     </div>
 </section>
