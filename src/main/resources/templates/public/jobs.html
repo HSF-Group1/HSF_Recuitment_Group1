@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script>
+    (function () {
+      var cachedTheme = 'light';
+      try { cachedTheme = localStorage.getItem('theme') || 'light'; } catch (e) { }
+      document.documentElement.setAttribute('data-bs-theme', cachedTheme);
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Jobs - TalentHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link th:href="@{/css/base/variables.css}" rel="stylesheet">
+  <link th:href="@{/css/base/reset.css}" rel="stylesheet">
+  <link th:href="@{/css/layout/navbar.css}" rel="stylesheet">
+  <link th:href="@{/css/components/badge.css}" rel="stylesheet">
+  <link th:href="@{/css/base/dark.css}" rel="stylesheet">
+  <style>
+    :root {
+      --public-canvas: #f9f8f6;
+      --public-surface: #ffffff;
+      --public-ink: #111111;
+      --public-muted: #757575;
+      --public-border: #efefef;
+      --public-active-bg: #ebf7ee;
+      --public-active-text: #2f6a3e;
+    }
+
+    html { min-height: 100dvh; }
+
+    body {
+      min-height: 100dvh;
+      margin: 0;
+      background: var(--public-canvas);
+      color: var(--public-ink);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    .public-shell {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .public-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--public-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .app-navbar-brand {
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+      color: var(--public-ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-user-btn {
+      background: transparent;
+      border: 1px solid var(--public-border);
+      border-radius: 4px;
+      color: var(--public-ink);
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .nav-user-btn:hover { border-color: rgba(17, 17, 17, 0.18); }
+
+    [data-bs-theme="dark"] .nav-user-btn {
+      border-color: rgba(226, 232, 240, 0.16);
+      color: #e2e8f0;
+    }
+
+    .brand-mark {
+      color: var(--public-ink);
+      font-weight: 700;
+      letter-spacing: 0;
+      text-decoration: none;
+    }
+
+    .public-nav-link {
+      color: var(--public-ink);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .public-nav-link:hover,
+    .brand-mark:hover {
+      color: var(--public-ink);
+      opacity: 0.72;
+    }
+
+    .btn-charcoal,
+    .btn-quiet {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 42px;
+      padding: 0.55rem 1rem;
+      border-radius: 4px;
+      font-weight: 650;
+      text-decoration: none;
+      box-shadow: none;
+      transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
+    }
+
+    .btn-charcoal {
+      border: 1px solid #111111;
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .btn-charcoal:hover {
+      color: #ffffff;
+      opacity: 0.88;
+    }
+
+    .btn-quiet {
+      border: 1px solid var(--public-border);
+      background: var(--public-surface);
+      color: var(--public-ink);
+    }
+
+    .btn-quiet:hover {
+      color: var(--public-ink);
+      border-color: rgba(17, 17, 17, 0.28);
+    }
+
+    .btn-charcoal:active,
+    .btn-quiet:active { transform: scale(0.98); }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+      gap: 2rem;
+      align-items: end;
+      padding: 4rem 0 2rem;
+    }
+
+    .eyebrow {
+      margin-bottom: 0.8rem;
+      color: var(--public-muted);
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      max-width: 11ch;
+      margin: 0;
+      color: var(--public-ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(3rem, 7vw, 6.75rem);
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-copy {
+      max-width: 42ch;
+      margin: 1.25rem 0 0;
+      color: var(--public-muted);
+      font-size: 1.02rem;
+    }
+
+    .summary-panel {
+      border: 1px solid var(--public-border);
+      border-radius: 8px;
+      background: var(--public-surface);
+      padding: 1.5rem;
+    }
+
+    .summary-number {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 3rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .summary-label {
+      color: var(--public-muted);
+      font-size: 0.92rem;
+    }
+
+    .jobs-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 0;
+      border-top: 1px solid var(--public-border);
+      border-bottom: 1px solid var(--public-border);
+    }
+
+    .toolbar-label {
+      margin: 0;
+      color: var(--public-muted);
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .job-list {
+      display: grid;
+      gap: 1rem;
+      padding: 1.5rem 0 4rem;
+    }
+
+    .job-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+      align-items: center;
+      border: 1px solid var(--public-border);
+      border-radius: 8px;
+      background: var(--public-surface);
+      padding: 1.5rem;
+      box-shadow: none;
+    }
+
+    .job-card-title {
+      margin: 0 0 0.75rem;
+      color: var(--public-ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1rem;
+      margin: 0;
+      padding: 0;
+      color: var(--public-muted);
+      list-style: none;
+      font-size: 0.92rem;
+    }
+
+    .job-meta li {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .job-meta i {
+      color: var(--public-ink);
+      opacity: 0.72;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: fit-content;
+      margin-bottom: 0.85rem;
+      border-radius: 6px;
+      background: var(--public-active-bg);
+      color: var(--public-active-text);
+      padding: 0.32rem 0.58rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .job-description {
+      max-width: 72ch;
+      margin: 1rem 0 0;
+      color: var(--public-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .empty-state {
+      margin: 1.5rem 0 4rem;
+      border: 1px solid var(--public-border);
+      border-radius: 8px;
+      background: var(--public-surface);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .empty-state i {
+      color: var(--public-muted);
+      font-size: 2rem;
+    }
+
+    .empty-state h2 {
+      margin: 1rem 0 0.5rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: -0.02em;
+    }
+
+    .empty-state p {
+      margin: 0 auto;
+      max-width: 42ch;
+      color: var(--public-muted);
+    }
+
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-bs-theme="dark"] body {
+      background: #0a0f1d;
+      color: #e2e8f0;
+    }
+
+    [data-bs-theme="dark"] .public-header,
+    [data-bs-theme="dark"] .job-card,
+    [data-bs-theme="dark"] .summary-panel,
+    [data-bs-theme="dark"] .empty-state,
+    [data-bs-theme="dark"] .btn-quiet {
+      background: #121829;
+      border-color: rgba(226, 232, 240, 0.11);
+      color: #e2e8f0;
+    }
+
+    [data-bs-theme="dark"] .brand-mark,
+    [data-bs-theme="dark"] .public-nav-link,
+    [data-bs-theme="dark"] .hero-title,
+    [data-bs-theme="dark"] .job-card-title,
+    [data-bs-theme="dark"] .job-meta i,
+    [data-bs-theme="dark"] .btn-quiet:hover {
+      color: #f1f5f9;
+    }
+
+    [data-bs-theme="dark"] .hero-copy,
+    [data-bs-theme="dark"] .summary-label,
+    [data-bs-theme="dark"] .toolbar-label,
+    [data-bs-theme="dark"] .job-meta,
+    [data-bs-theme="dark"] .job-description,
+    [data-bs-theme="dark"] .empty-state p {
+      color: #94a3b8;
+    }
+
+    @media (max-width: 767.98px) {
+      .hero-grid,
+      .job-card { grid-template-columns: 1fr; }
+      .hero-grid { padding-top: 2.5rem; }
+      .jobs-toolbar { align-items: flex-start; flex-direction: column; }
+      .job-card { padding: 1.2rem; }
+      .job-card .btn-quiet { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="public-shell">
+    <th:block th:if="${currentUser != null and currentUser.isHrOrAdmin()}">
+      <div th:replace="~{layout/header :: header}"></div>
+    </th:block>
+    <th:block th:if="${currentUser != null and not currentUser.isHrOrAdmin()}">
+      <div th:replace="~{layout/member :: memberNavbar}"></div>
+    </th:block>
+    <header th:if="${currentUser == null}" class="public-header">
+      <div class="container py-3 d-flex align-items-center justify-content-between gap-3">
+        <a th:href="@{/}" class="brand-mark">TalentHub</a>
+        <nav class="d-flex align-items-center gap-3">
+          <a th:href="@{/jobs}" class="public-nav-link">View Jobs</a>
+          <a th:if="${currentUser == null}" th:href="@{/auth/login}" class="btn-charcoal">
+            <i class="fa-solid fa-right-to-bracket fa-fw"></i>
+            <span>Sign In</span>
+          </a>
+          <a th:if="${currentUser != null}" th:href="@{/profile}" class="btn-quiet">
+            <i class="fa-solid fa-user fa-fw"></i>
+            <span th:text="${currentUser.username}">Account</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <section class="hero-grid reveal-on-scroll">
+          <div>
+            <div class="eyebrow">Candidate Portal</div>
+            <h1 class="hero-title">Open roles</h1>
+            <p class="hero-copy">
+              Browse active job postings, compare departments and locations, then open the role detail before applying.
+            </p>
+          </div>
+          <aside class="summary-panel" aria-label="Active job summary">
+            <span class="summary-number" th:text="${#lists.size(jobs)}">0</span>
+            <span class="summary-label">active postings currently accepting applications</span>
+          </aside>
+        </section>
+
+        <section aria-labelledby="jobs-heading">
+          <div class="jobs-toolbar">
+            <div>
+              <p class="toolbar-label">Public Job List</p>
+              <h2 id="jobs-heading" class="h5 m-0">Available positions</h2>
+            </div>
+            <span class="status-badge">
+              <i class="fa-solid fa-circle-check fa-fw"></i>
+              Active only
+            </span>
+          </div>
+
+          <div th:if="${jobs == null or jobs.isEmpty()}" class="empty-state reveal-on-scroll">
+            <i class="fa-solid fa-briefcase fa-fw"></i>
+            <h2>No active jobs</h2>
+            <p>There are no public openings at the moment. Please check this page again later.</p>
+          </div>
+
+          <div th:unless="${jobs == null or jobs.isEmpty()}" class="job-list">
+            <article class="job-card reveal-on-scroll" th:each="job : ${jobs}">
+              <div>
+                <span class="status-badge">
+                  <i class="fa-solid fa-circle-check fa-fw"></i>
+                  Active
+                </span>
+                <h3 class="job-card-title" th:text="${job.title}">Java Backend Developer</h3>
+                <ul class="job-meta">
+                  <li th:if="${job.department != null and !job.department.isBlank()}">
+                    <i class="fa-solid fa-building fa-fw me-2"></i>
+                    <span th:text="${job.department}">Engineering</span>
+                  </li>
+                  <li th:if="${job.location != null and !job.location.isBlank()}">
+                    <i class="fa-solid fa-location-dot fa-fw me-2"></i>
+                    <span th:text="${job.location}">Ha Noi</span>
+                  </li>
+                  <li th:if="${job.salaryRange != null and !job.salaryRange.isBlank()}">
+                    <i class="fa-solid fa-money-bill-wave fa-fw me-2"></i>
+                    <span th:text="${job.salaryRange}">$1,500 - $2,500</span>
+                  </li>
+                  <li th:if="${job.applicationDeadline != null}">
+                    <i class="fa-solid fa-calendar-day fa-fw me-2"></i>
+                    <span th:text="${#temporals.format(job.applicationDeadline, 'dd MMM yyyy')}">31 Jul 2026</span>
+                  </li>
+                </ul>
+                <p class="job-description" th:if="${job.description != null and !job.description.isBlank()}" th:text="${job.description}">
+                  Build reliable recruitment workflows with a practical engineering team.
+                </p>
+              </div>
+              <div class="text-md-end">
+                <a th:href="@{/jobs/{id}(id=${job.id})}" class="btn-quiet">
+                  <span>View Details</span>
+                  <i class="fa-solid fa-arrow-right fa-fw"></i>
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/theme.js}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach(function (element) {
+        observer.observe(element);
+      });
+    });
+  </script>
+</body>
+</html>
