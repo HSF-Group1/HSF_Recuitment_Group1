@@ -42,7 +42,7 @@ public class HrApplicationController {
     public String listAllApplications(@RequestParam(required = false) String status,
                                       HttpSession session, Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
-        if (!sessionUser.isHr() && !sessionUser.isAdmin()) {
+        if (!sessionUser.isHr() && !sessionUser.isAdmin() && !sessionUser.isInterviewer()) {
             return "redirect:/error/403";
         }
 
@@ -57,12 +57,18 @@ public class HrApplicationController {
                     ? applicationService.getApplicationRepository().findByStatusOrderBySubmissionDateDesc(filterStatus)
                     : applicationService.getApplicationRepository().findAllByOrderBySubmissionDateDesc();
             pipelineCounts = applicationService.getPipelineCountsAll();
-        } else {
+        } else if (sessionUser.isHr()) {
             // HR chỉ thấy hồ sơ ứng tuyển của các Job do mình tạo
             applications = (filterStatus != null)
                     ? applicationService.getApplicationRepository().findByJobPosting_CreatedByAndStatusOrderBySubmissionDateDesc(currentUser, filterStatus)
                     : applicationService.getApplicationRepository().findByJobPosting_CreatedByOrderBySubmissionDateDesc(currentUser);
             pipelineCounts = applicationService.getPipelineCountsForHr(currentUser);
+        } else {
+            // Interviewer chỉ thấy hồ sơ ứng tuyển được assign Interview
+            applications = (filterStatus != null)
+                    ? applicationService.getApplicationRepository().findByInterviewerAndStatusOrderBySubmissionDateDesc(currentUser, filterStatus)
+                    : applicationService.getApplicationRepository().findByInterviewerOrderBySubmissionDateDesc(currentUser);
+            pipelineCounts = applicationService.getPipelineCountsForInterviewer(currentUser);
         }
 
         model.addAttribute("applications", applications);

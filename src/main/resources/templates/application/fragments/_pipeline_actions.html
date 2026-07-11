@@ -8,7 +8,7 @@
         <th:block th:each="targetStatus : ${allowedTransitions}">
             <!-- Move to Screening -->
             <button th:if="${targetStatus.name() == 'SCREENING'}" type="button" class="app-btn app-btn-primary"
-                th:attr="hx-post='/application/' + ${app.id} + '/status?status=SCREENING'"
+                th:attr="hx-post='/applications/' + ${app.id} + '/status?status=SCREENING'"
                 hx-target="#application-detail-panels" hx-swap="outerHTML">
                 <i class="bi bi-search me-1"></i> Move to Screening
             </button>
@@ -21,14 +21,14 @@
 
             <!-- Move to Offer -->
             <button th:if="${targetStatus.name() == 'OFFER'}" type="button" class="app-btn app-btn-primary"
-                th:attr="hx-post='/application/' + ${app.id} + '/status?status=OFFER'"
+                th:attr="hx-post='/applications/' + ${app.id} + '/status?status=OFFER'"
                 hx-target="#application-detail-panels" hx-swap="outerHTML">
                 <i class="bi bi-envelope-open me-1"></i> Move to Offer
             </button>
 
             <!-- Mark as Hired -->
             <button th:if="${targetStatus.name() == 'HIRED'}" type="button" class="app-btn app-btn-primary"
-                th:attr="hx-post='/application/' + ${app.id} + '/status?status=HIRED'"
+                th:attr="hx-post='/applications/' + ${app.id} + '/status?status=HIRED'"
                 hx-target="#application-detail-panels" hx-swap="outerHTML"
                 hx-confirm="Are you sure you want to mark this candidate as HIRED?">
                 <i class="bi bi-check-circle me-1"></i> Mark as Hired
@@ -36,7 +36,7 @@
 
             <!-- Reject -->
             <button th:if="${targetStatus.name() == 'REJECTED'}" type="button" class="app-btn app-btn-danger"
-                th:attr="hx-post='/application/' + ${app.id} + '/status?status=REJECTED'"
+                th:attr="hx-post='/applications/' + ${app.id} + '/status?status=REJECTED'"
                 hx-target="#application-detail-panels" hx-swap="outerHTML"
                 hx-confirm="Are you sure you want to REJECT this candidate?">
                 <i class="bi bi-x-circle me-1"></i> Reject

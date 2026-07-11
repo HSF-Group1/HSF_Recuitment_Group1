@@ -15,7 +15,7 @@
         </div>
         <div>
             <a th:if="${canDownloadCv && app.cvFileUrl != null}" 
-               th:href="@{/application/{id}/cv(id=${app.id})}" 
+               th:href="@{/applications/{id}/cv(id=${app.id})}" 
                class="app-btn app-btn-primary text-decoration-none d-inline-flex align-items-center gap-2">
                 <i class="bi bi-download"></i> Download CV
             </a>

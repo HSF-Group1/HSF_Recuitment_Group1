@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: mainLayout(title='Admin Dashboard', activeMenu='dashboard', content=~{::section})}">
+      th:replace="~{layout/base :: mainLayout(title='Admin Dashboard', activeMenu='dashboard', content=~{::section})}"
+      th:with="pageTitle='System Overview', pageSubtitle='Monitor global platform metrics and system health.'">
 <body>
 <section>
   <style>

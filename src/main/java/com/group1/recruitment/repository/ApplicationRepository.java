@@ -96,4 +96,4 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy = :hr AND a.submissionDate >= :from AND a.submissionDate < :to")
        long countByHrAndSubmissionDateBetween(@Param("hr") User hr, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
-}
+}

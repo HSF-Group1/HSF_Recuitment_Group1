@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layout/base :: mainLayout(title='Application Detail', activeMenu='dashboard', content=~{::section})}">
+    th:replace="${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? ~{layout/base :: mainLayout(title='Application Detail', activeMenu='applications', content=~{::section})} : ~{layout/member :: memberLayout(title='Application Detail', content=~{::section})}">
 
 <body>
     <section class="container py-4">
 
-
-
         <!-- Breadcrumb -->
         <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(
             parentText='Applications',
-            parentUrl='/applications',
+            parentUrl=${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? '/applications' : '/profile/my-applications',
             activeText='Details')}">
         </div>
 
@@ -19,7 +17,7 @@
             <h1 class="app-h1">Application Detail</h1>
 
             <div th:if="${currentApplication != null}">
-                <a href="/applications" class="app-btn app-btn-secondary text-decoration-none">
+                <a th:href="${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? '/applications' : '/profile/my-applications'" class="app-btn app-btn-secondary text-decoration-none">
                     <i class="bi bi-x-circle me-1"></i>
                     Exit
                 </a>

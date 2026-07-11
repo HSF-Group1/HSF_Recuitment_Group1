@@ -1,10 +1,9 @@
 <div th:fragment="header" class="app-navbar">
   <!-- Brand logo/text on left -->
   <a th:href="@{/}" class="app-navbar-brand">TalentHub</a>
-
   <!-- Right side notifications/profile dropdown actions -->
   <div class="d-flex align-items-center gap-3">
-    <a th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
+    <a th:if="${currentUser == null || currentUser.isCandidate()}" th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
       View Jobs
     </a>
     <!-- Theme Toggle -->

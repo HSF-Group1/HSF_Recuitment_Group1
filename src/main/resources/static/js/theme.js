@@ -44,4 +44,23 @@ function initReveal() {
 document.addEventListener('DOMContentLoaded', function () {
   updateThemeIcons();
   initReveal();
+
+  // Sidebar Toggle for Mobile Drawer
+  var sidebarToggle = document.getElementById('sidebarToggle');
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', function () {
+      document.body.classList.toggle('sidebar-open');
+    });
+  }
+
+  // Create and append backdrop dynamically if it doesn't exist
+  var backdrop = document.querySelector('.sidebar-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+  }
+  backdrop.addEventListener('click', function () {
+    document.body.classList.remove('sidebar-open');
+  });
 });

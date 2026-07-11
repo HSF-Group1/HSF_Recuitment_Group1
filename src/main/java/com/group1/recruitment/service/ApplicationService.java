@@ -170,4 +170,12 @@ public class ApplicationService {
         return counts;
     }
 
+    public Map<ApplicationStatus, Long> getPipelineCountsForInterviewer(User interviewer) {
+        Map<ApplicationStatus, Long> counts = new LinkedHashMap<>();
+        for (ApplicationStatus s : ApplicationStatus.values()) {
+            counts.put(s, applicationRepository.countByInterviewerAndStatus(interviewer, s));
+        }
+        return counts;
+    }
+
 }

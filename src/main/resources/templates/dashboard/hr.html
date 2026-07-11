@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: mainLayout(title='HR Dashboard', activeMenu='dashboard', content=~{::section})}">
+      th:replace="~{layout/base :: mainLayout(title='HR Dashboard', activeMenu='dashboard', content=~{::section})}"
+      th:with="pageTitle='Recruitment Overview', pageSubtitle='Monitor live job positions and candidate pipeline.'">
 <body>
 <section>
   <style>
@@ -11,13 +12,8 @@
     .chart-wrapper { position: relative; height: 200px; }
     .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
   </style>
-
   <div class="container py-4 reveal-on-scroll is-visible">
-    <div class="mb-4">
-      <h1 class="mb-1">Recruitment Overview</h1>
-      <p class="text-muted">Monitor live job positions and candidate pipeline.</p>
-    </div>
-
+    <!-- KPI Metrics Grid -->
     <div class="row g-4">
       <!-- Metric cards -->
       <div class="col-md-4">
@@ -26,16 +22,30 @@
           <div class="metric-label">Active Jobs</div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
-          <div class="metric-value" th:text="${newApps}">0</div>
-          <div class="metric-label">New Applications</div>
+      <!-- New Applications -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div class="kpi-card-icon">
+            <i class="fa-solid fa-file-signature text-muted"></i>
+          </div>
+          <div>
+            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">New Applications</div>
+            <div class="kpi-value my-2" th:text="${newApps}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
+          </div>
+          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Unreviewed applicant submissions</div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
-          <div class="metric-value" th:text="${interviewsToday}">0</div>
-          <div class="metric-label">Interviews Today</div>
+      <!-- Interviews Today -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div class="kpi-card-icon">
+            <i class="fa-solid fa-calendar-day text-muted"></i>
+          </div>
+          <div>
+            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">Interviews Today</div>
+            <div class="kpi-value my-2" th:text="${interviewsToday}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
+          </div>
+          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Scheduled candidate evaluations for today</div>
         </div>
       </div>
 
@@ -58,16 +68,28 @@
       <!-- Quick Actions -->
       <div class="col-md-4 mt-4">
         <div class="app-card p-4 h-100 d-flex flex-column">
-          <h3 class="mb-3" style="font-size: 1.25rem; font-weight: 600;">Quick Actions</h3>
-          <div class="d-flex flex-column gap-2 mt-auto">
-            <a th:href="@{/manage/jobs/new}" class="btn btn-charcoal text-start">
-              <i class="fa-solid fa-circle-plus fa-fw me-2"></i>Post New Job
+          <h3 class="mb-4" style="font-size: 1.15rem; font-weight: 600;">Quick Actions</h3>
+          <div class="quick-actions-grid mt-auto">
+            <a th:href="@{/manage/jobs/new}" class="quick-action-card">
+              <div class="quick-action-icon">
+                <i class="fa-solid fa-circle-plus"></i>
+              </div>
+              <div>
+                <div class="quick-action-title">Post New Job</div>
+                <div class="quick-action-desc">Publish a new job position</div>
+              </div>
             </a>
             <a th:href="@{/reports/pipeline}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
               <i class="fa-solid fa-chart-column fa-fw me-2"></i>View Full Report
             </a>
-            <a th:href="@{/manage/jobs}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
-              <i class="fa-solid fa-briefcase fa-fw me-2"></i>Manage Jobs
+            <a th:href="@{/manage/jobs}" class="quick-action-card">
+              <div class="quick-action-icon">
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+              <div>
+                <div class="quick-action-title">Manage Jobs</div>
+                <div class="quick-action-desc">Track and edit current jobs</div>
+              </div>
             </a>
           </div>
         </div>

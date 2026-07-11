@@ -83,7 +83,7 @@ public class EvaluationController {
             if (hxRequest != null) {
                 return "interview/fragments/_evaluation_result";
             }
-            return "redirect:/application/" + interview.getApplication().getId();
+            return "redirect:/applications/" + interview.getApplication().getId();
 
         } catch (Exception e) {
             model.addAttribute("errorMsg", e.getMessage());

@@ -78,7 +78,7 @@
     <!-- Viewport Main Frame Container -->
     <div class="app-main-frame">
         <!-- Navbar Header -->
-        <div th:replace="~{layout/header :: header}"></div>
+        <div th:replace="~{layout/header :: header(pageTitle=${pageTitle}, pageSubtitle=${pageSubtitle})}"></div>
 
         <!-- Dynamic Page Content -->
         <main class="app-viewport-content">

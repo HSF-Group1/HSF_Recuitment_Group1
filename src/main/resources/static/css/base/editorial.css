@@ -22,9 +22,15 @@
   --white: #FFFFFF;
   --surface-alt: #FAF9F6;
 
-  --font-family: 'SF Pro Display', -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: Georgia, 'Times New Roman', 'Playfair Display', serif;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --h1-size: 32px;
+  --h2-size: 24px;
+  --card-title-size: 18px;
+  --body-size: 15px;
+  --caption-size: 12px;
 
   --ink: #1F2022;
   --radius: 8px;
@@ -38,10 +44,10 @@ body {
   line-height: 1.6;
 }
 
-/* Editorial serif for page-level headings only */
+/* Editorial sans-serif for page-level headings only */
 h1, h2, .display-5, .display-6 {
-  font-family: var(--font-serif);
-  font-weight: 600;
+  font-family: var(--font-family);
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
   color: #111111;
@@ -49,6 +55,7 @@ h1, h2, .display-5, .display-6 {
 /* Card titles and small headings stay sans for utility */
 h5, h6, .app-card-title, .card-title {
   font-family: var(--font-family);
+  font-weight: 600;
   letter-spacing: 0;
 }
 
@@ -340,3 +347,359 @@ a:hover { color: #2A2A2A; text-decoration: underline; }
 [data-bs-theme="dark"] .page-link { background-color: #121829; border-color: #232B45; color: #E2E8F0; }
 [data-bs-theme="dark"] .page-item.active .page-link { background-color: #F1F5F9; border-color: #F1F5F9; color: #0A0F1D; }
 [data-bs-theme="dark"] kbd { background: #121829; color: #E2E8F0; border-color: #232B45; }
+
+/* ---------- 9. Premium Dashboard Components ---------- */
+
+/* KPI Cards */
+.kpi-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.kpi-card-icon {
+  position: absolute;
+  top: var(--space-24);
+  right: var(--space-24);
+  font-size: 1.5rem;
+  opacity: 0.25;
+  color: var(--ink);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.kpi-card:hover .kpi-card-icon {
+  opacity: 0.55;
+  transform: scale(1.1);
+}
+
+/* Custom CSS Chart Grid & Tooltips */
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.chart-container-inner {
+  display: flex;
+  width: 100%;
+  gap: var(--space-16);
+}
+.chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+  padding-bottom: 24px; /* Align with x-axis height */
+  font-family: var(--font-mono);
+  font-size: var(--caption-size);
+  color: var(--gray-text);
+  text-align: right;
+  min-width: 24px;
+}
+.chart-canvas {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-border);
+  padding-bottom: 10px;
+  width: 100%;
+  flex-grow: 1;
+}
+.chart-grid {
+  position: absolute;
+  inset: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.chart-grid-line {
+  border-bottom: 1px dashed var(--gray-border);
+  height: 0;
+  width: 100%;
+}
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+.chart-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+}
+.chart-bar:hover {
+  filter: brightness(0.92);
+  transform: scaleY(1.02);
+}
+.chart-tooltip {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background-color: #111111;
+  color: #FFFFFF;
+  padding: 4px 8px;
+  font-size: var(--caption-size);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 100;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.chart-bar-container:hover .chart-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.chart-x-axis-label {
+  margin-top: 8px;
+  font-size: var(--caption-size);
+  color: var(--gray-text);
+  font-family: var(--font-mono);
+}
+.chart-legend {
+  display: flex;
+  gap: var(--space-24);
+  justify-content: center;
+  margin-top: var(--space-24);
+  font-size: var(--caption-size);
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--gray-text);
+}
+.chart-legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* Quick Actions Card Grid */
+.quick-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.quick-action-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  background-color: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, background-color 0.2s ease;
+}
+.quick-action-card:hover {
+  border-color: var(--ink);
+  background-color: var(--surface-alt);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: var(--ink);
+}
+.quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--background);
+  border-radius: 6px;
+  color: var(--primary);
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+.quick-action-card:hover .quick-action-icon {
+  background-color: var(--ink);
+  color: var(--white);
+}
+.quick-action-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+}
+.quick-action-desc {
+  font-size: var(--caption-size);
+  color: var(--gray-text);
+  margin-top: 1px;
+}
+
+/* ---------- 10. Responsive Sidebars & Navigation ---------- */
+
+/* Sidebar Link Enhancements */
+.app-sidebar-link {
+  border-left: 3px solid transparent;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-left: 0;
+  padding-left: calc(var(--space-16) - 3px) !important;
+  transition: all 0.2s ease;
+}
+.app-sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--white) !important;
+}
+.app-sidebar-link.active {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--white) !important;
+  border-left-color: var(--white) !important;
+}
+
+/* Offcanvas Drawer for Mobile (< 768px) */
+@media (max-width: 767.98px) {
+  .app-sidebar {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -240px;
+    width: 240px;
+    z-index: 1050;
+    background-color: var(--primary);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  body.sidebar-open .app-sidebar {
+    transform: translateX(240px);
+  }
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 1040;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  body.sidebar-open .sidebar-backdrop {
+    display: block;
+    opacity: 1;
+  }
+  .app-main-frame {
+    margin-left: 0 !important;
+  }
+}
+
+/* Tablet Collapsed Sidebar (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .app-sidebar {
+    display: flex !important;
+    width: 72px !important;
+  }
+  .app-sidebar-logo span,
+  .app-sidebar-link span {
+    display: none !important;
+  }
+  .app-sidebar-logo {
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+  .app-sidebar-link {
+    justify-content: center !important;
+    padding: var(--space-12) 0 !important;
+    border-left: none !important;
+    border-radius: var(--radius);
+    margin: 0 var(--space-8) var(--space-8) var(--space-8);
+  }
+  .app-sidebar-link i {
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+  }
+  .app-main-frame {
+    margin-left: 72px !important;
+  }
+}
+
+/* Desktop Sidebar (> 1024px) */
+@media (min-width: 1024.02px) {
+  .app-sidebar {
+    display: flex !important;
+  }
+}
+
+/* Header (Navbar) Style Adjustments */
+.app-navbar {
+  height: 68px !important; /* Ensure 64-72px max height */
+  padding: 0 var(--space-24) !important;
+}
+.app-navbar-title-section {
+  display: flex;
+  flex-direction: column;
+}
+.app-navbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.app-navbar-subtitle {
+  font-size: 12px;
+  color: var(--gray-text);
+  margin-top: 1px;
+}
+
+/* Minimize Footer */
+.app-footer {
+  padding: var(--space-12) 0 !important;
+  font-size: 11px !important;
+  opacity: 0.6;
+  background-color: transparent !important;
+  border-top: 1px solid var(--gray-border) !important;
+}
+
+/* ---------- 11. Dark Theme Companions ---------- */
+[data-bs-theme="dark"] .kpi-card:hover {
+  box-shadow: none !important;
+  border-color: var(--accent);
+}
+[data-bs-theme="dark"] .kpi-card-icon {
+  color: var(--accent);
+}
+[data-bs-theme="dark"] .chart-grid-line {
+  border-color: var(--gray-border);
+}
+[data-bs-theme="dark"] .chart-bar:hover {
+  filter: brightness(1.1);
+}
+[data-bs-theme="dark"] .chart-tooltip {
+  background-color: var(--surface-2);
+  color: var(--gray-text);
+  border: 1px solid var(--gray-border);
+}
+[data-bs-theme="dark"] .quick-action-card {
+  background-color: var(--surface);
+  border-color: var(--gray-border);
+  color: var(--gray-text);
+}
+[data-bs-theme="dark"] .quick-action-card:hover {
+  border-color: var(--accent);
+  background-color: var(--surface-2);
+  color: #F1F5F9;
+}
+[data-bs-theme="dark"] .quick-action-title {
+  color: #F1F5F9;
+}
+[data-bs-theme="dark"] .quick-action-icon {
+  background-color: var(--surface-2);
+  color: var(--accent);
+}
+[data-bs-theme="dark"] .quick-action-card:hover .quick-action-icon {
+  background-color: var(--accent);
+  color: var(--surface);
+}

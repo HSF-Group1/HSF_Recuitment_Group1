@@ -5,13 +5,13 @@
   </div>
 
   <ul class="app-sidebar-menu">
-    <li>
+    <li th:if="${currentUser != null && currentUser.isHrOrAdmin()}">
       <a th:href="@{/}" class="app-sidebar-link" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
     </li>
-    <li>
+    <li th:if="${currentUser != null && currentUser.isHrOrAdmin()}">
       <a th:href="@{/manage/jobs}" class="app-sidebar-link" th:classappend="${activeMenu == 'jobs' ? 'active' : ''}">
         <i class="bi bi-briefcase"></i>
         <span>Jobs</span>
@@ -24,7 +24,7 @@
         <span>Applications</span>
       </a>
     </li>
-    <li>
+    <li th:if="${currentUser != null && currentUser.isHrOrAdmin()}">
       <a th:href="@{/candidates}" class="app-sidebar-link"
         th:classappend="${activeMenu == 'candidates' ? 'active' : ''}">
         <i class="bi bi-people"></i>
@@ -51,7 +51,7 @@
       </a>
     </li>
     <li>
-      <a th:href="@{/settings}" class="app-sidebar-link" th:classappend="${activeMenu == 'settings' ? 'active' : ''}">
+      <a th:href="@{/profile}" class="app-sidebar-link" th:classappend="${activeMenu == 'profile' ? 'active' : ''}">
         <i class="bi bi-gear"></i>
         <span>Settings</span>
       </a>
