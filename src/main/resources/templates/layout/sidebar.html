@@ -44,6 +44,12 @@
         <span>Manage Users</span>
       </a>
     </li>
+    <li th:if="${currentUser != null && currentUser.isAdmin()}">
+      <a th:href="@{/admin/activity-log}" class="app-sidebar-link" th:classappend="${activeMenu == 'activity-log' ? 'active' : ''}">
+        <i class="bi bi-journal-text"></i>
+        <span>Activity Log</span>
+      </a>
+    </li>
     <li>
       <a th:href="@{/settings}" class="app-sidebar-link" th:classappend="${activeMenu == 'settings' ? 'active' : ''}">
         <i class="bi bi-gear"></i>
