@@ -100,7 +100,7 @@ public class ApplicationController {
             return "application/detail :: #application-detail-panels";
         }
 
-        return "redirect:/application/" + id;
+        return "redirect:/applications/" + id;
     }
 
     @PostMapping("/{id}/notes")
@@ -203,6 +203,14 @@ public class ApplicationController {
                 return;
             }
             throw new AccessDeniedException("You are not assigned to this application.");
+        }
+        if (sessionUser.isCandidate()) {
+            if (application.getCandidate() != null &&
+                    application.getCandidate().getUser() != null &&
+                    application.getCandidate().getUser().getId().equals(sessionUser.getId())) {
+                return;
+            }
+            throw new AccessDeniedException("You do not have access to this application.");
         }
         throw new AccessDeniedException("Access denied.");
     }

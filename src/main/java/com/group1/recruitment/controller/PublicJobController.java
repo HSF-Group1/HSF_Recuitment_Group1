@@ -38,13 +38,21 @@ public class PublicJobController {
     }
 
     @GetMapping("/jobs")
-    public String jobs(Model model) {
+    public String jobs(HttpSession session, Model model) {
+        SessionUser currentUser = SessionUtil.current(session);
+        if (currentUser != null && !currentUser.isCandidate()) {
+            return "redirect:/error/403";
+        }
         model.addAttribute("jobs", jobPostingRepository.findByStatusOrderByCreatedAtDesc(JobStatus.ACTIVE));
         return "public/jobs";
     }
 
     @GetMapping("/jobs/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, HttpSession session, Model model) {
+        SessionUser currentUser = SessionUtil.current(session);
+        if (currentUser != null && !currentUser.isCandidate()) {
+            return "redirect:/error/403";
+        }
         JobPosting job = activeJobOrThrow(id);
         model.addAttribute("job", job);
         return "public/job-detail";

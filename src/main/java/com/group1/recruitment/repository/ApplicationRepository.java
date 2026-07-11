@@ -85,4 +85,35 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findByJobPosting_CreatedByAndStatusOrderBySubmissionDateDesc(User createdBy,
             ApplicationStatus status); 
 
+    @Query("SELECT DISTINCT a FROM Application a " +
+           "JOIN a.interviews iv " +
+           "LEFT JOIN FETCH a.jobPosting jp " +
+           "LEFT JOIN FETCH jp.createdBy " +
+           "LEFT JOIN FETCH a.candidate c " +
+           "LEFT JOIN FETCH c.user " +
+           "LEFT JOIN FETCH c.profile " +
+           "LEFT JOIN FETCH a.interviews iv2 " +
+           "LEFT JOIN FETCH iv2.interviewer " +
+           "LEFT JOIN FETCH iv2.evaluation " +
+           "WHERE iv.interviewer = :interviewer " +
+           "ORDER BY a.submissionDate DESC")
+    List<Application> findByInterviewerOrderBySubmissionDateDesc(@Param("interviewer") User interviewer);
+
+    @Query("SELECT DISTINCT a FROM Application a " +
+           "JOIN a.interviews iv " +
+           "LEFT JOIN FETCH a.jobPosting jp " +
+           "LEFT JOIN FETCH jp.createdBy " +
+           "LEFT JOIN FETCH a.candidate c " +
+           "LEFT JOIN FETCH c.user " +
+           "LEFT JOIN FETCH c.profile " +
+           "LEFT JOIN FETCH a.interviews iv2 " +
+           "LEFT JOIN FETCH iv2.interviewer " +
+           "LEFT JOIN FETCH iv2.evaluation " +
+           "WHERE iv.interviewer = :interviewer AND a.status = :status " +
+           "ORDER BY a.submissionDate DESC")
+    List<Application> findByInterviewerAndStatusOrderBySubmissionDateDesc(@Param("interviewer") User interviewer, @Param("status") ApplicationStatus status);
+
+    @Query("SELECT COUNT(DISTINCT a) FROM Application a JOIN a.interviews iv WHERE iv.interviewer = :interviewer AND a.status = :status")
+    long countByInterviewerAndStatus(@Param("interviewer") User interviewer, @Param("status") ApplicationStatus status);
+
 }

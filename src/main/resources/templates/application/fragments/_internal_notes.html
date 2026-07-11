@@ -33,7 +33,7 @@
 
             <!-- Form container (initially hidden) -->
             <div id="note-form-container" class="d-none mt-2">
-                <form th:attr="hx-post='/application/' + ${currentApplication.id} + '/notes'"
+                <form th:attr="hx-post='/applications/' + ${currentApplication.id} + '/notes'"
                       hx-target="#notes-panel"
                       hx-swap="outerHTML">
                     <div class="mb-3">

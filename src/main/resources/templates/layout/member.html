@@ -86,7 +86,7 @@
       <a th:href="@{/profile/my-applications}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
         My Applications
       </a>
-      <a th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
+      <a th:if="${currentUser == null || currentUser.isCandidate()}" th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
         View Jobs
       </a>
       <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">

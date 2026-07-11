@@ -21,7 +21,7 @@
         <div class="row mb-0 align-items-center" th:if="${app.cvFileUrl != null}">
             <div class="col-sm-4 fw-semibold text-muted">Resume (CV):</div>
             <div class="col-sm-8">
-                <a th:href="@{/application/{id}/cv(id=${app.id})}" class="app-btn app-btn-secondary btn-sm text-decoration-none d-inline-flex align-items-center gap-1">
+                <a th:href="@{/applications/{id}/cv(id=${app.id})}" class="app-btn app-btn-secondary btn-sm text-decoration-none d-inline-flex align-items-center gap-1">
                     <i class="bi bi-file-earmark-pdf"></i> Download CV
                 </a>
             </div>

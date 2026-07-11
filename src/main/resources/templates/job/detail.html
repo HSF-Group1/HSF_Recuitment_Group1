@@ -76,7 +76,7 @@
     <div class="segmented-tabs mb-4">
       <a href="#" class="tab-pill active">Overview</a>
       <a th:href="@{/manage/jobs/{id}/applications(id=${job.id})}" class="tab-pill">Applications (<span th:text="${applicationCount}">0</span>)</a>
-      <a th:href="@{/hr/reports/pipeline(jobId=${job.id})}" class="tab-pill">Pipeline Report</a>
+      <a th:href="@{/reports/pipeline(jobId=${job.id})}" class="tab-pill">Pipeline Report</a>
     </div>
 
     <div class="row g-4">

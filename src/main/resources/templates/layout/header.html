@@ -1,10 +1,18 @@
-<div th:fragment="header" class="app-navbar">
-  <!-- Brand logo/text on left -->
-  <a th:href="@{/}" class="app-navbar-brand">TalentHub</a>
+<div th:fragment="header(pageTitle, pageSubtitle)" class="app-navbar">
+  <!-- Left side: Hamburger (mobile) + Dynamic page titles -->
+  <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-link text-decoration-none text-muted p-0 me-3 d-md-none" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="bi bi-list" style="font-size: 24px;"></i>
+    </button>
+    <div class="app-navbar-title-section">
+      <h1 class="app-navbar-title mb-0" th:text="${pageTitle != null ? pageTitle : (title != null ? title : 'TalentHub')}">System Overview</h1>
+      <p class="app-navbar-subtitle text-muted mb-0 d-none d-sm-block" th:text="${pageSubtitle != null ? pageSubtitle : 'Manage your recruitment and system processes.'}">Monitor platform activity and manage the system efficiently.</p>
+    </div>
+  </div>
   
   <!-- Right side notifications/profile dropdown actions -->
   <div class="d-flex align-items-center gap-3">
-    <a th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
+    <a th:if="${currentUser == null || currentUser.isCandidate()}" th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
       View Jobs
     </a>
     <!-- Theme Toggle -->
@@ -36,8 +44,7 @@
         <span class="d-none d-md-inline" style="font-size: 14px;" th:text="${currentUser.username}">Username</span>
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
-        <li><a class="dropdown-item" th:href="@{/settings}"><i class="bi bi-gear me-2"></i>Settings</a></li>
+        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-gear me-2"></i>Settings</a></li>
         <li><hr class="dropdown-divider"></li>
         <li>
           <form th:action="@{/auth/logout}" method="post" class="w-100">

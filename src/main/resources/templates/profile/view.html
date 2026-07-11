@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- SCR-04: User Profile (data re-queried from DB per request for state sync) -->
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="${currentUser.isHrOrAdmin()} ? ~{layout/base :: mainLayout(title='Profile', activeMenu='profile', content=~{::section})} : ~{layout/member :: memberLayout(title='Profile', content=~{::section})}">
+      th:replace="${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? ~{layout/base :: mainLayout(title='Profile', activeMenu='profile', content=~{::section})} : ~{layout/member :: memberLayout(title='Profile', content=~{::section})}">
 <body>
 <section class="container" style="max-width: 720px; margin: 0 auto;">
   <h1 class="mb-1">Profile</h1>

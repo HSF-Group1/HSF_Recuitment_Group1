@@ -4,11 +4,11 @@
 <body>
 <section class="container py-4">
     <!-- Breadcrumb -->
-    <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(parentText='Applications', parentUrl='/application', activeText='Evaluate Interview')}"></div>
+    <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(parentText='Applications', parentUrl='/applications', activeText='Evaluate Interview')}"></div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="app-h1">Interview Evaluation</h1>
-        <a th:href="@{/application/{id}(id=${app.id})}" class="app-btn app-btn-secondary text-decoration-none">
+        <a th:href="@{/applications/{id}(id=${app.id})}" class="app-btn app-btn-secondary text-decoration-none">
             <i class="bi bi-arrow-left me-1"></i> Back to Detail
         </a>
     </div>

@@ -1,81 +1,162 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: mainLayout(title='HR Dashboard', activeMenu='dashboard', content=~{::section})}">
+      th:replace="~{layout/base :: mainLayout(title='HR Dashboard', activeMenu='dashboard', content=~{::section})}"
+      th:with="pageTitle='Recruitment Overview', pageSubtitle='Monitor live job positions and candidate pipeline.'">
 <body>
 <section>
-  <style>
-    .metric-value { font-family: var(--font-mono, monospace); font-size: 2.5rem; font-weight: 500; line-height: 1; margin-bottom: 8px; }
-    .metric-label { font-size: 0.85rem; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.05em; }
-    .reveal-on-scroll { opacity: 0; transform: translateY(12px); transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
-    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
-  </style>
-  
   <div class="container py-4 reveal-on-scroll is-visible">
-    <div class="mb-4">
-      <h1 class="mb-1">Recruitment Overview</h1>
-      <p class="text-muted">Monitor live job positions and candidate pipeline.</p>
-    </div>
-
+    <!-- KPI Metrics Grid -->
     <div class="row g-4">
-      <div class="col-md-4">
-        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
-          <div class="metric-value" th:text="${activeJobs}">0</div>
-          <div class="metric-label">Active Jobs</div>
+      <!-- Active Jobs -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div class="kpi-card-icon">
+            <i class="fa-solid fa-briefcase text-muted"></i>
+          </div>
+          <div>
+            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">Active Jobs</div>
+            <div class="kpi-value my-2" th:text="${activeJobs}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
+          </div>
+          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Current open positions in recruitment</div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
-          <div class="metric-value" th:text="${newApps}">0</div>
-          <div class="metric-label">New Applications</div>
+      <!-- New Applications -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div class="kpi-card-icon">
+            <i class="fa-solid fa-file-signature text-muted"></i>
+          </div>
+          <div>
+            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">New Applications</div>
+            <div class="kpi-value my-2" th:text="${newApps}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
+          </div>
+          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Unreviewed applicant submissions</div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
-          <div class="metric-value" th:text="${interviewsToday}">0</div>
-          <div class="metric-label">Interviews Today</div>
+      <!-- Interviews Today -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div class="kpi-card-icon">
+            <i class="fa-solid fa-calendar-day text-muted"></i>
+          </div>
+          <div>
+            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">Interviews Today</div>
+            <div class="kpi-value my-2" th:text="${interviewsToday}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
+          </div>
+          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Scheduled candidate evaluations for today</div>
         </div>
       </div>
+    </div>
       
+    <div class="row">
+      <!-- Pipeline Status Chart -->
       <div class="col-md-8 mt-4">
         <div class="app-card p-4 h-100">
-          <h3 class="mb-4" style="font-size: 1.25rem; font-weight: 600;">Pipeline Status</h3>
-          <div class="d-flex justify-content-between align-items-end" style="height: 200px; border-bottom: 1px solid var(--gray-border); padding-bottom: 10px;">
-             <div class="d-flex flex-column align-items-center" style="width: 18%;">
-                <div style="background: #FDEBEC; width: 100%; height: 180px; border-radius: 4px 4px 0 0;"></div>
-                <small class="mt-2 text-muted" style="font-size: 0.75rem;">Applied</small>
-             </div>
-             <div class="d-flex flex-column align-items-center" style="width: 18%;">
-                <div style="background: #FBF3DB; width: 100%; height: 120px; border-radius: 4px 4px 0 0;"></div>
-                <small class="mt-2 text-muted" style="font-size: 0.75rem;">Screening</small>
-             </div>
-             <div class="d-flex flex-column align-items-center" style="width: 18%;">
-                <div style="background: #E1F3FE; width: 100%; height: 80px; border-radius: 4px 4px 0 0;"></div>
-                <small class="mt-2 text-muted" style="font-size: 0.75rem;">Interview</small>
-             </div>
-             <div class="d-flex flex-column align-items-center" style="width: 18%;">
-                <div style="background: #EDF3EC; width: 100%; height: 40px; border-radius: 4px 4px 0 0;"></div>
-                <small class="mt-2 text-muted" style="font-size: 0.75rem;">Offered</small>
-             </div>
-             <div class="d-flex flex-column align-items-center" style="width: 18%;">
-                <div style="background: #FDEBEC; width: 100%; height: 15px; border-radius: 4px 4px 0 0;"></div>
-                <small class="mt-2 text-muted" style="font-size: 0.75rem;">Rejected</small>
-             </div>
+          <h3 class="mb-4" style="font-size: 1.15rem; font-weight: 600;">Pipeline Status</h3>
+          
+          <div class="chart-wrapper">
+            <div class="chart-container-inner">
+              <!-- Y-Axis -->
+              <div class="chart-y-axis">
+                <span>200</span>
+                <span>150</span>
+                <span>100</span>
+                <span>50</span>
+                <span>0</span>
+              </div>
+              
+              <!-- Canvas Area -->
+              <div class="chart-canvas">
+                <!-- Grid Lines -->
+                <div class="chart-grid">
+                  <div class="chart-grid-line"></div>
+                  <div class="chart-grid-line"></div>
+                  <div class="chart-grid-line"></div>
+                  <div class="chart-grid-line"></div>
+                  <div class="chart-grid-line"></div>
+                </div>
+                
+                <!-- Bars (with tooltips) -->
+                <!-- Applied -->
+                <div class="chart-bar-container" style="width: 16%;">
+                  <div class="chart-bar" style="background: #FDEBEC; height: 180px; width: 100%;">
+                    <div class="chart-tooltip">Applied: 180 applicants</div>
+                  </div>
+                  <div class="chart-x-axis-label">Applied</div>
+                </div>
+                <!-- Screening -->
+                <div class="chart-bar-container" style="width: 16%;">
+                  <div class="chart-bar" style="background: #FBF3DB; height: 120px; width: 100%;">
+                    <div class="chart-tooltip">Screening: 120 applicants</div>
+                  </div>
+                  <div class="chart-x-axis-label">Screening</div>
+                </div>
+                <!-- Interview -->
+                <div class="chart-bar-container" style="width: 16%;">
+                  <div class="chart-bar" style="background: #E1F3FE; height: 80px; width: 100%;">
+                    <div class="chart-tooltip">Interview: 80 applicants</div>
+                  </div>
+                  <div class="chart-x-axis-label">Interview</div>
+                </div>
+                <!-- Offered -->
+                <div class="chart-bar-container" style="width: 16%;">
+                  <div class="chart-bar" style="background: #EDF3EC; height: 40px; width: 100%;">
+                    <div class="chart-tooltip">Offered: 40 applicants</div>
+                  </div>
+                  <div class="chart-x-axis-label">Offered</div>
+                </div>
+                <!-- Rejected -->
+                <div class="chart-bar-container" style="width: 16%;">
+                  <div class="chart-bar" style="background: #FDEBEC; height: 15px; width: 100%;">
+                    <div class="chart-tooltip">Rejected: 15 applicants</div>
+                  </div>
+                  <div class="chart-x-axis-label">Rejected</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Legend -->
+            <div class="chart-legend">
+              <div class="chart-legend-item">
+                <div class="chart-legend-color" style="background: #E1F3FE; border: 1px solid var(--gray-border);"></div>
+                <span>Candidate pipeline stage volume</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Quick Actions panel -->
       <div class="col-md-4 mt-4">
         <div class="app-card p-4 h-100 d-flex flex-column">
-          <h3 class="mb-3" style="font-size: 1.25rem; font-weight: 600;">Quick Actions</h3>
-          <div class="d-flex flex-column gap-2 mt-auto">
-            <a th:href="@{/manage/jobs/new}" class="btn btn-charcoal text-start">
-              <i class="fa-solid fa-circle-plus fa-fw me-2"></i>Post New Job
+          <h3 class="mb-4" style="font-size: 1.15rem; font-weight: 600;">Quick Actions</h3>
+          <div class="quick-actions-grid mt-auto">
+            <a th:href="@{/manage/jobs/new}" class="quick-action-card">
+              <div class="quick-action-icon">
+                <i class="fa-solid fa-circle-plus"></i>
+              </div>
+              <div>
+                <div class="quick-action-title">Post New Job</div>
+                <div class="quick-action-desc">Publish a new job position</div>
+              </div>
             </a>
-            <a th:href="@{/hr/reports/pipeline}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
-              <i class="fa-solid fa-chart-column fa-fw me-2"></i>View Full Report
+            <a th:href="@{/hr/reports/pipeline}" class="quick-action-card">
+              <div class="quick-action-icon">
+                <i class="fa-solid fa-chart-column"></i>
+              </div>
+              <div>
+                <div class="quick-action-title">View Full Report</div>
+                <div class="quick-action-desc">Open detailed pipeline reports</div>
+              </div>
             </a>
-            <a th:href="@{/manage/jobs}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
-              <i class="fa-solid fa-briefcase fa-fw me-2"></i>Manage Jobs
+            <a th:href="@{/manage/jobs}" class="quick-action-card">
+              <div class="quick-action-icon">
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+              <div>
+                <div class="quick-action-title">Manage Jobs</div>
+                <div class="quick-action-desc">Track and edit current jobs</div>
+              </div>
             </a>
           </div>
         </div>

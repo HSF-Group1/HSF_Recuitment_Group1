@@ -92,10 +92,10 @@ public class InterviewController {
             model.addAttribute("app", application);
 
             if (hxRequest != null) {
-                response.setHeader("HX-Redirect", "/application/" + applicationId);
+                response.setHeader("HX-Redirect", "/applications/" + applicationId);
                 return null;
             }
-            return "redirect:/application/" + applicationId;
+            return "redirect:/applications/" + applicationId;
 
         } catch (Exception e) {
             model.addAttribute("errorMsg", e.getMessage());
@@ -149,7 +149,7 @@ public class InterviewController {
             return "application/detail :: #application-detail-panels";
         }
 
-        return "redirect:/application/" + application.getId();
+        return "redirect:/applications/" + application.getId();
     }
 
     private void checkAccess(Application application, SessionUser sessionUser) {

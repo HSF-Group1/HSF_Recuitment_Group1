@@ -118,11 +118,11 @@
                     <table class="applications-table">
                         <thead>
                             <tr>
-                                <th style="width: 32%;">Job</th>
-                                <th style="width: 18%;">Location</th>
-                                <th style="width: 18%;">Submitted</th>
+                                <th style="width: 30%;">Job</th>
+                                <th style="width: 12%;">Location</th>
+                                <th style="width: 14%;">Submitted</th>
                                 <th style="width: 16%;">Status</th>
-                                <th style="width: 16%; text-align: right;">Action</th>
+                                <th style="width: 28%; text-align: right;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,23 +149,27 @@
                                     </span>
                                 </td>
 
-                                <td style="text-align: right;">
-                                    <form
-                                        th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                        th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
-                                        method="post" class="m-0"
-                                        onsubmit="return confirm('Withdraw this application?');">
-                                        <button type="submit" class="btn btn-quiet btn-sm">
-                                            Withdraw
-                                        </button>
-                                    </form>
-
-                                    <span
-                                        th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                        class="text-muted small">
-                                        Locked
-                                    </span>
-                                </td>
+                                 <td style="text-align: right;">
+                                     <div class="d-flex justify-content-end align-items-center gap-2">
+                                         <a th:href="@{/applications/{id}(id=${app.id})}" class="btn btn-quiet btn-sm">
+                                             View Details
+                                         </a>
+                                         <form
+                                             th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                             th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
+                                             method="post" class="m-0"
+                                             onsubmit="return confirm('Withdraw this application?');">
+                                             <button type="submit" class="btn btn-quiet btn-sm">
+                                                 Withdraw
+                                             </button>
+                                         </form>
+                                         <span
+                                             th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                             class="text-muted small">
+                                             Locked
+                                         </span>
+                                     </div>
+                                 </td>
                             </tr>
                         </tbody>
                     </table>

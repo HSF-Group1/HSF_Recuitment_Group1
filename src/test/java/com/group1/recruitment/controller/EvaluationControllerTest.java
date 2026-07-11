@@ -94,7 +94,7 @@ class EvaluationControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         String view = evaluationController.submitEvaluation(interview.getId(), 5, "Excellent candidate", session, model, request, null);
-        assertEquals("redirect:/application/2", view);
+        assertEquals("redirect:/applications/2", view);
     }
 
     @Test
