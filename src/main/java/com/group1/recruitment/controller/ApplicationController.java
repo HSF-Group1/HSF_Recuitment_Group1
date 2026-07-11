@@ -1,7 +1,6 @@
 package com.group1.recruitment.controller;
 
 import com.group1.recruitment.entity.Application;
-import com.group1.recruitment.entity.InternalNote;
 import com.group1.recruitment.enums.ApplicationStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
 import com.group1.recruitment.exception.NotFoundException;
@@ -27,9 +26,9 @@ public class ApplicationController {
     private final ApplicationWorkflowService workflowService;
     private final InternalNoteService internalNoteService;
 
-    public ApplicationController(ApplicationService applicationService, 
-                                 ApplicationWorkflowService workflowService,
-                                 InternalNoteService internalNoteService) {
+    public ApplicationController(ApplicationService applicationService,
+            ApplicationWorkflowService workflowService,
+            InternalNoteService internalNoteService) {
         this.applicationService = applicationService;
         this.workflowService = workflowService;
         this.internalNoteService = internalNoteService;
@@ -56,7 +55,8 @@ public class ApplicationController {
         boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
                 (sessionUser.isInterviewer() && application.getInterviews() != null &&
                         application.getInterviews().stream()
-                                .anyMatch(i -> i.getInterviewer() != null && i.getInterviewer().getId().equals(sessionUser.getId())));
+                                .anyMatch(i -> i.getInterviewer() != null
+                                        && i.getInterviewer().getId().equals(sessionUser.getId())));
         model.addAttribute("canDownloadCv", canDownload);
 
         return "application/detail";
@@ -64,10 +64,10 @@ public class ApplicationController {
 
     @PostMapping("/{id}/status")
     public String updateStatus(@PathVariable Long id,
-                               @RequestParam ApplicationStatus status,
-                               HttpSession session,
-                               @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                               Model model) {
+            @RequestParam ApplicationStatus status,
+            HttpSession session,
+            @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+            Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
         Application application = applicationService.getOrThrow(id);
 
@@ -94,7 +94,8 @@ public class ApplicationController {
             boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
                     (sessionUser.isInterviewer() && application.getInterviews() != null &&
                             application.getInterviews().stream()
-                                    .anyMatch(i -> i.getInterviewer() != null && i.getInterviewer().getId().equals(sessionUser.getId())));
+                                    .anyMatch(i -> i.getInterviewer() != null
+                                            && i.getInterviewer().getId().equals(sessionUser.getId())));
             model.addAttribute("canDownloadCv", canDownload);
 
             return "application/detail :: #application-detail-panels";
@@ -105,9 +106,9 @@ public class ApplicationController {
 
     @PostMapping("/{id}/notes")
     public String addNote(@PathVariable Long id,
-                          @RequestParam String content,
-                          HttpSession session,
-                          Model model) {
+            @RequestParam String content,
+            HttpSession session,
+            Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
         Application application = applicationService.getOrThrow(id);
 
@@ -133,7 +134,8 @@ public class ApplicationController {
         boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
                 (sessionUser.isInterviewer() && application.getInterviews() != null &&
                         application.getInterviews().stream()
-                                .anyMatch(i -> i.getInterviewer() != null && i.getInterviewer().getId().equals(sessionUser.getId())));
+                                .anyMatch(i -> i.getInterviewer() != null
+                                        && i.getInterviewer().getId().equals(sessionUser.getId())));
 
         if (!canDownload) {
             throw new AccessDeniedException("You do not have permission to download this CV.");
@@ -161,7 +163,8 @@ public class ApplicationController {
         }
 
         String fullName = (application.getCandidate() != null && application.getCandidate().getUser() != null)
-                ? application.getCandidate().getUser().getFullName() : "Candidate";
+                ? application.getCandidate().getUser().getFullName()
+                : "Candidate";
 
         String dummyPdf = "%PDF-1.4\n" +
                 "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" +
@@ -170,7 +173,8 @@ public class ApplicationController {
                 "4 0 obj\n<< /Length 120 >>\nstream\n" +
                 "BT\n/F1 18 Tf\n50 700 Td\n(CV for Candidate: " + fullName + ") Tj\n" +
                 "0 -30 Td\n(Application ID: " + id + ") Tj\n" +
-                "0 -30 Td\n(Job Title: " + (application.getJobPosting() != null ? application.getJobPosting().getTitle() : "N/A") + ") Tj\n" +
+                "0 -30 Td\n(Job Title: "
+                + (application.getJobPosting() != null ? application.getJobPosting().getTitle() : "N/A") + ") Tj\n" +
                 "ET\nstream\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f\n0000000009 00000 n\n0000000056 00000 n\n0000000111 00000 n\n0000000192 00000 n\ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n360\n%%EOF";
 
         fileBytes = dummyPdf.getBytes();
@@ -198,7 +202,8 @@ public class ApplicationController {
         if (sessionUser.isInterviewer()) {
             boolean isAssigned = application.getInterviews() != null &&
                     application.getInterviews().stream()
-                            .anyMatch(i -> i.getInterviewer() != null && i.getInterviewer().getId().equals(sessionUser.getId()));
+                            .anyMatch(i -> i.getInterviewer() != null
+                                    && i.getInterviewer().getId().equals(sessionUser.getId()));
             if (isAssigned) {
                 return;
             }

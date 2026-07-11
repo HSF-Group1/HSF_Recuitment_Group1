@@ -4,20 +4,22 @@
       th:with="pageTitle='Recruitment Overview', pageSubtitle='Monitor live job positions and candidate pipeline.'">
 <body>
 <section>
+  <style>
+    .metric-value { font-family: var(--font-mono, monospace); font-size: 2.5rem; font-weight: 500; line-height: 1; margin-bottom: 8px; }
+    .metric-label { font-size: 0.85rem; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.05em; }
+    .reveal-on-scroll { opacity: 0; transform: translateY(12px); transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+    .chart-wrapper { position: relative; height: 200px; }
+    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+  </style>
   <div class="container py-4 reveal-on-scroll is-visible">
     <!-- KPI Metrics Grid -->
     <div class="row g-4">
-      <!-- Active Jobs -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="app-card kpi-card p-4 h-100 d-flex flex-column justify-content-between">
-          <div class="kpi-card-icon">
-            <i class="fa-solid fa-briefcase text-muted"></i>
-          </div>
-          <div>
-            <div class="kpi-title text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em; font-weight: 600;">Active Jobs</div>
-            <div class="kpi-value my-2" th:text="${activeJobs}" style="font-size: 2.25rem; font-weight: 700; line-height: 1;">0</div>
-          </div>
-          <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Current open positions in recruitment</div>
+      <!-- Metric cards -->
+      <div class="col-md-4">
+        <div class="app-card p-4 h-100 d-flex flex-column justify-content-center text-center">
+          <div class="metric-value" th:text="${activeJobs}">0</div>
+          <div class="metric-label">Active Jobs</div>
         </div>
       </div>
       <!-- New Applications -->
@@ -46,87 +48,24 @@
           <div class="kpi-desc text-muted" style="font-size: 0.85rem;">Scheduled candidate evaluations for today</div>
         </div>
       </div>
-    </div>
-      
-    <div class="row">
-      <!-- Pipeline Status Chart -->
+
+      <!-- Grouped bar chart: applications + interviews per day -->
       <div class="col-md-8 mt-4">
         <div class="app-card p-4 h-100">
-          <h3 class="mb-4" style="font-size: 1.15rem; font-weight: 600;">Pipeline Status</h3>
-          
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h3 style="font-size: 1.25rem; font-weight: 600; margin: 0;">Activity — Last 7 Days</h3>
+            <div class="d-flex gap-3" style="font-size: 0.8rem; color: var(--gray-text);">
+              <span><span class="legend-dot" style="background:rgba(59,130,246,0.75);"></span>Applications</span>
+              <span><span class="legend-dot" style="background:rgba(34,197,94,0.75);"></span>Interviews</span>
+            </div>
+          </div>
           <div class="chart-wrapper">
-            <div class="chart-container-inner">
-              <!-- Y-Axis -->
-              <div class="chart-y-axis">
-                <span>200</span>
-                <span>150</span>
-                <span>100</span>
-                <span>50</span>
-                <span>0</span>
-              </div>
-              
-              <!-- Canvas Area -->
-              <div class="chart-canvas">
-                <!-- Grid Lines -->
-                <div class="chart-grid">
-                  <div class="chart-grid-line"></div>
-                  <div class="chart-grid-line"></div>
-                  <div class="chart-grid-line"></div>
-                  <div class="chart-grid-line"></div>
-                  <div class="chart-grid-line"></div>
-                </div>
-                
-                <!-- Bars (with tooltips) -->
-                <!-- Applied -->
-                <div class="chart-bar-container" style="width: 16%;">
-                  <div class="chart-bar" style="background: #FDEBEC; height: 180px; width: 100%;">
-                    <div class="chart-tooltip">Applied: 180 applicants</div>
-                  </div>
-                  <div class="chart-x-axis-label">Applied</div>
-                </div>
-                <!-- Screening -->
-                <div class="chart-bar-container" style="width: 16%;">
-                  <div class="chart-bar" style="background: #FBF3DB; height: 120px; width: 100%;">
-                    <div class="chart-tooltip">Screening: 120 applicants</div>
-                  </div>
-                  <div class="chart-x-axis-label">Screening</div>
-                </div>
-                <!-- Interview -->
-                <div class="chart-bar-container" style="width: 16%;">
-                  <div class="chart-bar" style="background: #E1F3FE; height: 80px; width: 100%;">
-                    <div class="chart-tooltip">Interview: 80 applicants</div>
-                  </div>
-                  <div class="chart-x-axis-label">Interview</div>
-                </div>
-                <!-- Offered -->
-                <div class="chart-bar-container" style="width: 16%;">
-                  <div class="chart-bar" style="background: #EDF3EC; height: 40px; width: 100%;">
-                    <div class="chart-tooltip">Offered: 40 applicants</div>
-                  </div>
-                  <div class="chart-x-axis-label">Offered</div>
-                </div>
-                <!-- Rejected -->
-                <div class="chart-bar-container" style="width: 16%;">
-                  <div class="chart-bar" style="background: #FDEBEC; height: 15px; width: 100%;">
-                    <div class="chart-tooltip">Rejected: 15 applicants</div>
-                  </div>
-                  <div class="chart-x-axis-label">Rejected</div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Legend -->
-            <div class="chart-legend">
-              <div class="chart-legend-item">
-                <div class="chart-legend-color" style="background: #E1F3FE; border: 1px solid var(--gray-border);"></div>
-                <span>Candidate pipeline stage volume</span>
-              </div>
-            </div>
+            <canvas id="hrActivityChart"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- Quick Actions panel -->
+      <!-- Quick Actions -->
       <div class="col-md-4 mt-4">
         <div class="app-card p-4 h-100 d-flex flex-column">
           <h3 class="mb-4" style="font-size: 1.15rem; font-weight: 600;">Quick Actions</h3>
@@ -140,14 +79,8 @@
                 <div class="quick-action-desc">Publish a new job position</div>
               </div>
             </a>
-            <a th:href="@{/hr/reports/pipeline}" class="quick-action-card">
-              <div class="quick-action-icon">
-                <i class="fa-solid fa-chart-column"></i>
-              </div>
-              <div>
-                <div class="quick-action-title">View Full Report</div>
-                <div class="quick-action-desc">Open detailed pipeline reports</div>
-              </div>
+            <a th:href="@{/reports/pipeline}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
+              <i class="fa-solid fa-chart-column fa-fw me-2"></i>View Full Report
             </a>
             <a th:href="@{/manage/jobs}" class="quick-action-card">
               <div class="quick-action-icon">
@@ -163,6 +96,75 @@
       </div>
     </div>
   </div>
+
+  <!-- Data carrier to avoid th:inline="javascript" rendering issues -->
+  <div id="hr-chart-data"
+       th:attr="data-labels=${chartLabels},data-apps=${chartAppCounts},data-ivs=${chartIvCounts}"
+       style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      const el     = document.getElementById('hr-chart-data');
+      const labels = JSON.parse(el.dataset.labels);
+      const apps   = JSON.parse(el.dataset.apps);
+      const ivs    = JSON.parse(el.dataset.ivs);
+
+      const isDark    = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+      const tickColor = isDark ? '#94A3B8' : '#6B7280';
+      const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+
+      const ctx = document.getElementById('hrActivityChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'New Applications',
+              data: apps,
+              backgroundColor: isDark ? 'rgba(59,130,246,0.45)' : 'rgba(59,130,246,0.30)',
+              borderColor:     isDark ? 'rgba(96,165,250,0.9)'  : 'rgba(37,99,235,0.75)',
+              borderWidth: 2,
+              borderRadius: 4,
+              borderSkipped: false,
+            },
+            {
+              label: 'Interviews',
+              data: ivs,
+              backgroundColor: isDark ? 'rgba(34,197,94,0.45)' : 'rgba(34,197,94,0.30)',
+              borderColor:     isDark ? 'rgba(74,222,128,0.9)' : 'rgba(22,163,74,0.75)',
+              borderWidth: 2,
+              borderRadius: 4,
+              borderSkipped: false,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },   // we render our own legend above
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: tickColor, font: { size: 12 } }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: gridColor },
+              ticks: { color: tickColor, font: { size: 12 }, precision: 0 }
+            }
+          }
+        }
+      });
+    })();
+  </script>
 </section>
 </body>
 </html>

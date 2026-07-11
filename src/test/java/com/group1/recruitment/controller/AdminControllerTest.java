@@ -6,7 +6,6 @@ import com.group1.recruitment.entity.Role;
 import com.group1.recruitment.entity.User;
 import com.group1.recruitment.enums.AccountStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
-import com.group1.recruitment.exception.ValidationException;
 import com.group1.recruitment.repository.CandidateRepository;
 import com.group1.recruitment.repository.RoleRepository;
 import com.group1.recruitment.repository.UserRepository;
@@ -220,5 +219,27 @@ class AdminControllerTest {
         String view2 = adminController.toggleStatus(saved.getId(), session, ra);
         assertEquals("redirect:/admin/users", view2);
         assertEquals(AccountStatus.ACTIVE, userRepository.findById(saved.getId()).orElseThrow().getStatus());
+    }
+
+    @Test
+    void testActivityLogAccessDeniedForHr() {
+        MockHttpSession session = createHrSession();
+        ConcurrentModel model = new ConcurrentModel();
+        assertThrows(AccessDeniedException.class, () -> {
+            adminController.activityLogs(0, 10, session, model);
+        });
+    }
+
+    @Test
+    void testActivityLogsSuccessForAdmin() {
+        MockHttpSession session = createAdminSession();
+        ConcurrentModel model = new ConcurrentModel();
+        String view = adminController.activityLogs(0, 10, session, model);
+        assertEquals("admin/activity-log", view);
+        assertNotNull(model.getAttribute("logsPage"));
+        assertNotNull(model.getAttribute("currentPage"));
+        assertNotNull(model.getAttribute("totalPages"));
+        assertNotNull(model.getAttribute("totalItems"));
+        assertEquals("activity-log", model.getAttribute("activeMenu"));
     }
 }
