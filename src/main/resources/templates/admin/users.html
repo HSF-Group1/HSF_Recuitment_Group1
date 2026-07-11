@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='User Management', activeMenu='users', content=~{::section})}">
+<body>
+<section>
+  <style>
+    /* Typographic Hierarchy - Editorial Serif for Display Headings */
+    h1, h2, h3, h4, h5, h6, .display-serif {
+      font-family: 'Georgia', 'Times New Roman', 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: #111111;
+    }
+    
+    body, p, input, select, button, .app-table, .modal-content {
+      font-family: 'SF Pro Display', '-apple-system', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: #1F2022;
+    }
+    
+    .text-muted {
+      color: #757575 !important;
+    }
+
+    /* Custom CTA Button - btn-charcoal */
+    .btn-charcoal {
+      background-color: #111111 !important;
+      color: #FFFFFF !important;
+      border: 1px solid #111111 !important;
+      border-radius: 4px !important;
+      font-weight: 500;
+      padding: 8px 16px;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+      box-shadow: none !important;
+    }
+    .btn-charcoal:hover {
+      background-color: #222222 !important;
+      opacity: 0.95;
+    }
+    .btn-charcoal:active {
+      transform: scale(0.98);
+    }
+    
+    /* Tabs styling override */
+    .nav-tabs-custom { border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; gap: 24px; padding: 0 24px; border-radius: 8px 8px 0 0; }
+    .nav-tabs-custom .nav-link { 
+      border: none; 
+      color: #757575; 
+      padding: 16px 0; 
+      font-weight: 500; 
+      position: relative; 
+      background: transparent; 
+    }
+    .nav-tabs-custom .nav-link:hover { color: #111111; }
+    .nav-tabs-custom .nav-link.active { color: #111111; font-weight: 600; }
+    .nav-tabs-custom .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #111111;
+    }
+    
+    /* Table Container & Layout */
+    .table-container { padding: 0 24px 24px 24px; }
+    .app-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 0; }
+    .app-table th { color: #757575; font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 12px 16px; }
+    .app-table td { border-bottom: 1px solid rgba(0,0,0,0.06); padding: 16px; vertical-align: middle; }
+    .app-table tr:last-child td { border-bottom: none; }
+    
+    /* Search inputs & filters */
+    .search-input { border: 1px solid rgba(0,0,0,0.06); border-radius: 6px; padding: 8px 12px 8px 36px; width: 300px; outline: none; transition: border-color 0.2s ease; background-color: transparent; color: #111111; }
+    .search-input:focus { border-color: #111111; }
+    .search-wrapper { position: relative; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #757575; }
+    
+    .role-select { border: 1px solid rgba(0,0,0,0.06); border-radius: 6px; padding: 8px 12px; outline: none; transition: border-color 0.2s ease; background-color: transparent; color: #111111; }
+    .role-select:focus { border-color: #111111; }
+    
+    .empty-state { padding: 60px 20px; text-align: center; }
+    .empty-icon { font-size: 48px; color: rgba(0,0,0,0.06); margin-bottom: 16px; }
+    
+    /* Premium Flat Pastels Badges */
+    .app-badge-success { background-color: #EBF7EE !important; color: #2F6A3E !important; }
+    .app-badge-warning { background-color: #FEF9E7 !important; color: #8F6B00 !important; }
+    .app-badge-danger { background-color: #FDF1F2 !important; color: #A63A3A !important; }
+    .app-badge-info { background-color: #E6F4EA !important; color: #2B6CB0 !important; }
+
+    /* Modal override */
+    .modal-content {
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      box-shadow: none !important;
+      background-color: #FFFFFF;
+    }
+    .modal-header {
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 24px;
+    }
+    .modal-body {
+      padding: 24px;
+    }
+    .modal-footer {
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding: 24px;
+    }
+    .field-error {
+      display: block;
+      color: #A63A3A;
+      font-size: 0.82rem;
+      margin-top: 4px;
+    }
+
+    /* Dark theme overrides based on attribute data-bs-theme */
+    [data-bs-theme="dark"] h1, 
+    [data-bs-theme="dark"] h2, 
+    [data-bs-theme="dark"] h3, 
+    [data-bs-theme="dark"] h4, 
+    [data-bs-theme="dark"] h5, 
+    [data-bs-theme="dark"] h6,
+    [data-bs-theme="dark"] .display-serif {
+      color: #F1F5F9;
+    }
+    [data-bs-theme="dark"] body, 
+    [data-bs-theme="dark"] p, 
+    [data-bs-theme="dark"] input, 
+    [data-bs-theme="dark"] select, 
+    [data-bs-theme="dark"] button, 
+    [data-bs-theme="dark"] .app-table, 
+    [data-bs-theme="dark"] .modal-content {
+      color: #E2E8F0;
+    }
+    [data-bs-theme="dark"] .modal-content {
+      background-color: #121829;
+      border-color: rgba(255,255,255,0.08);
+    }
+    [data-bs-theme="dark"] .modal-header,
+    [data-bs-theme="dark"] .modal-footer {
+      border-color: rgba(255,255,255,0.08);
+    }
+    [data-bs-theme="dark"] .btn-charcoal {
+      background-color: #F1F5F9 !important;
+      color: #0A0F1D !important;
+      border-color: #F1F5F9 !important;
+    }
+    [data-bs-theme="dark"] .btn-charcoal:hover {
+      background-color: #E2E8F0 !important;
+    }
+    [data-bs-theme="dark"] .app-badge-success { background-color: rgba(47, 106, 62, 0.28) !important; color: #A9D8B2 !important; }
+    [data-bs-theme="dark"] .app-badge-warning { background-color: rgba(143, 107, 0, 0.28) !important; color: #E6C77E !important; }
+    [data-bs-theme="dark"] .app-badge-danger  { background-color: rgba(166, 58, 58, 0.28) !important; color: #E8A6A6 !important; }
+    [data-bs-theme="dark"] .app-badge-info    { background-color: rgba(43, 108, 176, 0.30) !important; color: #92C4EF !important; }
+    [data-bs-theme="dark"] .field-error { color: #E8A6A6; }
+    [data-bs-theme="dark"] .search-input { border-color: rgba(255,255,255,0.08); color: #F1F5F9; }
+    [data-bs-theme="dark"] .role-select { border-color: rgba(255,255,255,0.08); color: #F1F5F9; }
+  </style>
+
+  <div class="container py-4 reveal-on-scroll is-visible">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="mb-1">User Management</h1>
+        <p class="text-muted mb-0">Oversee system accounts, modify user details, and control access permissions.</p>
+      </div>
+      <!-- Trigger button for modal -->
+      <button type="button" class="btn btn-charcoal" data-bs-toggle="modal" data-bs-target="#userModal">
+        <i class="fa-solid fa-user-plus fa-fw me-2"></i>New User
+      </button>
+    </div>
+
+    <!-- Flash messages -->
+    <div class="alert alert-success d-flex align-items-center gap-2" th:if="${flash != null}">
+      <i class="fa-solid fa-circle-check fa-fw"></i>
+      <span th:text="${flash}">Success message</span>
+    </div>
+
+    <div class="app-card mb-4 p-0">
+      <!-- Tabs -->
+      <div class="nav-tabs-custom">
+        <a th:href="@{/admin/users(status='ALL', q=${q}, roleId=${roleId})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'ALL' ? 'active' : ''}">
+          All Users <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['ALL']}">0</span>
+        </a>
+        <a th:href="@{/admin/users(status='ACTIVE', q=${q}, roleId=${roleId})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'ACTIVE' ? 'active' : ''}">
+          Active <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['ACTIVE']}">0</span>
+        </a>
+        <a th:href="@{/admin/users(status='LOCKED', q=${q}, roleId=${roleId})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'LOCKED' ? 'active' : ''}">
+          Locked <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['LOCKED']}">0</span>
+        </a>
+        <a th:href="@{/admin/users(status='INACTIVE', q=${q}, roleId=${roleId})}" class="nav-link text-decoration-none" th:classappend="${activeTab == 'INACTIVE' ? 'active' : ''}">
+          Inactive <span class="badge rounded-pill border ms-1" style="color: inherit;" th:text="${tabCounts['INACTIVE']}">0</span>
+        </a>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="d-flex justify-content-between align-items-center p-4">
+        <form th:action="@{/admin/users}" method="get" class="m-0 d-flex gap-3 align-items-center">
+          <input type="hidden" name="status" th:value="${activeTab}">
+          
+          <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="q" class="search-input" placeholder="Search by name, email or username..." th:value="${q}">
+          </div>
+
+          <select name="roleId" class="role-select" onchange="this.form.submit()">
+            <option value="">All Roles</option>
+            <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}" th:selected="${r.id == roleId}">Role</option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <div th:if="${users.isEmpty()}" class="empty-state">
+          <i class="fa-solid fa-users-slash empty-icon"></i>
+          <h4 style="font-weight: 600;">No users found</h4>
+          <p class="text-muted">Try adjusting your filters or search terms.</p>
+        </div>
+
+        <div th:unless="${users.isEmpty()}" class="table-responsive">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">User details</th>
+                <th style="width: 25%;">Email</th>
+                <th style="width: 15%;">Role</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 20%; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="user : ${users}">
+                <td>
+                  <a th:href="@{/admin/users/{id}/edit(id=${user.id}, q=${q}, roleId=${roleId}, status=${activeTab})}" class="text-decoration-none fw-semibold" style="color: var(--ink);" th:text="${user.fullName}">Full Name</a>
+                  <div class="text-muted small mt-1" th:text="${'@' + user.username}">username</div>
+                </td>
+                <td th:text="${user.email}">email@domain.com</td>
+                <td>
+                  <span class="app-badge app-badge-info" th:text="${user.role.name}">ROLE</span>
+                </td>
+                <td>
+                  <span class="app-badge" 
+                        th:classappend="${user.status.name() == 'ACTIVE' ? 'app-badge-success' : (user.status.name() == 'LOCKED' ? 'app-badge-warning' : 'app-badge-danger')}">
+                        <i class="fa-solid" th:classappend="${user.status.name() == 'ACTIVE' ? 'fa-circle-check' : (user.status.name() == 'LOCKED' ? 'fa-lock' : 'fa-circle-xmark')}"></i>
+                        [[${user.status}]]
+                  </span>
+                </td>
+                <td style="text-align: right;">
+                  <a th:href="@{/admin/users/{id}/edit(id=${user.id}, q=${q}, roleId=${roleId}, status=${activeTab})}" class="btn btn-quiet btn-sm me-1" style="border: 1px solid var(--gray-border);">
+                    Edit
+                  </a>
+                  <form th:action="@{/admin/users/{id}/toggle-status(id=${user.id})}" method="post" class="d-inline m-0">
+                    <button type="submit" class="btn btn-sm" th:classappend="${user.status.name() == 'ACTIVE' ? 'btn-outline-danger' : 'btn-outline-success'}" style="min-width: 80px;">
+                      [[${user.status.name() == 'ACTIVE' ? 'Lock' : 'Activate'}]]
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Modal Dialog -->
+  <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form th:action="${editMode} ? '/admin/users/' + ${userForm.id} : '/admin/users'" method="post" th:object="${userForm}">
+          <input type="hidden" th:if="${editMode}" th:field="*{id}" />
+          
+          <div class="modal-header">
+            <h5 class="modal-title" id="userModalLabel" th:text="${editMode ? 'Edit User Account' : 'Create User Account'}">Account Setup</h5>
+            <a th:href="@{/admin/users}" class="btn-close" aria-label="Close"></a>
+          </div>
+          
+          <div class="modal-body">
+            <!-- Global error display inside the modal -->
+            <div class="alert alert-danger d-flex gap-2 align-items-center" th:if="${errors != null && errors.containsKey('global')}">
+              <i class="fa-solid fa-triangle-exclamation fa-fw"></i>
+              <span th:text="${errors.get('global')}">Error</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Full Name -->
+              <div class="col-12">
+                <label for="fullName" class="app-form-label">Full Name</label>
+                <input type="text" id="fullName" class="app-form-control" th:field="*{fullName}"
+                       th:classappend="${errors != null && errors.containsKey('fullName')} ? 'is-invalid' : ''"
+                       placeholder="e.g. Hieu Nguyen">
+                <div class="field-error" th:if="${errors != null && errors.containsKey('fullName')}"
+                     th:text="${errors.get('fullName')}"></div>
+              </div>
+
+              <!-- Username -->
+              <div class="col-12" th:if="${!editMode}">
+                <label for="username" class="app-form-label">Username</label>
+                <input type="text" id="username" class="app-form-control" th:field="*{username}"
+                       th:classappend="${errors != null && errors.containsKey('username')} ? 'is-invalid' : ''"
+                       placeholder="e.g. hieunguyen">
+                <div class="field-error" th:if="${errors != null && errors.containsKey('username')}"
+                     th:text="${errors.get('username')}"></div>
+              </div>
+              
+              <!-- Email -->
+              <div class="col-12">
+                <label for="email" class="app-form-label">Email Address</label>
+                <input type="email" id="email" class="app-form-control" th:field="*{email}"
+                       th:classappend="${errors != null && errors.containsKey('email')} ? 'is-invalid' : ''"
+                       placeholder="e.g. hieu.nguyen@hsf.com">
+                <div class="field-error" th:if="${errors != null && errors.containsKey('email')}"
+                     th:text="${errors.get('email')}"></div>
+              </div>
+
+              <!-- Role -->
+              <div class="col-md-6">
+                <label for="roleId" class="app-form-label">System Role</label>
+                <select id="roleId" class="app-form-control" th:field="*{roleId}"
+                        th:classappend="${errors != null && errors.containsKey('roleId')} ? 'is-invalid' : ''">
+                  <option value="">-- Select Role --</option>
+                  <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name}">Role Name</option>
+                </select>
+                <div class="field-error" th:if="${errors != null && errors.containsKey('roleId')}"
+                     th:text="${errors.get('roleId')}"></div>
+              </div>
+
+              <!-- Status -->
+              <div class="col-md-6">
+                <label for="status" class="app-form-label">Account Status</label>
+                <select id="status" class="app-form-control" th:field="*{status}"
+                        th:classappend="${errors != null && errors.containsKey('status')} ? 'is-invalid' : ''">
+                  <option th:value="${T(com.group1.recruitment.enums.AccountStatus).ACTIVE}">ACTIVE</option>
+                  <option th:value="${T(com.group1.recruitment.enums.AccountStatus).LOCKED}">LOCKED</option>
+                  <option th:value="${T(com.group1.recruitment.enums.AccountStatus).INACTIVE}">INACTIVE</option>
+                </select>
+                <div class="field-error" th:if="${errors != null && errors.containsKey('status')}"
+                     th:text="${errors.get('status')}"></div>
+              </div>
+
+              <div class="col-12 mt-3 pt-3 border-top">
+                <h6 class="mb-2 fw-semibold" style="font-family: var(--font-mono, monospace); font-size: 0.8rem; text-transform: uppercase; color: var(--gray-text);">Security Credentials</h6>
+                <p class="text-muted small mb-2" th:if="${editMode}">Leave blank to keep current password.</p>
+              </div>
+
+              <!-- Password -->
+              <div class="col-md-6">
+                <label for="password" class="app-form-label" th:text="${editMode ? 'New Password' : 'Password'}">Password</label>
+                <input type="password" id="password" class="app-form-control" th:field="*{password}"
+                       th:classappend="${errors != null && errors.containsKey('password')} ? 'is-invalid' : ''"
+                       placeholder="Min 8 chars, 1 upper, 1 digit">
+                <div class="field-error" th:if="${errors != null && errors.containsKey('password')}"
+                     th:text="${errors.get('password')}"></div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="col-md-6">
+                <label for="confirmPassword" class="app-form-label" th:text="${editMode ? 'Confirm New Password' : 'Confirm Password'}">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="app-form-control" th:field="*{confirmPassword}"
+                       th:classappend="${errors != null && errors.containsKey('confirmPassword')} ? 'is-invalid' : ''"
+                       placeholder="Repeat password">
+                <div class="field-error" th:if="${errors != null && errors.containsKey('confirmPassword')}"
+                     th:text="${errors.get('confirmPassword')}"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <a th:href="@{/admin/users}" class="btn btn-quiet" style="border: 1px solid var(--gray-border);">Cancel</a>
+            <button type="submit" class="btn btn-charcoal">
+              <i class="fa-solid fa-check fa-fw me-2"></i><span th:text="${editMode ? 'Save Changes' : 'Create User'}">Save</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal control script -->
+  <script th:if="${editMode or errors != null}">
+      document.addEventListener("DOMContentLoaded", function() {
+          var userModal = new bootstrap.Modal(document.getElementById('userModal'));
+          userModal.show();
+      });
+  </script>
+</section>
+</body>
+</html>
