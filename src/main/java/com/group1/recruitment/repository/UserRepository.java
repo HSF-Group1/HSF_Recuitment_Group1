@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     long countByRole_Name(String roleName);
+
+    long countByCreatedAtBetween(java.time.LocalDateTime from, java.time.LocalDateTime to);
 }

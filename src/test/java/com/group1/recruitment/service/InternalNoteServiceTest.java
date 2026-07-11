@@ -1,6 +1,5 @@
 package com.group1.recruitment.service;
 
-import com.group1.recruitment.entity.Application;
 import com.group1.recruitment.entity.InternalNote;
 import com.group1.recruitment.exception.AccessDeniedException;
 import com.group1.recruitment.exception.NotFoundException;
@@ -32,7 +31,7 @@ class InternalNoteServiceTest {
         assertFalse(notes.isEmpty());
         // Verify chronological order (newest first - if multiple)
         if (notes.size() > 1) {
-            assertTrue(notes.get(0).getCreatedAt().isAfter(notes.get(1).getCreatedAt()) 
+            assertTrue(notes.get(0).getCreatedAt().isAfter(notes.get(1).getCreatedAt())
                     || notes.get(0).getCreatedAt().isEqual(notes.get(1).getCreatedAt()));
         }
     }
@@ -75,7 +74,8 @@ class InternalNoteServiceTest {
     @Test
     void testAddNoteFailByOtherHr() {
         // App 1 is associated with Job 1 (created by HR manager 'hr_hieu', ID 3)
-        // HR manager 'hr_huong' (ID 2) is a different HR manager and does not own the job posting
+        // HR manager 'hr_huong' (ID 2) is a different HR manager and does not own the
+        // job posting
         SessionUser otherHr = new SessionUser(2L, "Nguyen Thi Huong", "hr_huong", "huong.hr@hsf.com", "HR_MANAGER");
 
         assertThrows(AccessDeniedException.class, () -> {

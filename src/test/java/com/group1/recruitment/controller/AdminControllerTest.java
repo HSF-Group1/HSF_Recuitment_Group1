@@ -6,7 +6,6 @@ import com.group1.recruitment.entity.Role;
 import com.group1.recruitment.entity.User;
 import com.group1.recruitment.enums.AccountStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
-import com.group1.recruitment.exception.ValidationException;
 import com.group1.recruitment.repository.CandidateRepository;
 import com.group1.recruitment.repository.RoleRepository;
 import com.group1.recruitment.repository.UserRepository;
