@@ -1,6 +1,7 @@
 package com.group1.recruitment.controller;
 
 import com.group1.recruitment.dto.UserForm;
+import com.group1.recruitment.entity.ActivityLog;
 import com.group1.recruitment.entity.Candidate;
 import com.group1.recruitment.entity.Role;
 import com.group1.recruitment.entity.User;
@@ -8,6 +9,7 @@ import com.group1.recruitment.enums.AccountStatus;
 import com.group1.recruitment.exception.AccessDeniedException;
 import com.group1.recruitment.exception.NotFoundException;
 import com.group1.recruitment.exception.ValidationException;
+import com.group1.recruitment.repository.ActivityLogRepository;
 import com.group1.recruitment.repository.CandidateRepository;
 import com.group1.recruitment.repository.RoleRepository;
 import com.group1.recruitment.repository.UserRepository;
@@ -16,6 +18,10 @@ import com.group1.recruitment.security.SessionUtil;
 import com.group1.recruitment.service.AuthService;
 import com.group1.recruitment.util.PasswordUtil;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/users")
+@RequestMapping("/admin")
 public class AdminController {
 
     private final UserRepository userRepository;
@@ -35,15 +41,17 @@ public class AdminController {
     private final CandidateRepository candidateRepository;
     private final PasswordUtil passwordUtil;
     private final AuthService authService;
+    private final ActivityLogRepository activityLogRepository;
 
     public AdminController(UserRepository userRepository, RoleRepository roleRepository,
                            CandidateRepository candidateRepository, PasswordUtil passwordUtil,
-                           AuthService authService) {
+                           AuthService authService, ActivityLogRepository activityLogRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.candidateRepository = candidateRepository;
         this.passwordUtil = passwordUtil;
         this.authService = authService;
+        this.activityLogRepository = activityLogRepository;
     }
 
     private void checkAdminAccess(HttpSession session) {
@@ -53,7 +61,7 @@ public class AdminController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public String list(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Long roleId,
@@ -73,7 +81,7 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/users/{id}/edit")
     public String editForm(
             @PathVariable Long id,
             @RequestParam(required = false) String q,
@@ -95,7 +103,7 @@ public class AdminController {
         return "admin/users";
     }
 
-    @PostMapping
+    @PostMapping("/users")
     public String create(
             @ModelAttribute UserForm userForm,
             HttpSession session,
@@ -139,7 +147,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/users/{id}")
     public String update(
             @PathVariable Long id,
             @ModelAttribute UserForm userForm,
@@ -187,7 +195,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/{id}/toggle-status")
+    @PostMapping("/users/{id}/toggle-status")
     public String toggleStatus(
             @PathVariable Long id,
             HttpSession session,
@@ -206,6 +214,24 @@ public class AdminController {
         }
         userRepository.save(user);
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/activity-log")
+    public String activityLogs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpSession session,
+            Model model) {
+        checkAdminAccess(session);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+        Page<ActivityLog> logsPage = activityLogRepository.findAll(pageable);
+
+        model.addAttribute("logsPage", logsPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", logsPage.getTotalPages());
+        model.addAttribute("totalItems", logsPage.getTotalElements());
+        model.addAttribute("activeMenu", "activity-log");
+        return "admin/activity-log";
     }
 
     private void populateListModel(String q, Long roleId, String status, Model model) {

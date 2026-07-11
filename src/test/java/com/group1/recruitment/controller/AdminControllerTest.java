@@ -221,4 +221,26 @@ class AdminControllerTest {
         assertEquals("redirect:/admin/users", view2);
         assertEquals(AccountStatus.ACTIVE, userRepository.findById(saved.getId()).orElseThrow().getStatus());
     }
+
+    @Test
+    void testActivityLogAccessDeniedForHr() {
+        MockHttpSession session = createHrSession();
+        ConcurrentModel model = new ConcurrentModel();
+        assertThrows(AccessDeniedException.class, () -> {
+            adminController.activityLogs(0, 10, session, model);
+        });
+    }
+
+    @Test
+    void testActivityLogsSuccessForAdmin() {
+        MockHttpSession session = createAdminSession();
+        ConcurrentModel model = new ConcurrentModel();
+        String view = adminController.activityLogs(0, 10, session, model);
+        assertEquals("admin/activity-log", view);
+        assertNotNull(model.getAttribute("logsPage"));
+        assertNotNull(model.getAttribute("currentPage"));
+        assertNotNull(model.getAttribute("totalPages"));
+        assertNotNull(model.getAttribute("totalItems"));
+        assertEquals("activity-log", model.getAttribute("activeMenu"));
+    }
 }
