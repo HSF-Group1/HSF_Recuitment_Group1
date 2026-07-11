@@ -22,6 +22,10 @@
                 padding: 24px;
             }
 
+            .applications-table td a:hover {
+                text-decoration: underline !important;
+            }
+
             .applications-table {
                 width: 100%;
                 table-layout: fixed;
@@ -128,8 +132,9 @@
                         <tbody>
                             <tr th:each="app : ${applications}">
                                 <td>
-                                    <div class="fw-semibold" th:text="${app.jobPosting.title}">Java Backend
-                                        Developer</div>
+                                    <a th:href="@{/applications/{id}(id=${app.id})}" class="fw-semibold text-decoration-none text-dark hover-underline" style="cursor: pointer;" th:text="${app.jobPosting.title}">
+                                        Java Backend Developer
+                                    </a>
                                     <div class="text-muted small" th:text="${app.jobPosting.department}">
                                         Engineering</div>
                                   </td>
@@ -149,27 +154,24 @@
                                     </span>
                                 </td>
 
-                                 <td style="text-align: right;">
-                                     <div class="d-flex justify-content-end align-items-center gap-2">
-                                         <a th:href="@{/applications/{id}(id=${app.id})}" class="btn btn-quiet btn-sm">
-                                             View Details
-                                         </a>
-                                         <form
-                                             th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                             th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
-                                             method="post" class="m-0"
-                                             onsubmit="return confirm('Withdraw this application?');">
-                                             <button type="submit" class="btn btn-quiet btn-sm">
-                                                 Withdraw
-                                             </button>
-                                         </form>
-                                         <span
-                                             th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                             class="text-muted small">
-                                             Locked
-                                         </span>
-                                     </div>
-                                 </td>
+                                <td style="text-align: right;">
+                                    <div class="d-flex justify-content-end align-items-center gap-2">
+                                        <form
+                                            th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                            th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
+                                            method="post" class="m-0"
+                                            onsubmit="return confirm('Withdraw this application?');">
+                                            <button type="submit" class="btn btn-quiet btn-sm" style="color: #A63A3A;">
+                                                Withdraw
+                                            </button>
+                                        </form>
+                                        <span
+                                            th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                            class="text-muted small" style="font-style: italic;">
+                                            Locked
+                                        </span>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

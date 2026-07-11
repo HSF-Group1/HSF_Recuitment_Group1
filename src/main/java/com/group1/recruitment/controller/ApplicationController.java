@@ -52,7 +52,7 @@ public class ApplicationController {
         }
 
         // Check if CV download is permitted
-        boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
+        boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() || sessionUser.isCandidate() ||
                 (sessionUser.isInterviewer() && application.getInterviews() != null &&
                         application.getInterviews().stream()
                                 .anyMatch(i -> i.getInterviewer() != null
@@ -91,7 +91,7 @@ public class ApplicationController {
                 model.addAttribute("internalNotes", internalNoteService.getNotesForApplication(id));
             }
 
-            boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
+            boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() || sessionUser.isCandidate() ||
                     (sessionUser.isInterviewer() && application.getInterviews() != null &&
                             application.getInterviews().stream()
                                     .anyMatch(i -> i.getInterviewer() != null
@@ -131,7 +131,7 @@ public class ApplicationController {
         Application application = applicationService.getOrThrow(id);
 
         // Check if CV download is permitted
-        boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() ||
+        boolean canDownload = sessionUser.isAdmin() || sessionUser.isHr() || sessionUser.isCandidate() ||
                 (sessionUser.isInterviewer() && application.getInterviews() != null &&
                         application.getInterviews().stream()
                                 .anyMatch(i -> i.getInterviewer() != null
@@ -146,6 +146,15 @@ public class ApplicationController {
             if (application.getJobPosting() == null ||
                     application.getJobPosting().getCreatedBy() == null ||
                     !application.getJobPosting().getCreatedBy().getId().equals(sessionUser.getId())) {
+                throw new AccessDeniedException("You do not have permission to download this CV.");
+            }
+        }
+
+        // Additional Candidate ownership check
+        if (sessionUser.isCandidate()) {
+            if (application.getCandidate() == null ||
+                    application.getCandidate().getUser() == null ||
+                    !application.getCandidate().getUser().getId().equals(sessionUser.getId())) {
                 throw new AccessDeniedException("You do not have permission to download this CV.");
             }
         }

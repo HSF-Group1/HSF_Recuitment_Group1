@@ -37,7 +37,7 @@ public class HrApplicationController {
         return userRepository.findById(user.getId()).orElse(null);
     }
 
-    // 1. Xem danh sách đơn tuyển dụng chung (của HR hoặc Admin)
+    // 1. Xem danh sách đơn tuyển dụng chung (của HR, Admin, hoặc Interviewer)
     @GetMapping({"/applications", "/manage/applications"})
     public String listAllApplications(@RequestParam(required = false) String status,
                                       HttpSession session, Model model) {
@@ -64,7 +64,6 @@ public class HrApplicationController {
                     : applicationService.getApplicationRepository().findByJobPosting_CreatedByOrderBySubmissionDateDesc(currentUser);
             pipelineCounts = applicationService.getPipelineCountsForHr(currentUser);
         } else {
-            // Interviewer chỉ thấy hồ sơ ứng tuyển được assign Interview
             applications = (filterStatus != null)
                     ? applicationService.getApplicationRepository().findByInterviewerAndStatusOrderBySubmissionDateDesc(currentUser, filterStatus)
                     : applicationService.getApplicationRepository().findByInterviewerOrderBySubmissionDateDesc(currentUser);

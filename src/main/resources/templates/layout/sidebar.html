@@ -6,6 +6,7 @@
 
   <ul class="app-sidebar-menu">
     <li th:if="${currentUser != null && currentUser.isHrOrAdmin()}">
+    <li th:if="${currentUser != null && !currentUser.isInterviewer()}">
       <a th:href="@{/}" class="app-sidebar-link" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>

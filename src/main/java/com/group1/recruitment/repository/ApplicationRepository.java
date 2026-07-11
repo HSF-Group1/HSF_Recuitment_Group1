@@ -96,4 +96,14 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
        @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPosting.createdBy = :hr AND a.submissionDate >= :from AND a.submissionDate < :to")
        long countByHrAndSubmissionDateBetween(@Param("hr") User hr, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
+       // Interviewer assigned applications
+       @Query("SELECT DISTINCT a FROM Application a JOIN a.interviews iv WHERE iv.interviewer = :interviewer ORDER BY a.submissionDate DESC")
+       List<Application> findByInterviewerOrderBySubmissionDateDesc(@Param("interviewer") User interviewer);
+
+       @Query("SELECT DISTINCT a FROM Application a JOIN a.interviews iv WHERE iv.interviewer = :interviewer AND a.status = :status ORDER BY a.submissionDate DESC")
+       List<Application> findByInterviewerAndStatusOrderBySubmissionDateDesc(@Param("interviewer") User interviewer, @Param("status") ApplicationStatus status);
+
+       @Query("SELECT COUNT(DISTINCT a) FROM Application a JOIN a.interviews iv WHERE iv.interviewer = :interviewer AND a.status = :status")
+       long countByInterviewerAndStatus(@Param("interviewer") User interviewer, @Param("status") ApplicationStatus status);
 }
+
