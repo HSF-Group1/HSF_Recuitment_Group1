@@ -17,4 +17,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     @Query("SELECT COUNT(i) FROM Interview i WHERE i.application.jobPosting.createdBy = :hr AND i.interviewDate = :date")
     long countByHrAndDate(@Param("hr") User hr, @Param("date") LocalDate date);
+
+    // Count interviews on a specific day for HR's jobs (for weekly chart)
+    @Query("SELECT COUNT(i) FROM Interview i WHERE i.application.jobPosting.createdBy = :hr AND i.interviewDate = :date")
+    long countByHrAndExactDate(@Param("hr") User hr, @Param("date") LocalDate date);
 }

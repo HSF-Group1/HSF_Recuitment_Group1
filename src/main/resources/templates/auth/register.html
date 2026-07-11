@@ -1,71 +1,69 @@
 <!DOCTYPE html>
 <!-- SCR-03: User Register (public candidate self-service) -->
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/auth :: authLayout(title='Create Account', content=~{::section})}">
+  th:replace="~{layout/auth :: authLayout(title='Create Account', content=~{::section})}">
+
 <body>
-<section>
-  <h1 class="mb-1" style="font-size: 1.5rem;">Create an account</h1>
-  <p class="text-muted mb-4" style="font-size: var(--small-size);">
-    Register as a candidate to apply for open positions.
-  </p>
+  <section>
+    <h1 class="mb-1" style="font-size: 1.5rem;">Create an account</h1>
+    <p class="text-muted mb-4" style="font-size: var(--small-size);">
+      Register as a candidate to apply for open positions.
+    </p>
 
-  <form th:action="@{/auth/register}" th:object="${registerForm}" method="post" novalidate>
-    <div class="mb-3">
-      <label for="fullName" class="app-form-label">Full name</label>
-      <input type="text" id="fullName" class="app-form-control" th:field="*{fullName}"
-             th:classappend="${#fields.hasErrors('fullName')} ? ' is-invalid'"
-             autocomplete="name" autofocus>
-      <span class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error</span>
-    </div>
-
-    <div class="mb-3">
-      <label for="email" class="app-form-label">Email</label>
-      <input type="email" id="email" class="app-form-control" th:field="*{email}"
-             th:classappend="${#fields.hasErrors('email')} ? ' is-invalid'"
-             autocomplete="email">
-      <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</span>
-    </div>
-
-    <div class="mb-3">
-      <label for="password" class="app-form-label">Password</label>
-      <div class="pw-group">
-        <input type="password" id="password" class="app-form-control" th:field="*{password}"
-               th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'"
-               autocomplete="new-password">
-        <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
-          <i class="fa-solid fa-eye fa-fw"></i>
-        </button>
+    <form th:action="@{/auth/register}" th:object="${registerForm}" method="post" novalidate>
+      <div class="mb-3">
+        <label for="fullName" class="app-form-label">Full name</label>
+        <input type="text" id="fullName" class="app-form-control" th:field="*{fullName}"
+          th:classappend="${#fields.hasErrors('fullName')} ? ' is-invalid'" autocomplete="name" autofocus>
+        <span class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error</span>
       </div>
-      <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
-      <span class="text-muted d-block mt-1" style="font-size: 0.78rem;"
-            th:unless="${#fields.hasErrors('password')}">
-        At least 8 characters, with an uppercase letter and a digit.
-      </span>
-    </div>
 
-    <div class="mb-4">
-      <label for="confirmPassword" class="app-form-label">Confirm password</label>
-      <div class="pw-group">
-        <input type="password" id="confirmPassword" class="app-form-control" th:field="*{confirmPassword}"
-               th:classappend="${#fields.hasErrors('confirmPassword')} ? ' is-invalid'"
-               autocomplete="new-password">
-        <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
-          <i class="fa-solid fa-eye fa-fw"></i>
-        </button>
+      <div class="mb-3">
+        <label for="email" class="app-form-label">Email</label>
+        <input type="email" id="email" class="app-form-control" th:field="*{email}"
+          th:classappend="${#fields.hasErrors('email')} ? ' is-invalid'" autocomplete="email">
+        <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</span>
       </div>
-      <span class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error</span>
-    </div>
 
-    <button type="submit" class="btn btn-charcoal w-100">
-      <i class="fa-solid fa-user-plus fa-fw me-2"></i>Create Account
-    </button>
-  </form>
+      <div class="mb-3">
+        <label for="password" class="app-form-label">Password</label>
+        <div class="pw-group">
+          <input type="password" id="password" class="app-form-control" th:field="*{password}"
+            th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'" autocomplete="new-password">
+          <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
+            <i class="fa-solid fa-eye fa-fw"></i>
+          </button>
+        </div>
+        <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
+        <span class="text-muted d-block mt-1" style="font-size: 0.78rem;" th:unless="${#fields.hasErrors('password')}">
+          At least 8 characters, with an uppercase letter and a digit.
+        </span>
+      </div>
 
-  <hr class="my-4">
-  <p class="text-center mb-0" style="font-size: var(--small-size);">
-    <span class="text-muted">Already have an account?</span>
-    <a th:href="@{/auth/login}">Sign in</a>
-  </p>
-</section>
+      <div class="mb-4">
+        <label for="confirmPassword" class="app-form-label">Confirm password</label>
+        <div class="pw-group">
+          <input type="password" id="confirmPassword" class="app-form-control" th:field="*{confirmPassword}"
+            th:classappend="${#fields.hasErrors('confirmPassword')} ? ' is-invalid'" autocomplete="new-password">
+          <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
+            <i class="fa-solid fa-eye fa-fw"></i>
+          </button>
+        </div>
+        <span class="field-error" th:if="${#fields.hasErrors('confirmPassword')}"
+          th:errors="*{confirmPassword}">Error</span>
+      </div>
+
+      <button type="submit" class="btn btn-charcoal w-100">
+        <i class="fa-solid fa-user-plus fa-fw me-2"></i>Create Account
+      </button>
+    </form>
+
+    <hr class="my-4">
+    <p class="text-center mb-0" style="font-size: var(--small-size);">
+      <span class="text-muted">Already have an account?</span>
+      <a th:href="@{/auth/login}">Sign in</a>
+    </p>
+  </section>
 </body>
+
 </html>
