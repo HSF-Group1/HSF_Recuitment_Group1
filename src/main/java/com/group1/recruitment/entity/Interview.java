@@ -36,12 +36,15 @@ public class Interview {
     @OneToOne(mappedBy = "interview")
     private Evaluation evaluation;
 
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     // No-args constructor
     public Interview() {
     }
 
     // All-args constructor
-    public Interview(Long id, Application application, User interviewer, LocalDate interviewDate, LocalTime interviewTime, String locationOrLink, InterviewStatus status, Evaluation evaluation) {
+    public Interview(Long id, Application application, User interviewer, LocalDate interviewDate, LocalTime interviewTime, String locationOrLink, InterviewStatus status, Evaluation evaluation, String notes) {
         this.id = id;
         this.application = application;
         this.interviewer = interviewer;
@@ -50,6 +53,7 @@ public class Interview {
         this.locationOrLink = locationOrLink;
         this.status = status;
         this.evaluation = evaluation;
+        this.notes = notes;
     }
 
     // Getters and Setters
@@ -115,5 +119,13 @@ public class Interview {
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

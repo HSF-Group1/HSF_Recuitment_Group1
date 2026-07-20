@@ -1,0 +1,9 @@
+<!-- Reusable Breadcrumb (Pure Thymeleaf) -->
+<nav th:fragment="appBreadcrumb(parentText, parentUrl, activeText)" aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a th:href="${parentUrl}" th:text="${parentText}" class="text-decoration-none">Parent Page</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page" th:text="${activeText}">Active Page</li>
+  </ol>
+</nav>

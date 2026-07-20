@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title='Activity Log', activeMenu='activity-log', content=~{::section})}">
+<body>
+<section>
+  <style>
+    /* Typographic Hierarchy - Editorial Serif for Display Headings */
+    h1, h2, h3, h4, h5, h6, .display-serif {
+      font-family: 'Georgia', 'Times New Roman', 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: #111111;
+    }
+    
+    body, p, input, select, button, .app-table {
+      font-family: 'SF Pro Display', '-apple-system', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: #1F2022;
+    }
+    
+    .text-muted {
+      color: #757575 !important;
+    }
+
+    /* Table Container & Layout */
+    .table-container { padding: 24px; }
+    .app-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 0; }
+    .app-table th { color: #757575; font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 12px 16px; }
+    .app-table td { border-bottom: 1px solid rgba(0,0,0,0.06); padding: 16px; vertical-align: middle; }
+    .app-table tr:last-child td { border-bottom: none; }
+    
+    .empty-state { padding: 60px 20px; text-align: center; }
+    .empty-icon { font-size: 48px; color: rgba(0,0,0,0.06); margin-bottom: 16px; }
+    
+    /* Premium Flat Pastels Badges */
+    .app-badge-success { background-color: #EBF7EE !important; color: #2F6A3E !important; }
+    .app-badge-warning { background-color: #FEF9E7 !important; color: #8F6B00 !important; }
+    .app-badge-danger { background-color: #FDF1F2 !important; color: #A63A3A !important; }
+    .app-badge-info { background-color: #E6F4EA !important; color: #2B6CB0 !important; }
+
+    /* Dark theme overrides based on attribute data-bs-theme */
+    [data-bs-theme="dark"] h1, 
+    [data-bs-theme="dark"] h2, 
+    [data-bs-theme="dark"] h3, 
+    [data-bs-theme="dark"] h4, 
+    [data-bs-theme="dark"] h5, 
+    [data-bs-theme="dark"] h6,
+    [data-bs-theme="dark"] .display-serif {
+      color: #F1F5F9;
+    }
+    [data-bs-theme="dark"] body, 
+    [data-bs-theme="dark"] p, 
+    [data-bs-theme="dark"] .app-table {
+      color: #E2E8F0;
+    }
+    [data-bs-theme="dark"] .app-badge-success { background-color: rgba(47, 106, 62, 0.28) !important; color: #A9D8B2 !important; }
+    [data-bs-theme="dark"] .app-badge-warning { background-color: rgba(143, 107, 0, 0.28) !important; color: #E6C77E !important; }
+    [data-bs-theme="dark"] .app-badge-danger  { background-color: rgba(166, 58, 58, 0.28) !important; color: #E8A6A6 !important; }
+    [data-bs-theme="dark"] .app-badge-info    { background-color: rgba(43, 108, 176, 0.30) !important; color: #92C4EF !important; }
+    
+    .pagination .page-link {
+      color: #1F2022;
+      background-color: transparent;
+    }
+    .pagination .page-link:hover {
+      background-color: rgba(0,0,0,0.03);
+    }
+    .pagination .active .page-link {
+      background-color: #111111 !important;
+      border-color: #111111 !important;
+      color: #FFFFFF !important;
+    }
+    [data-bs-theme="dark"] .pagination .page-link {
+      color: #E2E8F0;
+    }
+    [data-bs-theme="dark"] .pagination .page-link:hover {
+      background-color: rgba(255,255,255,0.05);
+    }
+    [data-bs-theme="dark"] .pagination .active .page-link {
+      background-color: #F1F5F9 !important;
+      border-color: #F1F5F9 !important;
+      color: #0A0F1D !important;
+    }
+  </style>
+
+  <div class="container py-4 reveal-on-scroll is-visible">
+    <div class="mb-4">
+      <h1 class="mb-1">Activity Log</h1>
+      <p class="text-muted mb-0">Monitor system events, administrator mutations, and authorization history.</p>
+    </div>
+
+    <div class="app-card mb-4 p-0">
+      <div class="table-container">
+        <div th:if="${logsPage.isEmpty()}" class="empty-state">
+          <i class="fa-solid fa-clock-rotate-left empty-icon"></i>
+          <h4 style="font-weight: 600;">No activity logged</h4>
+          <p class="text-muted">The system log is currently empty.</p>
+        </div>
+
+        <div th:unless="${logsPage.isEmpty()}" class="table-responsive">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th style="width: 22%;">Timestamp</th>
+                <th style="width: 18%;">User</th>
+                <th style="width: 22%;">Event Type</th>
+                <th style="width: 25%;">Description</th>
+                <th style="width: 13%;">IP Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="log : ${logsPage.content}">
+                <td th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss')}">2026-07-11 12:00:00</td>
+                <td>
+                  <span th:if="${log.user != null}">
+                    <strong th:text="${log.user.fullName}">Full Name</strong>
+                    <div class="text-muted small mt-1" th:text="${'@' + log.user.username}">username</div>
+                  </span>
+                  <span th:unless="${log.user != null}" class="text-muted">SYSTEM</span>
+                </td>
+                <td>
+                  <span class="app-badge" 
+                        th:classappend="${log.eventType.name() == 'SIGN_IN_SUCCESS' || log.eventType.name() == 'ACCOUNT_UNLOCKED' ? 'app-badge-success' : 
+                                         (log.eventType.name() == 'SIGN_IN_FAILURE' || log.eventType.name() == 'ACCOUNT_DEACTIVATED' ? 'app-badge-danger' : 
+                                         (log.eventType.name() == 'ACCOUNT_LOCKED' ? 'app-badge-warning' : 'app-badge-info'))}"
+                        th:text="${log.eventType}">
+                    EVENT_TYPE
+                  </span>
+                </td>
+                <td th:text="${log.description}">Description of the logged event...</td>
+                <td th:text="${log.ipAddress}">127.0.0.1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div th:if="${totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+          <div class="text-muted small">
+            Showing <span th:text="${currentPage * 10 + 1}">1</span> to 
+            <span th:text="${(currentPage + 1) * 10 > totalItems ? totalItems : (currentPage + 1) * 10}">10</span> of 
+            <span th:text="${totalItems}">50</span> entries
+          </div>
+          
+          <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0 gap-1">
+              <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link border-0 rounded" th:href="@{/admin/activity-log(page=${currentPage - 1})}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link border-0 rounded fw-medium" th:href="@{/admin/activity-log(page=${i})}" th:text="${i + 1}">1</a>
+              </li>
+              <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link border-0 rounded" th:href="@{/admin/activity-log(page=${currentPage + 1})}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

@@ -24,7 +24,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             "/js/",
             "/images/",
             "/webjars/",
-            "/error"
+            "/error",
+            "/jobs"
     };
 
     /** Exact public paths (aliases that immediately redirect into /auth/**). */

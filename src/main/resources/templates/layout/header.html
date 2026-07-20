@@ -4,6 +4,14 @@
   
   <!-- Right side notifications/profile dropdown actions -->
   <div class="d-flex align-items-center gap-3">
+    <a th:href="@{/jobs}" class="text-decoration-none text-muted" style="font-size: 14px; font-weight: 600;">
+      View Jobs
+    </a>
+    <!-- Theme Toggle -->
+    <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <i class="fa-solid fa-moon fa-fw" data-theme-icon=""></i>
+    </button>
+    
     <!-- Notifications bell -->
     <div class="dropdown">
       <button class="btn btn-link text-decoration-none text-muted p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -25,14 +33,14 @@
     <div class="dropdown">
       <button class="btn btn-link text-decoration-none text-muted p-1 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-person-circle" style="font-size: 20px;"></i>
-        <span class="d-none d-md-inline" style="font-size: 14px;">HR Manager</span>
+        <span class="d-none d-md-inline" style="font-size: 14px;" th:text="${currentUser.username}">Username</span>
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+        <li><a class="dropdown-item" th:href="@{/settings}"><i class="bi bi-gear me-2"></i>Settings</a></li>
         <li><hr class="dropdown-divider"></li>
         <li>
-          <form th:action="@{/logout}" method="post" class="w-100">
+          <form th:action="@{/auth/logout}" method="post" class="w-100">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}"/>
             <button type="submit" class="dropdown-item text-danger w-100"><i class="bi bi-box-arrow-right me-2"></i>Log Out</button>
           </form>
@@ -41,3 +49,4 @@
     </div>
   </div>
 </div>
+

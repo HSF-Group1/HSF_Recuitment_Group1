@@ -1,0 +1,66 @@
+<div th:fragment="candidateInfo(app, canDownloadCv)" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-person-badge-fill me-2"></i>Candidate Detail</h3>
+        <div class="app-card-subtitle">Personal and account information</div>
+    </div>
+    <div class="py-2">
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Full Name:</div>
+            <div class="col-sm-8 fw-bold text-dark"
+                th:text="${app.candidate != null && app.candidate.user != null ? app.candidate.user.fullName : 'N/A'}">
+                Tran Thi Mai</div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Email:</div>
+            <div class="col-sm-8">
+                <a th:if="${app.candidate != null && app.candidate.user != null}"
+                    th:href="'mailto:' + ${app.candidate.user.email}" th:text="${app.candidate.user.email}"
+                    class="text-decoration-none fw-medium">mai.tran@gmail.com</a>
+                <span th:unless="${app.candidate != null && app.candidate.user != null}">N/A</span>
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Phone:</div>
+            <div class="col-sm-8 text-dark"
+                th:text="${app.candidate != null && app.candidate.profile != null ? app.candidate.profile.phone : 'N/A'}">
+                0901234567</div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Account Status:</div>
+            <div class="col-sm-8" th:if="${app.candidate != null && app.candidate.user != null}">
+                <span class="app-badge"
+                    th:classappend="${app.candidate.user.status.name() == 'ACTIVE' ? 'app-badge-success' : 'app-badge-danger'}"
+                    th:text="${app.candidate.user.status}">ACTIVE</span>
+            </div>
+            <div class="col-sm-8" th:unless="${app.candidate != null && app.candidate.user != null}">
+                <span class="app-badge app-badge-secondary">UNKNOWN</span>
+            </div>
+        </div>
+        <div class="row mb-0 align-items-center">
+            <div class="col-sm-4 fw-semibold text-muted">Personal Information:</div>
+            <div class="col-sm-8">
+                <a th:if="${canDownloadCv && app.cvFileUrl != null}" th:href="@{/application/{id}/cv(id=${app.id})}"
+                    class="app-btn app-btn-primary text-decoration-none d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-download"></i> Download CV
+                </a>
+                <button th:if="${!canDownloadCv || app.cvFileUrl == null}" type="button" class="app-btn app-btn-primary"
+                    disabled>
+                    <i class="bi bi-lock-fill"></i> Download Restricted
+                </button>
+            </div>
+            <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-light mt-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="fs-1 text-danger"><i class="bi bi-file-earmark-pdf"></i></div>
+                    <div>
+                        <div class="fw-semibold text-dark"
+                            th:text="${app.cvFileUrl?.contains('/') ? app.cvFileUrl.substring(app.cvFileUrl.lastIndexOf('/') + 1) : (app.cvFileUrl ?: 'CV_Document.pdf')}">
+                            mai_tran.pdf</div>
+                        <div class="small text-muted"
+                            th:text="${app.submissionDate != null ? 'Uploaded: ' + #temporals.format(app.submissionDate, 'dd/MM/yyyy HH:mm') : 'Uploaded: N/A'}">
+                            Uploaded: 01/07/2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

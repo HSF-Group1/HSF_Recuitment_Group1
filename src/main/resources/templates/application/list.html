@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: mainLayout(title=${title}, activeMenu=${activeMenu}, content=~{::section})}">
+<body>
+<section>
+  <style>
+    .funnel-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--gray-border);
+      padding-bottom: 16px;
+    }
+    .funnel-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray-text);
+      text-decoration: none;
+      background: var(--gray-border);
+      transition: all 0.2s ease;
+    }
+    .funnel-tab:hover {
+      color: var(--ink);
+      background: rgba(0,0,0,0.06);
+    }
+    .funnel-tab.active {
+      background: var(--ink);
+      color: var(--surface);
+    }
+    .funnel-tab .badge-count {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .funnel-tab.active .badge-count {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .status-applied, .status-screening { background: #FEF9E7; color: #8F6B00; }
+    .status-interview { background: #E6F4EA; color: #2B6CB0; }
+    .status-offer, .status-hired { background: #EBF7EE; color: #2F6A3E; }
+    .status-rejected, .status-withdrawn { background: #FDF1F2; color: #A63A3A; }
+
+    [data-bs-theme="dark"] .status-applied,
+    [data-bs-theme="dark"] .status-screening { background: rgba(143, 107, 0, 0.15); color: #F7D070; }
+    [data-bs-theme="dark"] .status-interview { background: rgba(43, 108, 176, 0.15); color: #90CDF4; }
+    [data-bs-theme="dark"] .status-offer,
+    [data-bs-theme="dark"] .status-hired { background: rgba(47, 106, 62, 0.15); color: #9AE6B4; }
+    [data-bs-theme="dark"] .status-rejected,
+    [data-bs-theme="dark"] .status-withdrawn { background: rgba(166, 58, 58, 0.15); color: #FEB2B2; }
+  </style>
+
+  <div class="container py-4">
+    <!-- Breadcrumb & Job Title (nếu truy cập từ chi tiết Job) -->
+    <div class="mb-4">
+      <div th:if="${job != null}">
+        <a th:href="@{/manage/jobs/{id}(id=${job.id})}" class="text-decoration-none text-muted small">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Job Details
+        </a>
+        <h1 class="mt-2" th:text="${'Applications: ' + job.title}">Applications List</h1>
+        <p class="text-muted" th:text="${job.department + ' • ' + job.location}">Job meta</p>
+      </div>
+
+      <div th:if="${job == null}">
+        <h1 class="mb-1">Candidates Applications</h1>
+        <p class="text-muted">Review, filter, and progress candidates in the hiring pipeline.</p>
+      </div>
+    </div>
+
+    <!-- Funnel Filter Tabs -->
+    <div class="funnel-tabs mb-4">
+      <a th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status='ALL')} : @{/applications(status='ALL')}"
+         class="funnel-tab" th:classappend="${activeTab == 'ALL' ? 'active' : ''}">
+        <span>All</span>
+      </a>
+
+      <!-- Lặp qua các Status Enum để sinh ra Tab động kèm số lượng -->
+      <a th:each="entry : ${pipeline}"
+         th:href="${job != null} ? @{/manage/jobs/{id}/applications(id=${job.id}, status=${entry.key.name()})} : @{/applications(status=${entry.key.name()})}"
+         class="funnel-tab" th:classappend="${activeTab == entry.key.name() ? 'active' : ''}">
+        <span th:text="${#strings.capitalize(#strings.toLowerCase(entry.key.name()))}">Stage</span>
+        <span class="badge-count" th:text="${entry.value}">0</span>
+      </a>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="app-card p-0 overflow-hidden">
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead class="table-light">
+          <tr>
+            <th class="ps-4 py-3" style="width: 25%;">Candidate</th>
+            <th th:if="${job == null}" class="py-3" style="width: 25%;">Applied Role</th>
+            <th class="py-3" style="width: 20%;">Date Applied</th>
+            <th class="py-3" style="width: 15%;">Status</th>
+            <th class="pe-4 py-3 text-end" style="width: 15%;">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Empty state -->
+          <tr th:if="${applications == null or applications.isEmpty()}">
+            <td colspan="5" class="text-center py-5 text-muted">
+              <i class="fa-solid fa-folder-open fa-2x mb-3 d-block"></i>
+              No applications found in this stage.
+            </td>
+          </tr>
+          <!-- Row iterator -->
+          <tr th:each="app : ${applications}">
+            <td class="ps-4">
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle" style="width: 36px; height: 36px; border-radius: 50%; background: var(--gray-border); display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                  <span th:text="${#strings.substring(app.candidate.user.fullName, 0, 1)}">C</span>
+                </div>
+                <div>
+                  <div class="fw-semibold text-dark" th:text="${app.candidate.user.fullName}">Candidate Name</div>
+                  <small class="text-muted" th:text="${app.candidate.user.email}">candidate@email.com</small>
+                </div>
+              </div>
+            </td>
+            <td th:if="${job == null}">
+              <div class="fw-semibold" th:text="${app.jobPosting.title}">Job Title</div>
+              <small class="text-muted" th:text="${app.jobPosting.department}">Department</small>
+            </td>
+            <td>
+              <span th:text="${#temporals.format(app.submissionDate, 'dd MMM yyyy')}">09 Jul 2026</span>
+            </td>
+            <td>
+                <span class="status-chip" th:classappend="${'status-' + #strings.toLowerCase(app.status.name())}">
+                  <i class="fa-solid fa-circle fa-fw" style="font-size: 0.45rem;"></i>
+                  <span th:text="${app.status.name()}">APPLIED</span>
+                </span>
+            </td>
+            <td class="pe-4 text-end">
+              <a th:href="@{/applications/{id}(id=${app.id})}" class="btn btn-quiet btn-sm">
+                View Profile <i class="fa-solid fa-chevron-right ms-1"></i>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>
