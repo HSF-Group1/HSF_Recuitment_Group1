@@ -1,8 +1,10 @@
 package com.group1.recruitment.controller;
 
+import com.group1.recruitment.entity.Application;
 import com.group1.recruitment.entity.Candidate;
 import com.group1.recruitment.entity.JobPosting;
 import com.group1.recruitment.entity.User;
+import com.group1.recruitment.enums.ApplicationStatus;
 import com.group1.recruitment.enums.JobStatus;
 import com.group1.recruitment.exception.NotFoundException;
 import com.group1.recruitment.exception.ValidationException;
@@ -22,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Controller
 public class PublicJobController {
     private final JobPostingRepository jobPostingRepository;
@@ -38,15 +44,58 @@ public class PublicJobController {
     }
 
     @GetMapping("/jobs")
-    public String jobs(Model model) {
-        model.addAttribute("jobs", jobPostingRepository.findByStatusOrderByCreatedAtDesc(JobStatus.ACTIVE));
+    public String jobs(HttpSession session, Model model) {
+        SessionUser currentUser = SessionUtil.current(session);
+        if (currentUser != null && !currentUser.isCandidate()) {
+            return "redirect:/error/403";
+        }
+
+        List<JobPosting> jobs = jobPostingRepository.findByStatusOrderByCreatedAtDesc(JobStatus.ACTIVE);
+
+        if (currentUser != null && currentUser.isCandidate()) {
+            User user = userRepository.findById(currentUser.getId()).orElse(null);
+            if (user != null) {
+                Candidate candidate = candidateRepository.findByUser(user).orElse(null);
+                if (candidate != null) {
+                    Set<Long> activeAppliedJobIds = applicationService.listForCandidate(candidate).stream()
+                            .filter(app -> app.getStatus() != ApplicationStatus.WITHDRAWN)
+                            .map(app -> app.getJobPosting().getId())
+                            .collect(Collectors.toSet());
+
+                    jobs = jobs.stream()
+                            .filter(j -> !activeAppliedJobIds.contains(j.getId()))
+                            .collect(Collectors.toList());
+                }
+            }
+        }
+
+        model.addAttribute("jobs", jobs);
         return "public/jobs";
     }
 
     @GetMapping("/jobs/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, HttpSession session, Model model) {
+        SessionUser currentUser = SessionUtil.current(session);
+        if (currentUser != null && !currentUser.isCandidate()) {
+            return "redirect:/error/403";
+        }
         JobPosting job = activeJobOrThrow(id);
+        boolean alreadyApplied = false;
+
+        if (currentUser != null && currentUser.isCandidate()) {
+            User user = userRepository.findById(currentUser.getId()).orElse(null);
+            if (user != null) {
+                Candidate candidate = candidateRepository.findByUser(user).orElse(null);
+                if (candidate != null) {
+                    alreadyApplied = applicationService.listForCandidate(candidate).stream()
+                            .anyMatch(app -> app.getJobPosting().getId().equals(id)
+                                    && app.getStatus() != ApplicationStatus.WITHDRAWN);
+                }
+            }
+        }
+
         model.addAttribute("job", job);
+        model.addAttribute("alreadyApplied", alreadyApplied);
         return "public/job-detail";
     }
 
