@@ -22,7 +22,7 @@ public class DataSeeder implements CommandLineRunner {
 
     public DataSeeder(PasswordUtil passwordUtil) {
         this.passwordUtil = passwordUtil;
-        this.DEMO_PASSWORD = passwordUtil.hash("password123");
+        this.DEMO_PASSWORD = passwordUtil.hash("Password123@");
     }
 
     @PersistenceContext
@@ -31,6 +31,13 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+        try {
+            em.createNativeQuery("ALTER TABLE interviews MODIFY COLUMN status VARCHAR(50)").executeUpdate();
+            System.out.println("[DataSeeder] Successfully altered interviews table status column to VARCHAR(50).");
+        } catch (Exception e) {
+            System.err.println("[DataSeeder] Failed to alter interviews table: " + e.getMessage());
+        }
+
         Long userCount = em.createQuery("select count(u) from User u", Long.class).getSingleResult();
         if (userCount > 0) {
             System.out.println(
@@ -173,6 +180,7 @@ public class DataSeeder implements CommandLineRunner {
         Application app7 = application(cand3, job3, ApplicationStatus.REJECTED,
                 LocalDateTime.now().minusDays(11),
                 "/cv/long_pham.pdf");
+        app7.setRejectedAtStage(ApplicationStatus.SCREENING);
         Application app8 = application(cand4, job1, ApplicationStatus.WITHDRAWN,
                 LocalDateTime.now().minusDays(8),
                 "/cv/lan_vo.pdf");
@@ -325,6 +333,7 @@ public class DataSeeder implements CommandLineRunner {
         a.setStatus(status);
         a.setSubmissionDate(submittedAt);
         a.setCvFileUrl(cvUrl);
+        a.setStatusUpdatedAt(submittedAt);
         em.persist(a);
         return a;
     }

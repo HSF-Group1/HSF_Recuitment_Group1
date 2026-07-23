@@ -7,9 +7,32 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
+    List<Interview> findByApplication(com.group1.recruitment.entity.Application application);
+
+    List<Interview> findByInterviewer(User interviewer);
+
+    long countByInterviewer(User interviewer);
+
+    long countByInterviewerAndStatus(User interviewer, com.group1.recruitment.enums.InterviewStatus status);
+
+    long countByInterviewerAndStatusAndInterviewDateLessThan(User interviewer, com.group1.recruitment.enums.InterviewStatus status, LocalDate date);
+
+    long countByInterviewerAndStatusAndInterviewDateGreaterThanEqual(User interviewer, com.group1.recruitment.enums.InterviewStatus status, LocalDate date);
+
+    List<Interview> findByInterviewerAndStatusAndInterviewDateGreaterThanEqualOrderByInterviewDateAscInterviewTimeAsc(
+            User interviewer, com.group1.recruitment.enums.InterviewStatus status, LocalDate date);
+
+    List<Interview> findByInterviewerAndStatusOrderByInterviewDateDescInterviewTimeDesc(
+            User interviewer, com.group1.recruitment.enums.InterviewStatus status);
+
     @Query("SELECT COUNT(i) FROM Interview i WHERE i.application.jobPosting.createdBy = :hr AND i.interviewDate = :date")
     long countByHrAndDate(@Param("hr") User hr, @Param("date") LocalDate date);
+
+    // Count interviews on a specific day for HR's jobs (for weekly chart)
+    @Query("SELECT COUNT(i) FROM Interview i WHERE i.application.jobPosting.createdBy = :hr AND i.interviewDate = :date")
+    long countByHrAndExactDate(@Param("hr") User hr, @Param("date") LocalDate date);
 }

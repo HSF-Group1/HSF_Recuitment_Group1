@@ -40,33 +40,39 @@
         <div class="app-card p-4 h-100">
           <h3 class="mb-4" style="font-size: 1.25rem; font-weight: 600;">System Activity</h3>
           <div class="d-flex justify-content-between align-items-end" style="height: 200px; border-bottom: 1px solid var(--gray-border); padding-bottom: 10px;">
-             <!-- Placeholder chart for admin dashboard -->
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 180px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['MONDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['MONDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Mon</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 120px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['TUESDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['TUESDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Tue</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 150px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['WEDNESDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['WEDNESDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Wed</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 100px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['THURSDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['THURSDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Thu</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 160px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['FRIDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['FRIDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Fri</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 50px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['SATURDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['SATURDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Sat</small>
              </div>
              <div class="d-flex flex-column align-items-center" style="width: 12%;">
-                <div style="background: #EAF3FB; width: 100%; height: 70px; border-radius: 4px 4px 0 0;"></div>
+                <div th:style="'background: #EAF3FB; width: 100%; height: ' + ${activityHeights['SUNDAY']} + 'px; border-radius: 4px 4px 0 0;'"
+                     th:title="${activityCounts['SUNDAY']} + ' activities'"></div>
                 <small class="mt-2 text-muted" style="font-size: 0.75rem;">Sun</small>
              </div>
           </div>
@@ -82,6 +88,9 @@
             </a>
             <a th:href="@{/admin/users}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
               <i class="fa-solid fa-users-gear fa-fw me-2"></i>Manage Users
+            </a>
+            <a th:href="@{/admin/activity-log}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
+              <i class="fa-solid fa-clock-rotate-left fa-fw me-2"></i>Activity Log
             </a>
             <a th:href="@{/admin/settings}" class="btn btn-quiet text-start" style="border: 1px solid var(--gray-border);">
               <i class="fa-solid fa-gear fa-fw me-2"></i>System Settings

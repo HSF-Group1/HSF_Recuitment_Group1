@@ -22,6 +22,10 @@
                 padding: 24px;
             }
 
+            .applications-table td a:hover {
+                text-decoration: underline !important;
+            }
+
             .applications-table {
                 width: 100%;
                 table-layout: fixed;
@@ -118,18 +122,19 @@
                     <table class="applications-table">
                         <thead>
                             <tr>
-                                <th style="width: 32%;">Job</th>
-                                <th style="width: 18%;">Location</th>
-                                <th style="width: 18%;">Submitted</th>
+                                <th style="width: 30%;">Job</th>
+                                <th style="width: 12%;">Location</th>
+                                <th style="width: 14%;">Submitted</th>
                                 <th style="width: 16%;">Status</th>
-                                <th style="width: 16%; text-align: right;">Action</th>
+                                <th style="width: 28%; text-align: right;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="app : ${applications}">
                                 <td>
-                                    <div class="fw-semibold" th:text="${app.jobPosting.title}">Java Backend
-                                        Developer</div>
+                                    <a th:href="@{/applications/{id}(id=${app.id})}" class="fw-semibold text-decoration-none text-dark hover-underline" style="cursor: pointer;" th:text="${app.jobPosting.title}">
+                                        Java Backend Developer
+                                    </a>
                                     <div class="text-muted small" th:text="${app.jobPosting.department}">
                                         Engineering</div>
                                   </td>
@@ -150,21 +155,22 @@
                                 </td>
 
                                 <td style="text-align: right;">
-                                    <form
-                                        th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                        th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
-                                        method="post" class="m-0"
-                                        onsubmit="return confirm('Withdraw this application?');">
-                                        <button type="submit" class="btn btn-quiet btn-sm">
-                                            Withdraw
-                                        </button>
-                                    </form>
-
-                                    <span
-                                        th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
-                                        class="text-muted small">
-                                        Locked
-                                    </span>
+                                    <div class="d-flex justify-content-end align-items-center gap-2">
+                                        <form
+                                            th:if="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                            th:action="@{/profile/my-applications/{id}/withdraw(id=${app.id})}"
+                                            method="post" class="m-0"
+                                            onsubmit="return confirm('Withdraw this application?');">
+                                            <button type="submit" class="btn btn-quiet btn-sm" style="color: #A63A3A;">
+                                                Withdraw
+                                            </button>
+                                        </form>
+                                        <span
+                                            th:unless="${app.status.name() == 'APPLIED' or app.status.name() == 'SCREENING'}"
+                                            class="text-muted small" style="font-style: italic;">
+                                            Locked
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

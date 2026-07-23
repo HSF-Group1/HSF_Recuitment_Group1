@@ -37,12 +37,12 @@ public class HrApplicationController {
         return userRepository.findById(user.getId()).orElse(null);
     }
 
-    // 1. Xem danh sách đơn tuyển dụng chung (của HR hoặc Admin)
-    @GetMapping({"/hr/applications", "/manage/applications"})
+    // 1. Xem danh sách đơn tuyển dụng chung (của HR, Admin, hoặc Interviewer)
+    @GetMapping({"/applications", "/manage/applications"})
     public String listAllApplications(@RequestParam(required = false) String status,
                                       HttpSession session, Model model) {
         SessionUser sessionUser = SessionUtil.require(session);
-        if (!sessionUser.isHr() && !sessionUser.isAdmin()) {
+        if (!sessionUser.isHr() && !sessionUser.isAdmin() && !sessionUser.isInterviewer()) {
             return "redirect:/error/403";
         }
 
@@ -57,12 +57,17 @@ public class HrApplicationController {
                     ? applicationService.getApplicationRepository().findByStatusOrderBySubmissionDateDesc(filterStatus)
                     : applicationService.getApplicationRepository().findAllByOrderBySubmissionDateDesc();
             pipelineCounts = applicationService.getPipelineCountsAll();
-        } else {
+        } else if (sessionUser.isHr()) {
             // HR chỉ thấy hồ sơ ứng tuyển của các Job do mình tạo
             applications = (filterStatus != null)
                     ? applicationService.getApplicationRepository().findByJobPosting_CreatedByAndStatusOrderBySubmissionDateDesc(currentUser, filterStatus)
                     : applicationService.getApplicationRepository().findByJobPosting_CreatedByOrderBySubmissionDateDesc(currentUser);
             pipelineCounts = applicationService.getPipelineCountsForHr(currentUser);
+        } else {
+            applications = (filterStatus != null)
+                    ? applicationService.getApplicationRepository().findByInterviewerAndStatusOrderBySubmissionDateDesc(currentUser, filterStatus)
+                    : applicationService.getApplicationRepository().findByInterviewerOrderBySubmissionDateDesc(currentUser);
+            pipelineCounts = applicationService.getPipelineCountsForInterviewer(currentUser);
         }
 
         model.addAttribute("applications", applications);
@@ -74,7 +79,7 @@ public class HrApplicationController {
     }
 
     // 2. Xem danh sách đơn tuyển dụng của 1 Job cụ thể
-    @GetMapping({"/hr/jobs/{jobId}/applications", "/manage/jobs/{jobId}/applications"})
+    @GetMapping({"/jobs/{jobId}/applications", "/manage/jobs/{jobId}/applications"})
     public String listJobApplications(@PathVariable Long jobId,
                                       @RequestParam(required = false) String status,
                                       HttpSession session, Model model) {

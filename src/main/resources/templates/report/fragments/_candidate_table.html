@@ -1,0 +1,64 @@
+<div th:fragment="candidateTable(applications, reportService)" class="app-card">
+    <div class="mb-3">
+        <h3 class="app-card-title"><i class="bi bi-list-task me-2"></i>Candidate Pipeline Details</h3>
+        <div class="app-card-subtitle">Active and historical application tracking details</div>
+    </div>
+
+    <!-- Empty State -->
+    <th:block th:if="${applications == null || applications.isEmpty()}">
+        <div th:replace="~{report/fragments/_pipeline_empty :: pipelineEmpty}"></div>
+    </th:block>
+
+    <!-- Table -->
+    <div class="table-responsive" th:unless="${applications == null || applications.isEmpty()}">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" style="min-width: 150px;">Candidate Name</th>
+                    <th scope="col">Job Posting</th>
+                    <th scope="col">Current Stage</th>
+                    <th scope="col">Days in Stage</th>
+                    <th scope="col">Assigned Interviewer</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col" style="min-width: 120px;">Last Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="app : ${applications}">
+                    <td>
+                        <a th:href="@{/applications/{id}(id=${app.id})}" class="fw-bold text-decoration-none text-primary" th:text="${app.candidate?.user?.fullName ?: 'N/A'}">
+                            Tran Thi Mai
+                        </a>
+                    </td>
+                    <td class="text-charcoal" th:text="${app.jobPosting?.title ?: 'N/A'}">Java Backend Developer</td>
+                    <td>
+                        <span class="app-badge" 
+                              th:classappend="${app.status.name() == 'APPLIED' ? 'app-badge-primary' : 
+                                              (app.status.name() == 'SCREENING' ? 'app-badge-warning' : 
+                                              (app.status.name() == 'INTERVIEW' ? 'app-badge-info' : 
+                                              (app.status.name() == 'OFFER' ? 'app-badge-success' : 
+                                              (app.status.name() == 'HIRED' ? 'app-badge-success' : 
+                                              (app.status.name() == 'REJECTED' ? 'app-badge-danger' : 'app-badge-secondary')))))}"
+                              th:text="${app.status}">APPLIED</span>
+                    </td>
+                    <td class="font-monospace fw-bold text-dark">
+                        <span th:text="${reportService.calculateDaysInStage(app)}">5</span> days
+                    </td>
+                    <td class="text-charcoal" th:text="${reportService.getInterviewerName(app)}">Nguyen Van Khoa</td>
+                    <td>
+                        <span th:with="rating=${reportService.getEvaluationRatingStr(app)}">
+                            <span th:if="${rating != '-'}" class="text-warning fw-bold">
+                                <i class="bi bi-star-fill"></i> <span th:text="${rating}">4/5</span>
+                            </span>
+                            <span th:if="${rating == '-'}" class="text-muted">-</span>
+                        </span>
+                    </td>
+                    <td class="text-muted small" 
+                        th:text="${#temporals.format(app.statusUpdatedAt != null ? app.statusUpdatedAt : app.submissionDate, 'dd/MM/yyyy HH:mm')}">
+                        09/07/2026 10:00
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

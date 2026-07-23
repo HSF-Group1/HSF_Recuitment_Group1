@@ -1,0 +1,72 @@
+<div th:fragment="summaryCards(summary)" class="row g-3 mb-4">
+    <!-- Applied -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid var(--primary, #111111);">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Applied</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).APPLIED) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-primary" style="opacity: 0.85;"><i class="bi bi-file-earmark-person-fill"></i></div>
+        </div>
+    </div>
+    <!-- Screening -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #D97706;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Screening</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).SCREENING) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-warning" style="opacity: 0.85;"><i class="bi bi-search"></i></div>
+        </div>
+    </div>
+    <!-- Interview -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #0284C7;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Interview</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).INTERVIEW) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-info" style="opacity: 0.85;"><i class="bi bi-people-fill"></i></div>
+        </div>
+    </div>
+    <!-- Offer -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #2E6B3F;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Offer</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).OFFER) ?: 0}">0</div>
+            </div>
+            <div class="fs-2" style="color: #2E6B3F; opacity: 0.85;"><i class="bi bi-envelope-open-fill"></i></div>
+        </div>
+    </div>
+    <!-- Hired -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #059669;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Hired</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).HIRED) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-success" style="opacity: 0.85;"><i class="bi bi-check-circle-fill"></i></div>
+        </div>
+    </div>
+    <!-- Rejected -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #DC2626;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Rejected</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).REJECTED) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-danger" style="opacity: 0.85;"><i class="bi bi-x-circle-fill"></i></div>
+        </div>
+    </div>
+    <!-- Withdrawn -->
+    <div class="col-md col-sm-6">
+        <div class="app-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid #6B7280;">
+            <div>
+                <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Withdrawn</div>
+                <div class="fs-3 fw-bold text-dark mt-1" th:text="${summary.get(T(com.group1.recruitment.enums.ApplicationStatus).WITHDRAWN) ?: 0}">0</div>
+            </div>
+            <div class="fs-2 text-secondary" style="opacity: 0.85;"><i class="bi bi-dash-circle-fill"></i></div>
+        </div>
+    </div>
+</div>

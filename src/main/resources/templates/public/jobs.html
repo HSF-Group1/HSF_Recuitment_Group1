@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <script>
     (function () {
@@ -30,7 +31,9 @@
       --public-active-text: #2f6a3e;
     }
 
-    html { min-height: 100dvh; }
+    html {
+      min-height: 100dvh;
+    }
 
     body {
       min-height: 100dvh;
@@ -78,7 +81,9 @@
       cursor: pointer;
     }
 
-    .nav-user-btn:hover { border-color: rgba(17, 17, 17, 0.18); }
+    .nav-user-btn:hover {
+      border-color: rgba(17, 17, 17, 0.18);
+    }
 
     [data-bs-theme="dark"] .nav-user-btn {
       border-color: rgba(226, 232, 240, 0.16);
@@ -143,7 +148,9 @@
     }
 
     .btn-charcoal:active,
-    .btn-quiet:active { transform: scale(0.98); }
+    .btn-quiet:active {
+      transform: scale(0.98);
+    }
 
     .hero-grid {
       display: grid;
@@ -365,15 +372,32 @@
     }
 
     @media (max-width: 767.98px) {
+
       .hero-grid,
-      .job-card { grid-template-columns: 1fr; }
-      .hero-grid { padding-top: 2.5rem; }
-      .jobs-toolbar { align-items: flex-start; flex-direction: column; }
-      .job-card { padding: 1.2rem; }
-      .job-card .btn-quiet { width: 100%; }
+      .job-card {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        padding-top: 2.5rem;
+      }
+
+      .jobs-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .job-card {
+        padding: 1.2rem;
+      }
+
+      .job-card .btn-quiet {
+        width: 100%;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="public-shell">
     <th:block th:if="${currentUser != null and currentUser.isHrOrAdmin()}">
@@ -459,7 +483,8 @@
                     <span th:text="${#temporals.format(job.applicationDeadline, 'dd MMM yyyy')}">31 Jul 2026</span>
                   </li>
                 </ul>
-                <p class="job-description" th:if="${job.description != null and !job.description.isBlank()}" th:text="${job.description}">
+                <p class="job-description" th:if="${job.description != null and !job.description.isBlank()}"
+                  th:text="${job.description}">
                   Build reliable recruitment workflows with a practical engineering team.
                 </p>
               </div>
@@ -495,4 +520,5 @@
     });
   </script>
 </body>
+
 </html>

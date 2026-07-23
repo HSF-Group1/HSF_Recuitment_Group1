@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <!-- SCR-01: User Login -->
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/auth :: authLayout(title='Sign In', content=~{::section})}">
+  th:replace="~{layout/auth :: authLayout(title='Sign In', content=~{::section})}">
+
 <body>
-<section>
-  <h1 class="mb-1" style="font-size: 1.5rem;">Sign in</h1>
-  <p class="text-muted mb-4" style="font-size: var(--small-size);">
-    Welcome back. Enter your credentials to continue.
-  </p>
+  <section>
+    <h1 class="mb-1" style="font-size: 1.5rem;">Sign in</h1>
+    <p class="text-muted mb-4" style="font-size: var(--small-size);">
+      Welcome back. Enter your credentials to continue.
+    </p>
 
-  <div class="alert alert-info d-flex align-items-center gap-2" th:if="${infoMessage != null}">
-    <i class="fa-solid fa-circle-info fa-fw"></i>
-    <span th:text="${infoMessage}">Info</span>
-  </div>
-  <div class="alert alert-danger d-flex align-items-center gap-2" th:if="${errorMessage != null}">
-    <i class="fa-solid fa-circle-exclamation fa-fw"></i>
-    <span th:text="${errorMessage}">Error</span>
-  </div>
-
-  <form th:action="@{/auth/login}" th:object="${loginForm}" method="post" novalidate>
-    <div class="mb-3">
-      <label for="usernameOrEmail" class="app-form-label">Username or email</label>
-      <input type="text" id="usernameOrEmail" class="app-form-control" th:field="*{usernameOrEmail}"
-             th:classappend="${#fields.hasErrors('usernameOrEmail')} ? ' is-invalid'"
-             autocomplete="username" autofocus>
-      <span class="field-error" th:if="${#fields.hasErrors('usernameOrEmail')}" th:errors="*{usernameOrEmail}">Error</span>
+    <div class="alert alert-info d-flex align-items-center gap-2" th:if="${infoMessage != null}">
+      <i class="fa-solid fa-circle-info fa-fw"></i>
+      <span th:text="${infoMessage}">Info</span>
+    </div>
+    <div class="alert alert-danger d-flex align-items-center gap-2" th:if="${errorMessage != null}">
+      <i class="fa-solid fa-circle-exclamation fa-fw"></i>
+      <span th:text="${errorMessage}">Error</span>
     </div>
 
-    <div class="mb-2">
-      <label for="password" class="app-form-label">Password</label>
-      <div class="pw-group">
-        <input type="password" id="password" class="app-form-control" th:field="*{password}"
-               th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'"
-               autocomplete="current-password">
-        <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
-          <i class="fa-solid fa-eye fa-fw"></i>
-        </button>
+    <form th:action="@{/auth/login}" th:object="${loginForm}" method="post" novalidate>
+      <div class="mb-3">
+        <label for="usernameOrEmail" class="app-form-label">Username or email</label>
+        <input type="text" id="usernameOrEmail" class="app-form-control" th:field="*{usernameOrEmail}"
+          th:classappend="${#fields.hasErrors('usernameOrEmail')} ? ' is-invalid'" autocomplete="username" autofocus>
+        <span class="field-error" th:if="${#fields.hasErrors('usernameOrEmail')}"
+          th:errors="*{usernameOrEmail}">Error</span>
       </div>
-      <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
-    </div>
 
-    <div class="d-flex justify-content-end mb-4">
-      <a th:href="@{/auth/forgot-password}" style="font-size: var(--small-size);">Forgot password?</a>
-    </div>
+      <div class="mb-2">
+        <label for="password" class="app-form-label">Password</label>
+        <div class="pw-group">
+          <input type="password" id="password" class="app-form-control" th:field="*{password}"
+            th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'" autocomplete="current-password">
+          <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Show password">
+            <i class="fa-solid fa-eye fa-fw"></i>
+          </button>
+        </div>
+        <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
+      </div>
 
-    <button type="submit" class="btn btn-charcoal w-100">
-      <i class="fa-solid fa-arrow-right-to-bracket fa-fw me-2"></i>Sign In
-    </button>
-  </form>
+      <div class="d-flex justify-content-end mb-4">
+        <a th:href="@{/auth/forgot-password}" style="font-size: var(--small-size);">Forgot password?</a>
+      </div>
 
-  <hr class="my-4">
-  <p class="text-center mb-0" style="font-size: var(--small-size);">
-    <span class="text-muted">New to TalentHub?</span>
-    <a th:href="@{/auth/register}">Create an account</a>
-  </p>
-</section>
+      <button type="submit" class="btn btn-charcoal w-100">
+        <i class="fa-solid fa-arrow-right-to-bracket fa-fw me-2"></i>Sign In
+      </button>
+    </form>
+
+    <hr class="my-4">
+    <p class="text-center mb-0" style="font-size: var(--small-size);">
+      <span class="text-muted">New to TalentHub?</span>
+      <a th:href="@{/auth/register}">Create an account</a>
+    </p>
+  </section>
 </body>
+
 </html>

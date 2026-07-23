@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? ~{layout/base :: mainLayout(title='Application Detail', activeMenu='applications', content=~{::section})} : ~{layout/member :: memberLayout(title='Application Detail', content=~{::section})}">
+
+<body>
+    <section class="container py-4">
+
+        <!-- Breadcrumb -->
+        <div th:replace="~{fragments/breadcrumb :: appBreadcrumb(
+            parentText='Applications',
+            parentUrl=${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? '/applications' : '/profile/my-applications',
+            activeText='Details')}">
+        </div>
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="app-h1">Application Detail</h1>
+
+            <div th:if="${currentApplication != null}">
+                <a th:href="${currentUser.isHrOrAdmin() || currentUser.isInterviewer()} ? '/applications' : '/profile/my-applications'" class="app-btn app-btn-secondary text-decoration-none">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Exit
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Modal -->
+        <div th:replace="~{fragments/alert :: appModalAlert(
+            message=${errorMsg},
+            type='danger')}">
+        </div>
+
+        <div id="application-detail-panels" class="row g-4 mt-2" th:if="${currentApplication != null}">
+
+            <!-- ===================================================== -->
+            <!-- LEFT COLUMN : Candidate -->
+            <!-- ===================================================== -->
+            <div class="col-lg-7 d-flex flex-column gap-2">
+
+                <!-- Candidate Information -->
+                <div id="candidate-panel">
+                    <div th:replace="~{application/fragments/_candidate_info
+                    :: candidateInfo(${currentApplication}, ${canDownloadCv})}">
+                    </div>
+                </div>
+
+
+
+
+                <!-- Internal Notes (Placeholder) -->
+                <div id="notes-panel">
+                    <div th:replace="~{application/fragments/_internal_notes
+                    :: internalNotes}">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- RIGHT COLUMN : Recruitment Workflow -->
+            <!-- ===================================================== -->
+            <div class="col-lg-5 d-flex flex-column gap-4">
+
+                <!-- Application Status -->
+                <div id="status-panel">
+                    <div th:replace="~{application/fragments/_status_card
+                    :: statusCard(${currentApplication})}">
+                    </div>
+                </div>
+
+                <!-- Pipeline Actions -->
+                <div id="pipeline-panel">
+                    <div th:replace="~{application/fragments/_pipeline_actions
+                    :: pipelineActions(${currentApplication}, ${allowedTransitions})}">
+                    </div>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div id="timeline-panel">
+                    <div th:replace="~{application/fragments/_activity_timeline
+                    :: activityTimeline(${currentApplication})}">
+                    </div>
+                </div>
+
+                <!-- Interview Summary -->
+                <div id="interview-panel">
+
+                    <th:block th:if="${currentApplication.interviews != null}">
+                        <th:block th:each="interview : ${currentApplication.interviews}">
+
+                            <th:block th:if="${interview != null
+                            && (interview.status.name() == 'SCHEDULED'
+                            || interview.status.name() == 'EVALUATED'
+                            || interview.status.name() == 'CANCELLED')}">
+
+                                <div th:replace="~{interview/fragments/_interview_info
+                                :: interviewInfo(${interview}, ${currentApplication})}">
+                                </div>
+
+                            </th:block>
+
+                        </th:block>
+                    </th:block>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

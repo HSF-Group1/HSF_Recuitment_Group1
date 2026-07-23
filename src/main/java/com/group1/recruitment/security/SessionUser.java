@@ -119,7 +119,7 @@ public class SessionUser implements Serializable {
         if (isHr())
             return "/hr/dashboard";
         if (isInterviewer())
-            return "/profile";
+            return "/applications";
         return "/profile";
     }
 
