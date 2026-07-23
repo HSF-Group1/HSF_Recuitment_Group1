@@ -11,10 +11,12 @@ import com.group1.recruitment.repository.*;
 import com.group1.recruitment.security.SessionUser;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -23,15 +25,18 @@ public class ApplicationService {
     private final ApplicationWorkflowService workflowService;
     private final ActivityLogRepository activityLogRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public ApplicationService(ApplicationRepository applicationRepository, 
                               ApplicationWorkflowService workflowService,
                               ActivityLogRepository activityLogRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              NotificationService notificationService) {
         this.applicationRepository = applicationRepository;
         this.workflowService = workflowService;
         this.activityLogRepository = activityLogRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public ApplicationDetailResponse getById(Long id) {
@@ -98,7 +103,7 @@ public class ApplicationService {
         }
 
         application.setStatus(targetStatus);
-        application.setStatusUpdatedAt(java.time.LocalDateTime.now());
+        application.setStatusUpdatedAt(LocalDateTime.now());
         applicationRepository.save(application);
 
         if (actor != null) {
@@ -109,25 +114,46 @@ public class ApplicationService {
                 log.setEventType(EventType.APPLICATION_STATUS_CHANGED);
                 log.setDescription("Application #" + application.getId() + " moved to " + targetStatus);
                 log.setIpAddress("127.0.0.1");
-                log.setTimestamp(java.time.LocalDateTime.now());
+                log.setTimestamp(LocalDateTime.now());
                 activityLogRepository.save(log);
             }
         }
     }
+
     @Transactional
     public Application applyToJob(Candidate candidate, JobPosting job, String cvFileUrl) {
-        applicationRepository.findByCandidateAndJobPosting(candidate, job).ifPresent(existing -> {
-            throw ValidationException.global("You have already applied for this job.");
-        });
+        Optional<Application> existingOpt = applicationRepository.findByCandidateAndJobPosting(candidate, job);
+        Application application;
 
-        Application application = new Application();
-        application.setCandidate(candidate);
-        application.setJobPosting(job);
-        application.setSubmissionDate(LocalDateTime.now());
-        application.setStatus(ApplicationStatus.APPLIED);
-        application.setCvFileUrl(cvFileUrl);
+        if (existingOpt.isPresent()) {
+            Application existing = existingOpt.get();
+            if (existing.getStatus() == ApplicationStatus.WITHDRAWN) {
+                existing.setStatus(ApplicationStatus.APPLIED);
+                existing.setSubmissionDate(LocalDateTime.now());
+                existing.setStatusUpdatedAt(LocalDateTime.now());
+                existing.setRejectedAtStage(null);
+                if (cvFileUrl != null && !cvFileUrl.isBlank()) {
+                    existing.setCvFileUrl(cvFileUrl);
+                }
+                application = applicationRepository.save(existing);
+            } else {
+                throw ValidationException.global("You have already applied for this job.");
+            }
+        } else {
+            application = new Application();
+            application.setCandidate(candidate);
+            application.setJobPosting(job);
+            application.setSubmissionDate(LocalDateTime.now());
+            application.setStatus(ApplicationStatus.APPLIED);
+            application.setCvFileUrl(cvFileUrl);
+            application = applicationRepository.save(application);
+        }
 
-        return applicationRepository.save(application);
+        if (notificationService != null) {
+            notificationService.notifyApplicationSubmitted(application);
+        }
+
+        return application;
     }
 
     public List<Application> listForCandidate(Candidate candidate) {

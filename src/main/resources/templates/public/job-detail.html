@@ -413,20 +413,28 @@
 
           <aside class="apply-panel">
             <div class="eyebrow">Application</div>
-            <h2 class="h4 mb-3">Ready to apply?</h2>
-            <p class="text-muted mb-4">Submit your CV for this role. Guests will be asked to sign in before the
-              application is recorded.</p>
-
-            <form th:action="@{/jobs/{id}/apply(id=${job.id})}" method="post" enctype="multipart/form-data">
-              <div class="mb-3">
-                <label for="cvFile" class="form-label">CV document</label>
-                <input id="cvFile" name="cvFile" type="file" class="form-control" accept=".pdf,.doc,.docx">
+            <th:block th:if="${alreadyApplied}">
+              <div class="alert alert-info d-flex align-items-center gap-2 mb-0">
+                <i class="fa-solid fa-circle-info fa-fw"></i>
+                <span>You have already submitted an active application for this role.</span>
               </div>
-              <button type="submit" class="btn-charcoal w-100">
-                <i class="fa-solid fa-paper-plane fa-fw"></i>
-                Apply
-              </button>
-            </form>
+            </th:block>
+            <th:block th:unless="${alreadyApplied}">
+              <h2 class="h4 mb-3">Ready to apply?</h2>
+              <p class="text-muted mb-4">Submit your CV for this role. Guests will be asked to sign in before the
+                application is recorded.</p>
+
+              <form th:action="@{/jobs/{id}/apply(id=${job.id})}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="cvFile" class="form-label">CV document</label>
+                  <input id="cvFile" name="cvFile" type="file" class="form-control" accept=".pdf,.doc,.docx">
+                </div>
+                <button type="submit" class="btn-charcoal w-100">
+                  <i class="fa-solid fa-paper-plane fa-fw"></i>
+                  Apply
+                </button>
+              </form>
+            </th:block>
           </aside>
         </div>
       </div>
