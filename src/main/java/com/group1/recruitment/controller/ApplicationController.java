@@ -175,16 +175,71 @@ public class ApplicationController {
                 ? application.getCandidate().getUser().getFullName()
                 : "Candidate";
 
-        String dummyPdf = "%PDF-1.4\n" +
-                "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" +
-                "2 0 obj\n<< /Type /Pages /Kids [ 3 0 R ] /Count 1 >>\nendobj\n" +
-                "3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << >> /Contents 4 0 R >>\nendobj\n" +
-                "4 0 obj\n<< /Length 120 >>\nstream\n" +
-                "BT\n/F1 18 Tf\n50 700 Td\n(CV for Candidate: " + fullName + ") Tj\n" +
-                "0 -30 Td\n(Application ID: " + id + ") Tj\n" +
-                "0 -30 Td\n(Job Title: "
-                + (application.getJobPosting() != null ? application.getJobPosting().getTitle() : "N/A") + ") Tj\n" +
-                "ET\nstream\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f\n0000000009 00000 n\n0000000056 00000 n\n0000000111 00000 n\n0000000192 00000 n\ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n360\n%%EOF";
+        String jobTitle = (application != null && application.getJobPosting() != null)
+                ? application.getJobPosting().getTitle()
+                : "N/A";
+
+        // Định nghĩa nội dung hiển thị trong Stream của PDF
+        String pdfContent = "BT\n" +
+                "/F1 20 Tf 50 770 Td (" + fullName + ") Tj\n" +
+                "/F1 12 Tf 0 -22 Td (Job Position: " + jobTitle + " | Application ID: " + id + ") Tj\n" +
+                "0 -15 Td (Email: candidate@example.com | Phone: +84 123 456 789) Tj\n" +
+                "0 -25 Td (____________________________________________________________________) Tj\n" +
+
+                "0 -30 Td /F1 14 Tf (SUMMARY) Tj\n" +
+                "0 -18 Td /F1 10 Tf (Motivated and detail-oriented professional with experience in software development) Tj\n"
+                +
+                "0 -14 Td (and system architecture. Passionate about building scalable applications and learning new tech.) Tj\n"
+                +
+
+                "0 -28 Td /F1 14 Tf (WORK EXPERIENCE) Tj\n" +
+                "0 -18 Td /F1 11 Tf (Software Engineer | Tech Company) Tj\n" +
+                "0 -14 Td /F1 10 Tf (2023 - Present) Tj\n" +
+                "0 -14 Td (- Developed RESTful APIs using Spring Boot and Java.) Tj\n" +
+                "0 -14 Td (- Managed database schemas, triggers, and optimized SQL queries.) Tj\n" +
+                "0 -14 Td (- Integrated WebSocket and OAuth2 for secure real-time communication.) Tj\n" +
+
+                "0 -25 Td /F1 11 Tf (Junior Developer | Software Solutions) Tj\n" +
+                "0 -14 Td /F1 10 Tf (2022 - 2023) Tj\n" +
+                "0 -14 Td (- Collaborated with cross-functional teams to build responsive web interfaces.) Tj\n" +
+                "0 -14 Td (- Assisted in microservices migration and unit testing.) Tj\n" +
+
+                "0 -28 Td /F1 14 Tf (EDUCATION) Tj\n" +
+                "0 -18 Td /F1 11 Tf (Bachelor of Science in Computer Science) Tj\n" +
+                "0 -14 Td /F1 10 Tf (University of Technology | 2019 - 2023) Tj\n" +
+
+                "0 -28 Td /F1 14 Tf (SKILLS) Tj\n" +
+                "0 -18 Td /F1 10 Tf (Languages: Java, JavaScript, SQL, C++) Tj\n" +
+                "0 -14 Td (Frameworks: Spring Boot, React, Vite, Bootstrap) Tj\n" +
+                "0 -14 Td (Tools & Databases: Git, PostgreSQL, Docker, WebSocket) Tj\n" +
+                "ET\n";
+
+        int streamLength = pdfContent.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+
+        // Khai báo đối tượng PDF chuẩn
+        String obj1 = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+        String obj2 = "2 0 obj\n<< /Type /Pages /Kids [ 3 0 R ] /Count 1 >>\nendobj\n";
+        String obj3 = "3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 4 0 R >>\nendobj\n";
+        String obj4Header = "4 0 obj\n<< /Length " + streamLength + " >>\nstream\n";
+        String obj4End = "endstream\nendobj\n";
+
+        // Tính toán Offset vị trí từng Object trong file PDF (Bắt buộc chuẩn để PDF
+        // không hỏng)
+        int offset1 = 9; // Sau "%PDF-1.4\n"
+        int offset2 = offset1 + obj1.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+        int offset3 = offset2 + obj2.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+        int offset4 = offset3 + obj3.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+
+        String fullStream = obj4Header + pdfContent + obj4End;
+        int startXref = offset4 + fullStream.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+
+        String xrefAndTrailer = String.format(
+                "xref\n0 5\n0000000000 65535 f\n%010d 00000 n\n%010d 00000 n\n%010d 00000 n\n%010d 00000 n\n" +
+                        "trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n%d\n%%EOF",
+                offset1, offset2, offset3, offset4, startXref);
+
+        // Chuỗi PDF hoàn chỉnh
+        String dummyPdf = "%PDF-1.4\n" + obj1 + obj2 + obj3 + fullStream + xrefAndTrailer;
 
         fileBytes = dummyPdf.getBytes();
 
